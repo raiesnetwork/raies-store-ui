@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import "../Helpers/Scss/ProductViewCard.scss";
-import { ProductViewCardProps, respProduct } from "../core/interface/interface";
-import useMystoreStore from "../core/store/MyStoreStore";
 import {ToastContainer, toast } from "react-toastify";
+import useMystoreStore from "../Core/Store";
+import { ProductViewCardProps, respProduct } from "../Core/Interfaces";
 
 const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
   const { updateSingleProductData,AddToCart,FetchToCart  } =useMystoreStore((state) => state);
@@ -13,7 +13,7 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
   const [btnDisable,setDisable]=useState<boolean>(false)
   const handileCart=async(id:string,count:number)=>{
     setDisable(true)
-   const data:any=await AddToCart(id,count)
+   const data=await AddToCart(id,count)
    setDisable(false)
    if (data.error) {
     toast.error("item coun't add to cart")
