@@ -1,16 +1,16 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
-import "../Helpers/Scss/StoreCart.scss";
-import useMystoreStore from "../core/store/MyStoreStore";
-import { respStoreCart } from "../core/interface/interface";
+import "../Helpers/scss/Cart.scss";
 import { FaPlus ,FaMinus} from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
+import useMystoreStore from "../Core/Store";
+import { respStoreCart } from "../Core/Interfaces";
 const StoreCart: React.FC = () => {
   const {
     cartData,
     cartLoader,
     setCartLoader,
-    AddToCart,
+    
     deleteCart,
     FetchToCart,
     updateCart
@@ -21,7 +21,7 @@ const StoreCart: React.FC = () => {
       setCartLoader(false);
       setCartItems(cartData);
     }
-  }, [cartData]);
+  }, [cartData, setCartLoader]);
 
   // Update the total price when quantities change
   const getTotal = () => {
