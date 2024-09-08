@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../Helpers/Scss/ProductViewCard.scss";
+import "../Helpers/scss/ProductCard.scss";
 import {ToastContainer, toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { ProductViewCardProps, respProduct } from "../Core/Interfaces";

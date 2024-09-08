@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import useMystoreStore from "../core/store/MyStoreStore";
 import { GiFastBackwardButton } from "react-icons/gi";
 import "../Helpers/Scss/SingleProductView.scss";
+import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
 import BiddingModal from "./BiddingModal";
 
@@ -12,6 +12,7 @@ const SingleProductView: React.FC = () => {
   const [imageView, setImageView] = useState<string>(
     singleProductData.mainImage
   );
+  // eslint-disable-next-line no-unsafe-optional-chaining
   const [year, month, day] = singleProductData?.endDate.split("-");
   const lastDate = `${day}-${month}-${year}`;
   return (

@@ -21,7 +21,7 @@ const StoreCart: React.FC = () => {
       setCartLoader(false);
       setCartItems(cartData);
     }
-  }, [cartData, setCartLoader]);
+  }, [cartData]);
 
   // Update the total price when quantities change
   const getTotal = () => {

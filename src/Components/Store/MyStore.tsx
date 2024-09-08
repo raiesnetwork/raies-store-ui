@@ -1,13 +1,13 @@
 import React, { useEffect, useState } from "react";
-import ProductViewCard from "./ProductViewCard";
-import useMystoreStore from "../core/store/MyStoreStore";
-import { respProduct } from "../core/interface/interface";
-
+import useMystoreStore from "./Core/Store";
+import { respProduct } from "./Core/Interfaces";
+import ProductViewCard from "./Molecules/ProductCard";
+const {hostname}=window.location
 export const MyStore:React.FC = () => {
  
 
 
-  const {  AllProducts, getAllProduct, communityInfo,setHomeLoader,homeLoader } =
+  const { getAllProduct, AllProducts, setHomeLoader,homeLoader } =
     useMystoreStore((state) => state);
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
@@ -25,12 +25,11 @@ export const MyStore:React.FC = () => {
 
   useEffect(() => {
     const ApiHelper = async () => {
-      getAllProduct(communityInfo.id);
+      getAllProduct(hostname);
     };
-    if (communityInfo.id) {
-      ApiHelper();
-    }
-  }, [communityInfo.id]);
+   
+    ApiHelper()
+  }, []);
 
   useEffect(() => {
     // Filter the products based on the selected filter

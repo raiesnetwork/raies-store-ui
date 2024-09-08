@@ -1,9 +1,10 @@
+import { MyStore } from "./Components/Store/MyStore"
 
 function App() {
 
   return (
     <>
-     
+     <MyStore/>
     </>
   )
 }
