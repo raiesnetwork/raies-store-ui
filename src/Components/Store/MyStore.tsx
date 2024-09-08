@@ -12,23 +12,24 @@ export const MyStore:React.FC = () => {
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
   
-
+  setTimeout(() => {
+    setHomeLoader(false)
+  }, 18000);
   useEffect(() => {
     if (AllProducts) {
-      setTimeout(() => {
-        setHomeLoader(false)
-      }, 20000);
+      
       
       setData(AllProducts);
     }
   }, [AllProducts]);
-
+  const ApiHelper = async () => {
+    getAllProduct(hostname);
+  };
   useEffect(() => {
-    const ApiHelper = async () => {
-      getAllProduct(hostname);
-    };
+    
    
     ApiHelper()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
