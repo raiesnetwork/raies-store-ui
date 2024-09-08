@@ -1,0 +1,105 @@
+.single-product-container{
+    // height: 100vh;
+    width: 100%;
+    overflow: hidden;
+    }
+    .single-product-details{
+        width: 100%;
+        display: flex;
+        margin-bottom: 50px;
+        
+    }
+    .single-product-left{
+    width: 50%;
+    }
+    .big-image{
+       display: flex;
+       align-items: center;
+    }
+    .big-image img{
+        width: 90%;
+        border-radius: 3px;
+    
+    
+    }
+    .related-images{
+    margin-top: 17px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    }
+    .related-images img{
+        width: 30%;
+        border-radius: 8px;
+        cursor: pointer;
+    }
+    .single-product-right{
+        width: 45%;
+        }
+        .details-product-normal div:nth-child(1){
+            font-weight: bold;
+            font-size: 22px;
+        }
+        .details-product-normal div:nth-child(2){
+            font-size: 18px;
+            font-weight: 600;
+            color: rgb(146, 144, 144);
+        }
+        .details-product-normal div:nth-child(3){
+            font-size: 20px;
+            font-weight: 600;
+           
+        }
+        .details-product-normal div:nth-child(4){
+            font-size: 16px;
+            font-family: sans-serif;
+            
+            max-width: 90%;
+        }
+        .details-product-normal p{
+            font-family: sans-serif;
+            font-style: italic;
+            background-color: rgb(185, 182, 182);
+            text-align: center;
+            padding: 5px;
+            border-radius: 5px;
+            font-weight: 700;
+            width: 90%;
+        }
+        @mixin btn(){
+            outline: none;
+            border-radius: 5px;
+            width: 30%;
+            height: 38px;
+            border: 0;
+            background-color: yellow;
+            font-weight: 500;
+            cursor: pointer;
+        }
+        .purchase-btns{
+            display: flex;
+            align-items: center;
+            gap: 10px;
+        }
+        .purchase-btns button{
+            @include btn
+        }
+        .related-products div{
+            font-size: 20px;
+            font-weight: bold;
+        }
+        @media (max-width:676px) {
+            .single-product-details{
+                width: 100%;
+                display: grid;
+                margin-bottom: 50px;
+                align-items: center;
+                justify-content: center;
+            }
+            .single-product-left{
+                width: 100%;
+                }
+                .single-product-right{
+                    width: 100%;
+                    }
+        }
