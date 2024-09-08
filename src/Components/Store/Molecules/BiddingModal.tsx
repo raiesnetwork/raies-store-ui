@@ -1,8 +1,8 @@
-import React, { useState, useEffect, useRef } from "react";
+import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import useMystoreStore from "../core/store/MyStoreStore";
-import { KTSVG } from "../../../../_metronic/helpers";
+import useMystoreStore from "../Core/Store";
+// import { KTSVG } from "../../../../_metronic/helpers";
 
 const BiddingModal: React.FC = () => {
   const { setOpenBiddingModal, isOpenBiddingModal } = useMystoreStore((state) => state);
@@ -73,6 +73,7 @@ const BiddingModal: React.FC = () => {
         //   updateModalOpen();
         //   ProductImageRef.current.value = "";
         // }
+      // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         setDisable(false);
         toast.error("Failed to submit form.");
@@ -87,7 +88,7 @@ const BiddingModal: React.FC = () => {
           <div className="modal-header d-flex justify-content-between">
             <h5 className="modal-title">Address Form</h5>
             <div className="btn btn-icon btn-sm btn-active-light-primary ms-2" onClick={() => setOpenBiddingModal()}>
-              <KTSVG path="media/icons/duotune/arrows/arr061.svg" className="svg-icon svg-icon-2x" />
+              {/* <KTSVG path="media/icons/duotune/arrows/arr061.svg" className="svg-icon svg-icon-2x" /> */}
             </div>
           </div>
 
