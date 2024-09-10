@@ -9,7 +9,7 @@ export interface respProduct {
   mainImage: string;
   subImages: string[];
   productCount: number;
-  communityId?: string;
+  userId?: string;
   flag: boolean;
   description: string;
   id: string;

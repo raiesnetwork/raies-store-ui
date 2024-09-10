@@ -13,7 +13,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   getAllProduct: async (hostName) => {
     if (hostName) {
       const resp = await getAllProductApi(hostName);
-      set(() => ({ AllProducts: resp?.data?.data }));
+      set(() => ({ AllProducts: resp?.data}));
     }
   },
   singleProductData: {
@@ -26,7 +26,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     productCount: 0,
     productName: "",
     subImages: [],
-    communityId: "",
+    userId: "",
     currency: "",
     priceOption: "",
     endDate: "",
