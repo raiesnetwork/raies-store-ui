@@ -22,15 +22,17 @@ export const MyStore:React.FC = () => {
       setData(AllProducts);
     }
   }, [AllProducts]);
-  const ApiHelper = async () => {
-    getAllProduct(hostname);
-  };
+  
   useEffect(() => {
+    const ApiHelper = async () => {
+      getAllProduct(hostname);
+    };
+   if (hostname) {
     
-   
-    ApiHelper()
+     ApiHelper()
+   }
   // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [hostname]);
 
   useEffect(() => {
     // Filter the products based on the selected filter

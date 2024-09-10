@@ -10,9 +10,9 @@ import {
 
 const useMystoreStore = create<MystoreStore>((set) => ({
   AllProducts: [],
-  getAllProduct: async (id) => {
-    if (id) {
-      const resp = await getAllProductApi(id);
+  getAllProduct: async (hostName) => {
+    if (hostName) {
+      const resp = await getAllProductApi(hostName);
       set(() => ({ AllProducts: resp?.data?.data }));
     }
   },

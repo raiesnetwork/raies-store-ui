@@ -2,9 +2,9 @@ import { createAxiosInstance } from "../../../Utils/Axios";
 
 const axiosInstance = createAxiosInstance();
 
-export const getAllProductApi = async (id?: string) => {
+export const getAllProductApi = async (hostName?: string) => {
   try {
-    const {data} = await axiosInstance.get(`/store/viewall/${id}`);
+    const {data} = await axiosInstance.get(`/store/viewall/${hostName}`);
     return data;
   } catch (error) {
     return {
