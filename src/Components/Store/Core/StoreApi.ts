@@ -5,8 +5,11 @@ const axiosInstance = createAxiosInstance();
 export const getAllProductApi = async (hostName?: string) => {
   try {
     const {data} = await axiosInstance.get(`/store/viewall/${hostName}`);
+    console.log(data.data);
     return data;
   } catch (error) {
+    console.log(error);
+    
     return {
         error: true,
         message: "api call faild",

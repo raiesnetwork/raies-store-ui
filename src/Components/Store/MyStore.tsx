@@ -37,7 +37,7 @@ export const MyStore:React.FC = () => {
   useEffect(() => {
     // Filter the products based on the selected filter
     let filteredData = AllProducts;
-        if (filteredData.length>0) {
+        if (filteredData?.length>0) {
           
           if (filter === "Price") {
             filteredData = AllProducts.filter(
@@ -62,6 +62,7 @@ export const MyStore:React.FC = () => {
           setData(filteredData);
         }
   }, [filter, AllProducts]);
+console.log(hostname);
 
   
   return (
