@@ -36,7 +36,7 @@ export interface MystoreStore {
   deleteCart: (id: string) => Promise<ApiResponce>;
   verifyNumber: (number: string) => Promise<ApiResponce>;
   createUser: (data: userStoreCreate) => Promise<ApiResponce>;
-  loginUser: (data: string) => Promise<ApiResponce>;
+  loginUser: (data: string,otp:string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
   homeLoader: boolean;
@@ -47,7 +47,9 @@ export interface MystoreStore {
 
 }
 export interface ApiResponce {
-  message: string | boolean;
+  [x: string]: boolean;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  message: string | any;
   error: boolean;
 }
 export interface myStoreCart {

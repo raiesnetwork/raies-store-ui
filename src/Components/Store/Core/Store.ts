@@ -6,6 +6,7 @@ import {
   DeleteCartApi,
   FetchToCartApi,
   getAllProductApi,
+  loginUserApi,
   updateCartApi,
   verifyNumberApi,
 } from "./StoreApi";
@@ -100,6 +101,10 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   },
   createUser:async(datas)=>{
     const data=await createStoreUserApi(datas)
+    return data
+  },
+  loginUser:async(number,otp)=>{
+    const data=await loginUserApi(number,otp)
     return data
   },
 

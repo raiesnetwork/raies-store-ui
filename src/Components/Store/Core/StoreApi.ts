@@ -72,7 +72,7 @@ export const updateCartApi = async (id: string, quantity: number) => {
 };
 export const verifyNumberApi = async (mobileNumber:string) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/verify`, { mobileNumber});
+    const { data } = await axiosInstance.post(`/userstore/auth/verify`, { mobileNumber});
     return data;
   } catch (error) {
     return {
@@ -85,7 +85,7 @@ export const verifyNumberApi = async (mobileNumber:string) => {
 };
 export const createStoreUserApi = async (datas:userStoreCreate) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/create`, { ...datas });
+    const { data } = await axiosInstance.post(`/userstore/auth/create`, { ...datas });
     return data;
   } catch (error) {
     return {
@@ -96,9 +96,9 @@ export const createStoreUserApi = async (datas:userStoreCreate) => {
     };
   }
 };
-export const loginUserApi = async (mobileNumber:string) => {
+export const loginUserApi = async (mobileNumber:string,otp:string) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/login`, { mobileNumber });
+    const { data } = await axiosInstance.post(`/userstore/auth/login`, { mobileNumber,otp });
     return data;
   } catch (error) {
     return {

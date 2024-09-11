@@ -19,7 +19,7 @@ const SignupModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   return (
     <div className="login-modal-overlay">
       <div className="login-modal">
-        <h2>Login</h2>
+        <h2>Signup</h2>
         <form onSubmit={handleSubmit}>
           <div className="login-modal__field">
             <label>Username:</label>
