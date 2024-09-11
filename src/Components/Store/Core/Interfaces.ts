@@ -47,6 +47,8 @@ export interface MystoreStore {
   isOpenBiddingModal: boolean;
   logedIn:boolean,
 checkLoggedIn:(data:boolean)=>void
+signupModal:()=>void
+isOpenSignupModal:boolean
 
 
 }

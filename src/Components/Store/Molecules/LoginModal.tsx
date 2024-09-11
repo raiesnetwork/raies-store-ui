@@ -10,7 +10,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
-  const {loginUser,verifyNumber,checkLoggedIn}=useMystoreStore((s)=>s)
+  const {loginUser,verifyNumber,checkLoggedIn,signupModal}=useMystoreStore((s)=>s)
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [otpFieldSet, setOtpField] = useState<boolean>(false);
@@ -50,7 +50,10 @@ console.log(mobileNumber);
     return toast.error("Enter a Valid input")
   };
 }
-
+const handileSignup=()=>{
+  signupModal()
+  closeModal()
+}
   return (
     <>
     <div className="login-modal-overlay">
@@ -90,6 +93,16 @@ console.log(mobileNumber);
             <button type="button" onClick={closeModal}>Close</button>
           </div>
         </form>
+        <button 
+        onClick={handileSignup}
+        style={{
+          outline:"none"
+          ,border:"0px"
+          ,backgroundColor:"transparent",
+          color:"blue",
+          textDecoration:"underline",
+          cursor:"pointer"
+        }}>Create a new Account?</button>
       </div>
     </div>
     <ToastContainer/>

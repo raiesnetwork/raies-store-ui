@@ -1,11 +1,12 @@
 import React, { useState } from "react";
 import '../Helpers/scss/LoginModal.scss';
+import useMystoreStore from "../Core/Store";
 
-interface LoginModalProps {
-  closeModal: () => void;
-}
 
-const SignupModal: React.FC<LoginModalProps> = ({ closeModal }) => {
+
+const SignupModal: React.FC = () => {
+  const{
+    signupModal}=useMystoreStore((s)=>s)
   const [username, setUsername] = useState<string>('');
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
@@ -13,7 +14,7 @@ const SignupModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   const handleSubmit = (e: React.FormEvent) => {
     e.preventDefault();
     
-    closeModal(); 
+    signupModal()
   };
 
   return (
@@ -50,7 +51,7 @@ const SignupModal: React.FC<LoginModalProps> = ({ closeModal }) => {
           </div>
           <div className="login-modal__actions">
             <button type="submit">Verify & Submit</button>
-            <button type="button" onClick={closeModal}>Close</button>
+            <button type="button" onClick={signupModal} >Close</button>
           </div>
         </form>
       </div>

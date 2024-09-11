@@ -5,9 +5,10 @@ import logo from '../../../assets/favicon.ico'
 import { BsCart } from "react-icons/bs";
 import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
+import SignupModal from "./SignupModal";
 
 const Header: React.FC = () => {
-  const {logedIn}=useMystoreStore((s)=>s)
+  const {logedIn,isOpenSignupModal}=useMystoreStore((s)=>s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [profileName] = useState("John Doe");
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
@@ -65,6 +66,7 @@ const Header: React.FC = () => {
       </div>
 
       {/* Login Modal */}
+      {isOpenSignupModal && <SignupModal  />}
       {isLoginModalOpen && <LoginModal closeModal={closeLoginModal} />}
     </header>
   );

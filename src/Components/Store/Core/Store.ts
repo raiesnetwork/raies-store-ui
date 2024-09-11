@@ -118,6 +118,10 @@ latestProduct:async(hostName)=>{
   set(() => ({ AllProducts: data?.data}));
 
   return data
+},
+isOpenSignupModal:false,
+signupModal:()=>{
+set((s)=>({isOpenSignupModal:!s.isOpenSignupModal}))
 }
 }));
 
