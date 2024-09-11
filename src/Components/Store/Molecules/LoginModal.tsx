@@ -33,7 +33,7 @@ console.log(mobileNumber);
       return toast.error("Enter Valid mobile number")
 
     }else{
-      if (datas?.data) {
+      if (datas?.data===false) {
         return toast.error("Invalid Otp")
 
       }else{

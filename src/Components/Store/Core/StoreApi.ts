@@ -109,3 +109,16 @@ export const loginUserApi = async (mobileNumber:string,otp:string) => {
     };
   }
 };
+export const latestProductApi = async (hostName:string) => {
+  try {
+    const { data } = await axiosInstance.get(`/userstore/auth/latest/${hostName}`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data:error
+
+    };
+  }
+};
