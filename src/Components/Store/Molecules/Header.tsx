@@ -6,6 +6,7 @@ import { BsCart } from "react-icons/bs";
 const Header: React.FC = () => {
     const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [profileName] = useState("John Doe")
+  const [login,SetLogin]=useState<boolean>(false)
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
@@ -33,6 +34,8 @@ const Header: React.FC = () => {
 
       {/* Right side: Cart, Profile, Login */}
       <div className="header__right">
+        {login ?(
+            <>
         {/* Cart Icon */}
         <div className="header__icon header__cart">
           <BsCart />
@@ -57,6 +60,9 @@ const Header: React.FC = () => {
             </div>
           )}
         </div>
+        </>):(<>
+        <button className="login-btn">Login</button>
+        </>)}
       </div>
     </header>
   );

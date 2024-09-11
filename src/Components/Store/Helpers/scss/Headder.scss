@@ -116,7 +116,22 @@
       }
     }
   }
-  
+  .login-btn{
+    outline: none;
+    width: 60px;
+    height: 30px;
+    border: 0px;
+    background-color: #275772;
+    border-radius: 5px;
+    color: white;
+    font-weight: bold;
+  }
+  .login-btn:hover{
+    background-color: #7ccfff;
+    border-radius: 5px;
+    color: rgb(0, 0, 0);
+    cursor: pointer;
+  }
   @media (max-width: 768px) {
     .header {
       flex-direction: column;
