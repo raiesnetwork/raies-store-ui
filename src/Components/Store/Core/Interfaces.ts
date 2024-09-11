@@ -34,6 +34,9 @@ export interface MystoreStore {
   cartLoader: boolean;
   setCartLoader: (d: boolean) => void;
   deleteCart: (id: string) => Promise<ApiResponce>;
+  verifyNumber: (number: string) => Promise<ApiResponce>;
+  createUser: (data: userStoreCreate) => Promise<ApiResponce>;
+  loginUser: (data: string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
   homeLoader: boolean;
@@ -41,6 +44,7 @@ export interface MystoreStore {
   setOpenBarterModal: () => void;
   setOpenBiddingModal: () => void;
   isOpenBiddingModal: boolean;
+
 }
 export interface ApiResponce {
   message: string | boolean;
@@ -68,5 +72,5 @@ export interface respStoreCart {
 export interface userStoreCreate{
   fullName:string
   mobileNumber:string
-  
+
 }

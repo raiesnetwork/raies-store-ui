@@ -2,10 +2,12 @@ import { create } from "zustand";
 import { MystoreStore } from "./Interfaces";
 import {
   AddToCartApi,
+  createStoreUserApi,
   DeleteCartApi,
   FetchToCartApi,
   getAllProductApi,
   updateCartApi,
+  verifyNumberApi,
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set) => ({
@@ -92,6 +94,15 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   setOpenBiddingModal: () => {
     set((s) => ({ isOpenBiddingModal: !s.isOpenBiddingModal }));
   },
+  verifyNumber:async(number)=>{
+    const data=await verifyNumberApi(number)
+    return data
+  },
+  createUser:async(datas)=>{
+    const data=await createStoreUserApi(datas)
+    return data
+  },
+
 }));
 
 export default useMystoreStore;
