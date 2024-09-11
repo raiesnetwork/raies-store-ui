@@ -33,10 +33,12 @@ console.log(mobileNumber);
       return toast.error("Enter Valid mobile number")
 
     }else{
-      if (datas?.data===false) {
+      if (datas?.data) {
         return toast.error("Invalid Otp")
 
       }else{
+        console.log(datas.data);
+
         localStorage.setItem('kt-auth-react-st',datas?.data?.token)
 
       }
