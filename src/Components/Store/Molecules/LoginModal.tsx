@@ -15,6 +15,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     setOtpField(true);
+    // localStorage.setItem('kt-auth-react-st',data.data.token)
   };
 
   return (

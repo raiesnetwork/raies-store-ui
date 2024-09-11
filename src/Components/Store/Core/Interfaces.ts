@@ -65,3 +65,8 @@ export interface respStoreCart {
   quantity: number;
   productDetails: myStoreCart;
 }
+export interface userStoreCreate{
+  fullName:string
+  mobileNumber:string
+  
+}
