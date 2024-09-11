@@ -1,6 +1,5 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import useMystoreStore from "../Core/Store";
 // import { KTSVG } from "../../../../_metronic/helpers";
 

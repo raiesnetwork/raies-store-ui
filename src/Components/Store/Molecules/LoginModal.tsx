@@ -3,7 +3,7 @@ import 'react-phone-input-2/lib/style.css';
 import '../Helpers/scss/LoginModal.scss';
 import PhoneInput from 'react-phone-input-2';
 import useMystoreStore from "../Core/Store";
-import { toast } from "react-toastify";
+import { toast,ToastContainer } from "react-toastify";
 
 interface LoginModalProps {
   closeModal: () => void;
@@ -18,41 +18,41 @@ console.log(mobileNumber);
 
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
-    setOtpField(true);
     let data=null
-    if (mobileNumber.trim()&&!otp&&mobileNumber.length<7) {
+    
+    if (mobileNumber.trim()&&mobileNumber.length>7&&!otp.trim()) {
+      setOtpField(true);
 
      data=await verifyNumber(mobileNumber)
      if (data.error) {
      return toast.error("Enter Valid mobile number")
      }
     }else{
-      return toast.error("Enter Valid mobile number")
+     
 
-    }
-    if (mobileNumber.trim()&&otp.trim()) {
-    const  datas=await loginUser(mobileNumber,otp)
-    if (datas.error) {
-      return toast.error("Enter Valid mobile number")
+      if (mobileNumber.trim()&&otp.trim()) {
+        const  datas=await loginUser(mobileNumber,otp)
+        if (datas.error) {
+      return toast.error("Enter registred mobile number")
 
     }else{
       if (datas?.data===false) {
         return toast.error("Invalid Otp")
 
       }else{
-        console.log(datas.data);
         checkLoggedIn(true)
         localStorage.setItem('kt-auth-react-st',datas?.data?.token)
-
+          closeModal()
       }
     }
-
-    }else{
-      return toast.error("Enter Valid input")
-    }
+    
+  }
+    return toast.error("Enter a Valid input")
   };
+}
 
   return (
+    <>
     <div className="login-modal-overlay">
       <div className="login-modal">
         <h2>Login</h2>
@@ -67,6 +67,7 @@ console.log(mobileNumber);
                 inputProps={{
                   name: 'mobile',
                   required: true,
+                  
                  
                 }}
               />
@@ -75,11 +76,12 @@ console.log(mobileNumber);
             <div className="login-modal__field">
               <label>OTP:</label>
               <input
-                type="text"
+                type="number"
                 value={otp}
                 onChange={(e) => setOtp(e.target.value)}
                 required
                 maxLength={6}
+               
               />
             </div>
           )}
@@ -90,6 +92,8 @@ console.log(mobileNumber);
         </form>
       </div>
     </div>
+    <ToastContainer/>
+    </>
   );
 };
 

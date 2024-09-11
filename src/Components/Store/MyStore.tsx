@@ -3,6 +3,8 @@ import useMystoreStore from "./Core/Store";
 import { respProduct } from "./Core/Interfaces";
 import ProductViewCard from "./Molecules/ProductCard";
 import Header from "./Molecules/Header";
+import "react-toastify/dist/ReactToastify.css";
+
 
 const { hostname } = window.location;
 
