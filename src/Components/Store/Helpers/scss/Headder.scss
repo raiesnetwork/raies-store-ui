@@ -1,0 +1,88 @@
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    position: relative;
+    z-index: 10;
+  
+    &__left {
+      display: flex;
+      align-items: center;
+    }
+  
+    &__logo {
+      width: 50px;
+      height: 50px;
+      object-fit: contain;
+    }
+  
+    &__store-name {
+      font-size: 1.5rem;
+      margin-left: 10px;
+      font-weight: bold;
+      color: #333;
+    }
+  
+    &__center {
+      flex: 1;
+      display: flex;
+      justify-content: center;
+    }
+  
+    &__search {
+      width: 60%;
+      max-width: 600px;
+      padding: 8px;
+      border-radius: 20px;
+      border: 1px solid #ddd;
+      font-size: 1rem;
+    }
+  
+    &__right {
+      display: flex;
+      align-items: center;
+      gap: 15px;
+    }
+  
+    &__icon {
+      font-size: 1.5rem;
+      cursor: pointer;
+      color: #333;
+    }
+  
+    &__profile-pic {
+      width: 40px;
+      height: 40px;
+      border-radius: 50%;
+      object-fit: cover;
+      cursor: pointer;
+    }
+  
+    &__login a {
+      font-size: 1rem;
+      color: #333;
+      text-decoration: none;
+      &:hover {
+        text-decoration: underline;
+      }
+    }
+  }
+  
+  @media (max-width: 768px) {
+    .header {
+      flex-direction: column;
+      padding: 15px;
+  
+      &__center {
+        margin: 10px 0;
+      }
+  
+      &__search {
+        width: 100%;
+      }
+    }
+  }
+  
