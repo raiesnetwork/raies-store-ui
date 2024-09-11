@@ -10,7 +10,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
-  const {loginUser,verifyNumber}=useMystoreStore((s)=>s)
+  const {loginUser,verifyNumber,checkLoggedIn}=useMystoreStore((s)=>s)
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [otpFieldSet, setOtpField] = useState<boolean>(false);
@@ -20,12 +20,15 @@ console.log(mobileNumber);
     e.preventDefault();
     setOtpField(true);
     let data=null
-    if (mobileNumber.trim()&&!otp) {
+    if (mobileNumber.trim()&&!otp&&mobileNumber.length<7) {
 
      data=await verifyNumber(mobileNumber)
      if (data.error) {
      return toast.error("Enter Valid mobile number")
      }
+    }else{
+      return toast.error("Enter Valid mobile number")
+
     }
     if (mobileNumber.trim()&&otp.trim()) {
     const  datas=await loginUser(mobileNumber,otp)
@@ -38,12 +41,14 @@ console.log(mobileNumber);
 
       }else{
         console.log(datas.data);
-
+        checkLoggedIn(true)
         localStorage.setItem('kt-auth-react-st',datas?.data?.token)
 
       }
     }
 
+    }else{
+      return toast.error("Enter Valid input")
     }
   };
 
@@ -79,7 +84,7 @@ console.log(mobileNumber);
             </div>
           )}
           <div className="login-modal__actions">
-            <button type="submit">Verify</button>
+            <button type="submit">{otpFieldSet?"Submit":"Verify"}</button>
             <button type="button" onClick={closeModal}>Close</button>
           </div>
         </form>

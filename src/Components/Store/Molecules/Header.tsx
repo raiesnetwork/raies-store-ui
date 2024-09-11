@@ -4,11 +4,12 @@ import profile from "../../../assets/blank-profile-picture-973460_1280.png"
 import logo from '../../../assets/favicon.ico'
 import { BsCart } from "react-icons/bs";
 import LoginModal from "./LoginModal"; // Import the modal
+import useMystoreStore from "../Core/Store";
 
 const Header: React.FC = () => {
+  const {logedIn}=useMystoreStore((s)=>s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [profileName] = useState("John Doe");
-  const [login, setLogin] = useState<boolean>(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
   const toggleDropdown = () => {
@@ -38,7 +39,7 @@ const Header: React.FC = () => {
 
       {/* Right side: Cart, Profile, Login */}
       <div className="header__right">
-        {login ? (
+        {logedIn ? (
           <>
             <div className="header__icon header__cart">
               <BsCart />

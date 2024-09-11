@@ -7,7 +7,9 @@ import Header from "./Molecules/Header";
 const { hostname } = window.location;
 
 export const MyStore: React.FC = () => {
-  const { getAllProduct, AllProducts, setHomeLoader, homeLoader } =
+  const { getAllProduct, AllProducts, setHomeLoader, homeLoader ,
+    logedIn,latestProduct
+  } =
     useMystoreStore((state) => state);
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
@@ -22,9 +24,14 @@ export const MyStore: React.FC = () => {
 
   useEffect(() => {
     const ApiHelper = async () => {
-      setHomeLoader(true); // Start loading
-      await getAllProduct(hostname);
-      setHomeLoader(false); // Stop loading after fetching
+      setHomeLoader(true); 
+      if (logedIn) {
+        await getAllProduct(hostname);
+        
+      }else{
+       await latestProduct(hostname)
+      }
+      setHomeLoader(false); 
     };
 
     if (hostname) {

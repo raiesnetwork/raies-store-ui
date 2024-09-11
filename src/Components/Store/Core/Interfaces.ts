@@ -38,12 +38,16 @@ export interface MystoreStore {
   createUser: (data: userStoreCreate) => Promise<ApiResponce>;
   loginUser: (data: string,otp:string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
+  latestProduct: (hostName: string) => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
   homeLoader: boolean;
   isOpenBarteModal: boolean;
   setOpenBarterModal: () => void;
   setOpenBiddingModal: () => void;
   isOpenBiddingModal: boolean;
+  logedIn:boolean,
+checkLoggedIn:(data:boolean)=>void
+
 
 }
 export interface ApiResponce {
