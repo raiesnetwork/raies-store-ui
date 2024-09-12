@@ -90,7 +90,7 @@ const handileSignup=()=>{
           )}
           <div className="login-modal__actions">
             <button type="submit">{otpFieldSet?"Submit":"Verify"}</button>
-            <button type="button" onClick={closeModal}>Close</button>
+            <button type="button" style={{color:"black"}} onClick={closeModal}>Close</button>
           </div>
         </form>
         <button 

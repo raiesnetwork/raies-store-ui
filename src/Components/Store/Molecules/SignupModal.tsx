@@ -5,13 +5,14 @@ import useMystoreStore from "../Core/Store";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast ,ToastContainer} from "react-toastify";
-
+const {hostname}=window.location
 const SignupModal: React.FC = () => {
   const { signupModal ,verifyNumber,createUser} = useMystoreStore((s) => s);
   const [username, setUsername] = useState<string>('');
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [isOtpVisible, setIsOtpVisible] = useState<boolean>(false);
+  const [btnFalse, setBtnFalse] = useState<boolean>(false);
   
   // Validation states
   const [isUsernameValid, setIsUsernameValid] = useState<boolean>(true);
@@ -42,7 +43,10 @@ const SignupModal: React.FC = () => {
     const validOtp = otp.trim().length === 6;
         setIsOTpValid(validOtp)
         if (validOtp&&isMobileNumberValid&&isUsernameValid) {
-         const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp})
+          setBtnFalse(true)
+          const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp,hostname:hostname})
+          setBtnFalse(false)
+
          if (data.error) {
           toast.error("Faild to create try again")
 
@@ -59,6 +63,8 @@ const SignupModal: React.FC = () => {
           }
          }
         }
+        toast.success("User Created Successfully")
+
     signupModal();
   };
 
@@ -129,7 +135,7 @@ const SignupModal: React.FC = () => {
 
           {/* Actions */}
           <div className="login-modal__actions">
-            <button type="submit">{isOtpVisible ? "Submit" : "Verify"}</button>
+            <button disabled={btnFalse} type="submit">{isOtpVisible ? "Submit" : "Verify"}</button>
             <button type="button" onClick={signupModal}>Close</button>
           </div>
         </form>

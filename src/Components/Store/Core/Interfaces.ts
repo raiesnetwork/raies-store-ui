@@ -83,5 +83,6 @@ export interface userStoreCreate{
   fullName:string
   mobileNumber:string
   otp:string
+  hostname:string
 
 }
