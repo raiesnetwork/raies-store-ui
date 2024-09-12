@@ -24,7 +24,7 @@ export interface respProduct {
 }
 
 export interface MystoreStore {
-  getAllProduct: (id?: string) => void;
+  getAllProduct: (id?: string) =>Promise<ApiResponce>;
   AllProducts: respProduct[];
   singleProductData: respProduct;
   updateSingleProductData: (data: respProduct) => void;

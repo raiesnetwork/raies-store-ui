@@ -27,7 +27,7 @@ export const MyStore: React.FC = () => {
   useEffect(() => {
     const ApiHelper = async () => {
       setHomeLoader(true); 
-      if (logedIn) {
+      if (logedIn===true) {
         await getAllProduct(hostname);
         
       }else{
@@ -40,7 +40,7 @@ export const MyStore: React.FC = () => {
       ApiHelper();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hostname]);
+  }, [hostname,logedIn]);
 
   useEffect(() => {
     // Filter the products based on the selected filter

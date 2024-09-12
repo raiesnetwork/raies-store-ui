@@ -5,7 +5,7 @@ const axiosInstance = createAxiosInstance();
 
 export const getAllProductApi = async (hostName?: string) => {
   try {
-    const {data} = await axiosInstance.get(`/userstore/viewall/${hostName}`);
+    const {data} = await axiosInstance.get(`/storuser/getall/${hostName}`);
     return data;
   } catch (error) {    
     return {
@@ -18,7 +18,7 @@ export const getAllProductApi = async (hostName?: string) => {
 };
 export const AddToCartApi = async (productId?: string, quantity?: number) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/cart`, {
+    const { data } = await axiosInstance.post(`/storuser/cart`, {
       productId,
       quantity,
     });
@@ -34,7 +34,7 @@ export const AddToCartApi = async (productId?: string, quantity?: number) => {
 };
 export const FetchToCartApi = async () => {
   try {
-    const { data } = await axiosInstance.get(`/userstore/cart`);
+    const { data } = await axiosInstance.get(`/storuser/cart`);
     return data;
   } catch (error) {
     return {
@@ -46,7 +46,7 @@ export const FetchToCartApi = async () => {
 };
 export const DeleteCartApi = async (id: string) => {
   try {
-    const { data } = await axiosInstance.delete(`/userstore/cart/${id}`);
+    const { data } = await axiosInstance.delete(`/storuser/cart/${id}`);
     return data;
   } catch (error) {
     return {
@@ -59,7 +59,7 @@ export const DeleteCartApi = async (id: string) => {
 };
 export const updateCartApi = async (id: string, quantity: number) => {
   try {
-    const { data } = await axiosInstance.put(`/userstore/cart`, { id, quantity });
+    const { data } = await axiosInstance.put(`/storuser/cart`, { id, quantity });
     return data;
   } catch (error) {
     return {

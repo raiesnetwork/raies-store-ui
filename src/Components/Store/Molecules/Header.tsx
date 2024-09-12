@@ -40,7 +40,7 @@ const Header: React.FC = () => {
 
       {/* Right side: Cart, Profile, Login */}
       <div className="header__right">
-        {logedIn ? (
+        {logedIn===true ? (
           <>
             <div className="header__icon header__cart">
               <BsCart />

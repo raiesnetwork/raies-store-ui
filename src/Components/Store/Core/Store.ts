@@ -18,6 +18,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     if (hostName) {
       const resp = await getAllProductApi(hostName);
       set(() => ({ AllProducts: resp?.data}));
+      return resp
     }
   },
   singleProductData: {

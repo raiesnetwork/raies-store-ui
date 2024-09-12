@@ -41,8 +41,8 @@ console.log(mobileNumber);
 
       }else{
         checkLoggedIn(true)
-        localStorage.setItem('kt-auth-react-st',datas?.data?.token)
-          closeModal()
+        localStorage.setItem('kt-auth-react-st', JSON.stringify({ api_token: datas?.data?.token }));
+        closeModal()
       }
     }
     
