@@ -4,6 +4,7 @@ import useMystoreStore from "../Store/Core/Store";
 import { Navigate, Route, Routes } from "react-router-dom";
 import StoreCart from "../Store/Molecules/Cart";
 import SingleProductView from "../Store/Molecules/SigleViewPage";
+import ProductBuyingPage from "../Store/Molecules/BuyingPage";
 const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { AuthApiCall } = useAuth((s) => s);
   const { checkLoggedIn, logedIn } = useMystoreStore((s) => s);
@@ -22,6 +23,7 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <>
           <Route path="/cart" element={<StoreCart />} />
           <Route path="/details" element={<SingleProductView />} />
+          <Route path="/buy" element={<ProductBuyingPage />} />
         </>
         )}
         <Route path="/*" element={<Navigate to='/'/>} />

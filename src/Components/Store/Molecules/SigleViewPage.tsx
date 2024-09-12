@@ -5,6 +5,7 @@ import BarterModal from "./BarterModal";
 import BiddingModal from "./BiddingModal";
 import Header from "./Header";
 import { toast,ToastContainer } from "react-toastify";
+import { Link } from "react-router-dom";
 
 const SingleProductView: React.FC = () => {
   const {FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
@@ -155,13 +156,13 @@ const [disable,setDisable]=useState<boolean>(false)
                 {singleProductData.priceOption === "free" && (
                   <>
                     <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
-                    <button>Buy Now</button>
+                    <button><Link style={{textDecoration:"none",color:"black"}} to='/buy'>Buy Now</Link></button>
                   </>
                 )}
                 {singleProductData.priceOption === "normal" && (
                   <>
                     <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
-                    <button>Buy Now</button>
+                    <button><Link style={{textDecoration:"none",color:"black"}} to='/buy'>Buy Now</Link></button>
                   </>
                 )}
                 {singleProductData.priceOption === "bidding" && (
