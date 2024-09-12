@@ -9,7 +9,7 @@ import "react-toastify/dist/ReactToastify.css";
 const { hostname } = window.location;
 
 export const MyStore: React.FC = () => {
-  const { getAllProduct, AllProducts, setHomeLoader, homeLoader ,
+  const {FetchToCart, getAllProduct, AllProducts, setHomeLoader, homeLoader ,
     logedIn,latestProduct
   } =
     useMystoreStore((state) => state);
@@ -29,6 +29,7 @@ export const MyStore: React.FC = () => {
       setHomeLoader(true); 
       if (logedIn===true) {
         await getAllProduct(hostname);
+        FetchToCart();
         
       }else{
        await latestProduct(hostname)
@@ -70,11 +71,11 @@ export const MyStore: React.FC = () => {
 
   return (
     <>
+        <Header/>
       {homeLoader ? (
         <div style={{ textAlign: "center" }}>Loading...</div>
       ) : (
         <>
-        <Header/>
           <div
             style={{
               padding: "15px",

@@ -5,6 +5,7 @@ import { FaPlus ,FaMinus} from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { respStoreCart } from "../Core/Interfaces";
+import Header from "./Header";
 const StoreCart: React.FC = () => {
   const {
     cartData,
@@ -64,6 +65,7 @@ const StoreCart: React.FC = () => {
 
   return (
     <>
+    <Header/>
       {cartLoader ? (
         <div style={{ textAlign: "center" }}>Loading...</div>
       ) : (

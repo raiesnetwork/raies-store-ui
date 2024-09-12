@@ -64,8 +64,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
       },
     },
   ],
-  AddToCart: async (id, quantity) => {
-    const data = await AddToCartApi(id, quantity);
+  AddToCart: async (id, quantity,userId) => {
+    const data = await AddToCartApi(id, quantity,userId);
     return data;
   },
   FetchToCart: async () => {

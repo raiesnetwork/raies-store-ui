@@ -6,6 +6,7 @@ import { BsCart } from "react-icons/bs";
 import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
 import SignupModal from "./SignupModal";
+import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
   const {logedIn,isOpenSignupModal}=useMystoreStore((s)=>s)
@@ -43,7 +44,7 @@ const Header: React.FC = () => {
         {logedIn===true ? (
           <>
             <div className="header__icon header__cart">
-              <BsCart />
+              <Link to='/cart' ><BsCart /></Link>
             </div>
             <div className="header__profile" onClick={toggleDropdown}>
               <img src={profile} alt="Profile" className="header__profile-pic" />

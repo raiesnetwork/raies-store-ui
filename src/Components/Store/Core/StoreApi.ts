@@ -16,11 +16,12 @@ export const getAllProductApi = async (hostName?: string) => {
       };
   }
 };
-export const AddToCartApi = async (productId?: string, quantity?: number) => {
+export const AddToCartApi = async (productId?: string, quantity?: number,adminId?:string) => {
   try {
     const { data } = await axiosInstance.post(`/storuser/cart`, {
       productId,
       quantity,
+      adminId
     });
     return data;
   } catch (error) {

@@ -9,7 +9,7 @@ export interface respProduct {
   mainImage: string;
   subImages: string[];
   productCount: number;
-  userId?: string;
+  userId: string;
   flag: boolean;
   description: string;
   id: string;
@@ -28,7 +28,7 @@ export interface MystoreStore {
   AllProducts: respProduct[];
   singleProductData: respProduct;
   updateSingleProductData: (data: respProduct) => void;
-  AddToCart: (id: string, count: number) => Promise<ApiResponce>;
+  AddToCart: (id: string, count: number,userId:string) => Promise<ApiResponce>;
   cartData: respStoreCart[];
   FetchToCart: () => void;
   cartLoader: boolean;
