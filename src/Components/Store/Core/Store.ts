@@ -123,7 +123,11 @@ latestProduct:async(hostName)=>{
 isOpenSignupModal:false,
 signupModal:()=>{
 set((s)=>({isOpenSignupModal:!s.isOpenSignupModal}))
-}
+},
+userName:"",
+setUserName(name) {
+  set(()=>({userName:name}))
+},
 }));
 
 export default useMystoreStore;

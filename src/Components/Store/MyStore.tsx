@@ -10,7 +10,7 @@ const { hostname } = window.location;
 
 export const MyStore: React.FC = () => {
   const {FetchToCart, getAllProduct, AllProducts, setHomeLoader, homeLoader ,
-    logedIn,latestProduct
+    logedIn,latestProduct,setUserName
   } =
     useMystoreStore((state) => state);
   const [data, setData] = useState<respProduct[]>(AllProducts);
@@ -23,7 +23,10 @@ export const MyStore: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AllProducts]);
-
+useEffect(()=>{
+ const name= localStorage.getItem('suname')
+ setUserName(name)
+},[])
   useEffect(() => {
     const ApiHelper = async () => {
       setHomeLoader(true); 

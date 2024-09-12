@@ -49,6 +49,8 @@ export interface MystoreStore {
 checkLoggedIn:(data:boolean)=>void
 signupModal:()=>void
 isOpenSignupModal:boolean
+userName:string|null
+setUserName:(name:string|null)=>void
 
 
 }

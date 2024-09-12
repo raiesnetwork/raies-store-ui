@@ -1,7 +1,7 @@
 import React, { useEffect } from "react";
 import useAuth from "./Core/Store";
 import useMystoreStore from "../Store/Core/Store";
-import { Route, Routes } from "react-router-dom";
+import { Navigate, Route, Routes } from "react-router-dom";
 import StoreCart from "../Store/Molecules/Cart";
 import SingleProductView from "../Store/Molecules/SigleViewPage";
 const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
@@ -17,12 +17,16 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
 
   return (
     <>
-      {logedIn === true && (
         <Routes>
+      {logedIn === true && (
+        <>
           <Route path="/cart" element={<StoreCart />} />
           <Route path="/details" element={<SingleProductView />} />
+        </>
+        )}
+        <Route path="/*" element={<Navigate to='/'/>} />
+
         </Routes>
-      )}
 
       {children}
     </>

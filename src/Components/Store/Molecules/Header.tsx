@@ -9,9 +9,8 @@ import SignupModal from "./SignupModal";
 import { Link } from "react-router-dom";
 
 const Header: React.FC = () => {
-  const {logedIn,isOpenSignupModal}=useMystoreStore((s)=>s)
+  const {userName,logedIn,isOpenSignupModal,cartData}=useMystoreStore((s)=>s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [profileName] = useState("John Doe");
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
   const toggleDropdown = () => {
@@ -47,11 +46,24 @@ const Header: React.FC = () => {
         {logedIn===true ? (
           <>
             <div className="header__icon header__cart">
-              <Link to='/cart' ><BsCart /></Link>
+
+              <Link to='/cart' >
+              <div >
+              <BsCart style={{position:"relative"}}  size={28} color="black" />
+              <p style={{
+                position:"absolute",
+                top:"0",
+
+              fontSize:"15px",
+              color:"red"
+              
+              }}>{cartData?.length}</p>
+              </div>
+              </Link>
             </div>
             <div className="header__profile" onClick={toggleDropdown}>
               <img src={profile} alt="Profile" className="header__profile-pic" />
-              <div className="header__profile-name">{profileName}</div>
+              <div className="header__profile-name">{userName}</div>
               {isDropdownOpen && (
                 <div className="header__dropdown">
                   <ul>

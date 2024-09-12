@@ -10,7 +10,7 @@ interface LoginModalProps {
 }
 
 const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
-  const {loginUser,verifyNumber,checkLoggedIn,signupModal}=useMystoreStore((s)=>s)
+  const {setUserName,loginUser,verifyNumber,checkLoggedIn,signupModal}=useMystoreStore((s)=>s)
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [otpFieldSet, setOtpField] = useState<boolean>(false);
@@ -40,7 +40,9 @@ console.log(mobileNumber);
         return toast.error("Invalid Otp")
 
       }else{
+        setUserName(datas?.data?.username)
         checkLoggedIn(true)
+        localStorage.setItem('suname',datas?.data?.username)
         localStorage.setItem('kt-auth-react-st', JSON.stringify({ api_token: datas?.data?.token }));
         closeModal()
       }
