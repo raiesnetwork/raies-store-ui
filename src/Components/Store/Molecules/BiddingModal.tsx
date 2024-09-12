@@ -1,6 +1,7 @@
 import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
+import '../Helpers/scss/BiddingModal.scss'
 // import { KTSVG } from "../../../../_metronic/helpers";
 
 const BiddingModal: React.FC = () => {

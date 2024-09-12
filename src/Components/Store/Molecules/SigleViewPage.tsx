@@ -1,12 +1,13 @@
 import React, { useState } from "react";
-import { GiFastBackwardButton } from "react-icons/gi";
-import "../Helpers/Scss/SingleProductView.scss";
+import "../Helpers/scss/SinglePageView.scss";
 import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
 import BiddingModal from "./BiddingModal";
+import Header from "./Header";
+import { toast,ToastContainer } from "react-toastify";
 
 const SingleProductView: React.FC = () => {
-  const { setOpenBiddingModal,singleProductData, updateSingleProductData,setOpenBarterModal } = useMystoreStore(
+  const {FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
     (s) => s
   );
   const [imageView, setImageView] = useState<string>(
@@ -15,22 +16,25 @@ const SingleProductView: React.FC = () => {
   // eslint-disable-next-line no-unsafe-optional-chaining
   const [year, month, day] = singleProductData?.endDate.split("-");
   const lastDate = `${day}-${month}-${year}`;
+const [disable,setDisable]=useState<boolean>(false)
+
+  const handileCart=async(id:string,count:number,userId:string)=>{
+    setDisable(true)
+   const data=await AddToCart(id,count,userId)
+   setDisable(false)
+   if (data.error) {
+    toast.error("item coun't add to cart")
+   }else{
+    FetchToCart()
+    toast.success("Item added Successfully")
+   }
+  }
   return (
     <>
-      <div
-        style={{
-          marginBottom: "20px",
-          cursor: "pointer",
-          display: "flex",
-        }}
-        onClick={() =>
-          updateSingleProductData({ ...singleProductData, id: "" })
-        }
-      >
-        <GiFastBackwardButton size={25} />
-      </div>
-
-      <div className="single-product-container">
+    <Header/>
+      <div style={{
+        marginTop:"20px"
+      }} className="single-product-container">
         <div className="single-product-details">
           <div className="single-product-left">
             <div className="big-image">
@@ -150,13 +154,13 @@ const SingleProductView: React.FC = () => {
                 )}
                 {singleProductData.priceOption === "free" && (
                   <>
-                    <button>Add to cart</button>
+                    <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
                     <button>Buy Now</button>
                   </>
                 )}
                 {singleProductData.priceOption === "normal" && (
                   <>
-                    <button>Add to cart</button>
+                    <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
                     <button>Buy Now</button>
                   </>
                 )}
@@ -175,8 +179,9 @@ const SingleProductView: React.FC = () => {
           <div>Related Products</div>
         </div>
       </div>
-      <BarterModal/>
-      <BiddingModal/>
+      {isOpenBarteModal&&<BarterModal/>}
+      {isOpenBiddingModal&&<BiddingModal/>}
+      <ToastContainer/>
     </>
   );
 };

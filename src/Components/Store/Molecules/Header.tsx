@@ -30,8 +30,11 @@ const Header: React.FC = () => {
     <header className="header">
       {/* Left side: Logo and Store Name */}
       <div className="header__left">
-        <img src={logo} alt="Store Logo" className="header__logo" />
+         <img src={logo} alt="Store Logo" className="header__logo" />
+        <Link style={{textDecoration:"none" }} to='/'>       
         <span className="header__store-name">MyStore</span>
+        </Link>
+
       </div>
 
       {/* Center: Search Box */}

@@ -3,24 +3,32 @@ import "../Helpers/scss/ProductCard.scss";
 import {ToastContainer, toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { ProductViewCardProps, respProduct } from "../Core/Interfaces";
+import { Link } from "react-router-dom";
 
 const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
-  const { updateSingleProductData,AddToCart,FetchToCart  } =useMystoreStore((state) => state);
+  const {  logedIn,updateSingleProductData,AddToCart,FetchToCart  } =useMystoreStore((state) => state);
   const handleDetaildView = (data: respProduct) => {
+ 
     updateSingleProductData(data);
     
   };
   const [btnDisable,setDisable]=useState<boolean>(false)
   const handileCart=async(id:string,count:number,userId:string)=>{
     setDisable(true)
-   const data=await AddToCart(id,count,userId)
-   setDisable(false)
-   if (data.error) {
-    toast.error("item coun't add to cart")
-   }else{
-    FetchToCart()
-    toast.success("Item added Successfully")
-   }
+    if (logedIn===true) {
+      
+      const data=await AddToCart(id,count,userId)
+      setDisable(false)
+      if (data.error) {
+        toast.error("item coun't add to cart")
+      }else{
+        FetchToCart()
+        toast.success("Item added Successfully")
+      }
+    }else{
+      toast("You need to login first")
+
+    }
   }
   return (
     <>
@@ -28,7 +36,8 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
       <div className="product-card__image">
         <img src={data.mainImage} alt={data.productName} />
       </div>
-      <div onClick={()=>handleDetaildView(data)} className="product-card__info">
+      <div  onClick={()=>handleDetaildView(data)} className="product-card__info">
+        <Link style={{textDecoration:"none",color:"black"}} to='/details'>
         <h4 className="product-card__brand">{data.brandName}</h4>
         <h3 className="product-card__name">{data.productName}</h3>
         <p className="product-card__price">
@@ -56,7 +65,7 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
             left
           </p>
         )}
-
+        </Link>
       </div>
       {
        ( data.priceOption==="normal"|| data.priceOption==="free")&&(
