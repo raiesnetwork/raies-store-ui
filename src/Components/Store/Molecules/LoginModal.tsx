@@ -1,7 +1,7 @@
 import React, { useState } from "react";
-import 'react-phone-input-2/lib/style.css';
 import '../Helpers/scss/LoginModal.scss';
 import PhoneInput from 'react-phone-input-2';
+import 'react-phone-input-2/lib/style.css';
 import useMystoreStore from "../Core/Store";
 import { toast,ToastContainer } from "react-toastify";
 

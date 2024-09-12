@@ -1,0 +1,27 @@
+.login-modal__field {
+    margin-bottom: 15px;
+  }
+  
+  .input-error {
+    border-color: red;
+  }
+  
+  .error-message {
+    color: red;
+    font-size: 0.85rem;
+  }
+  
+  .login-modal__actions {
+    display: flex;
+    justify-content: space-between;
+  }
+  
+  .login-modal__actions button {
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+  }
+  
