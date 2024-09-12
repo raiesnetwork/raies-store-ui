@@ -4,9 +4,10 @@ import '../Helpers/scss/SignupModal.scss';
 import useMystoreStore from "../Core/Store";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
+import { toast ,ToastContainer} from "react-toastify";
 
 const SignupModal: React.FC = () => {
-  const { signupModal } = useMystoreStore((s) => s);
+  const { signupModal ,verifyNumber,createUser} = useMystoreStore((s) => s);
   const [username, setUsername] = useState<string>('');
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
@@ -17,7 +18,7 @@ const SignupModal: React.FC = () => {
   const [isMobileNumberValid, setIsMobileNumberValid] = useState<boolean>(true);
   const [isOtpValid, setIsOTpValid] = useState<boolean>(true);
 
-  const handleVerify = (e: React.FormEvent) => {
+  const handleVerify = async(e: React.FormEvent) => {
     e.preventDefault();
 
     const validUsername = username.trim().length >= 3;
@@ -27,18 +28,42 @@ const SignupModal: React.FC = () => {
     setIsMobileNumberValid(validMobileNumber);
 
     if (validUsername && validMobileNumber) {
-      setIsOtpVisible(true); // Show OTP field
+
+      const  data=await verifyNumber(mobileNumber)
+      if (data.error) {
+       return toast.error("Enter a valid mobile Number")
+      }
+      setIsOtpVisible(true);
     }
   };
 
-  const handleSubmit = (e: React.FormEvent) => {
+  const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
     const validOtp = otp.trim().length === 6;
         setIsOTpValid(validOtp)
+        if (validOtp&&isMobileNumberValid&&isUsernameValid) {
+         const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp})
+         if (data.error) {
+          toast.error("Faild to create try again")
+
+         }else{
+          if (data.data===false) {
+            toast.error("Invalid OTP")
+
+          }else if (data.data==="exist") {
+            toast.success("Already Youhave an account")
+
+          } else{
+            toast.success("User Created Successfully")
+
+          }
+         }
+        }
     signupModal();
   };
 
   return (
+    <>
     <div className="login-modal-overlay">
       <div className="login-modal">
         <h2>Signup</h2>
@@ -110,6 +135,8 @@ const SignupModal: React.FC = () => {
         </form>
       </div>
     </div>
+    <ToastContainer/>
+    </>
   );
 };
 

@@ -82,5 +82,6 @@ export interface respStoreCart {
 export interface userStoreCreate{
   fullName:string
   mobileNumber:string
+  otp:string
 
 }
