@@ -1,29 +1,25 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import '../Helpers/scss/BuyPage.scss'
 import Header from "./Header";
 import { useLocation } from "react-router-dom";
 import { respProduct } from "../Core/Interfaces";
 import AddressModal from "./BuyAddressModal";
+import { ToastContainer } from "react-toastify";
+import useMystoreStore from "../Core/Store";
+import AddressComponent from "./ShowAllAddressModal";
 const CheckoutPage: React.FC = () => {
+  const {selectedAddress,addressData,getAddress,isOpenselectAddressModal,setIsOpenSelectAddressModal
+
+  }=useMystoreStore((s)=>s)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
-  const [address, setAddress] = useState("Edacheri, Kerala 675503");
   const location=useLocation()
   const {details,type}=location.state||{}
-  const products = [
-    {
-      id: 1,
-      name: "boAt BassHeads 100 in-Ear Wired Headphones with Mic (Black)",
-      price: 329,
-      quantity: 2,
-      image: "https://via.placeholder.com/100", // Replace with actual image URL
-      deliveryDate: "14 Sept 2024",
-    },
-  ];
+  
 
-  const totalPrice = products.reduce(
-    (total, product) => total + product.price * product.quantity,
-    0
-  );
+  // const totalPrice = products.reduce(
+  //   (total, product) => total + product.price * product.quantity,
+  //   0
+  // );
 
   const [isOpenAddressModal,setAddressModal]=useState<boolean>(false)
   const OpenAddressModal=()=>{
@@ -33,6 +29,20 @@ const CheckoutPage: React.FC = () => {
     setAddressModal(false)
 
   }
+  useEffect(()=>{
+    const apiHelper=async()=>{
+      await getAddress()
+    }
+    apiHelper()
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  },[])
+  const handilPlaceOrder=()=>{
+    if (selectedAddress.id.trim()&&selectedPaymentMethod.trim()) {
+      if (selectedPaymentMethod==="offline") {
+        alert("hii")
+      }
+    }
+  }
   return (
     <>
     <Header/>
@@ -41,12 +51,25 @@ const CheckoutPage: React.FC = () => {
       <div className="section address-section">
         <div className="section-header">1. Delivery Address</div>
         <div className="address-details">
-          {/* <div>
-            <p><strong>Kk</strong></p>
-            <p>{address}</p>
-          </div> */}
-          {/* <button onClick={() => alert("Change Address Clicked!")}>Change</button> */}
+          {
+            selectedAddress.id&&
+            <>
+          <div>
+            <p><strong>{selectedAddress.fullName}</strong></p>
+            <p>{selectedAddress.fullAddress}</p>
+            <p>{selectedAddress.landmark},{selectedAddress.pincode}</p>
+            <p>{selectedAddress.mobileNumber}</p>
+          </div> 
+           <button onClick={() =>setIsOpenSelectAddressModal()}>Change</button>
+          </>
+          }
+          {
+            (!addressData?.length&&!selectedAddress.id)&&
           <button onClick={OpenAddressModal}>Add new Address</button>
+          }{
+            (addressData?.length&&!selectedAddress.id)&&
+          <button onClick={setIsOpenSelectAddressModal}>Select Address</button>
+          }
 
         </div>
       </div>
@@ -74,7 +97,7 @@ const CheckoutPage: React.FC = () => {
                 checked={selectedPaymentMethod === "offline"}
                 onChange={(e) => setSelectedPaymentMethod(e.target.value)}
               />
-              Pay on Delivery (Cash/Card)
+              Pay on Delivery (Cash)
             </label>
           </div>
         </div>
@@ -118,10 +141,12 @@ const CheckoutPage: React.FC = () => {
         </div>
           </>
         }
-        <button onClick={() => alert("Order Placed!")}>Place Your Order</button>
+        <button onClick={handilPlaceOrder}>Place Your Order</button>
       </div>
     </div>
     {isOpenAddressModal&&(<AddressModal closeModal={closeAddressModal}/>)}
+    {isOpenselectAddressModal&&<AddressComponent opencreateAddressModal={OpenAddressModal} />}
+    <ToastContainer/>
     </>
   );
 };

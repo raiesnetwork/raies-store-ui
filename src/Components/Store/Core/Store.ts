@@ -2,9 +2,12 @@ import { create } from "zustand";
 import { MystoreStore } from "./Interfaces";
 import {
   AddToCartApi,
+  createAddressApi,
   createStoreUserApi,
+  DeleteAddressApi,
   DeleteCartApi,
   FetchToCartApi,
+  getAddressApi,
   getAllProductApi,
   latestProductApi,
   loginUserApi,
@@ -128,6 +131,35 @@ userName:"",
 setUserName(name) {
   set(()=>({userName:name}))
 },
+createAddress:async(data)=>{
+const resp=await createAddressApi(data)
+return resp
+},
+deleteAddress:async(id)=>{
+const resp=await DeleteAddressApi(id)
+return resp
+},
+addressData:[],
+getAddress:async()=>{
+const data=await getAddressApi()
+set(()=>({addressData:data.data}))
+return data
+},
+selectedAddress:{
+  fullAddress:"",
+  fullName:"",
+  id:"",
+  landmark:"",
+  mobileNumber:"",
+  pincode:""
+},
+setSelectedAddress:(data)=>{
+set(()=>({selectedAddress:data}))
+},
+isOpenselectAddressModal:false,
+setIsOpenSelectAddressModal:()=>{
+  set((s)=>({isOpenselectAddressModal:!s.isOpenselectAddressModal}))
+}
 }));
 
 export default useMystoreStore;

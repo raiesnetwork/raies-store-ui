@@ -2,6 +2,8 @@ import React, { useState, ChangeEvent, FormEvent } from "react";
 import "../Helpers/scss/BuyAddress.scss";
 import PhoneInput from "react-phone-input-2";
 import "react-phone-input-2/lib/style.css";
+import useMystoreStore from "../Core/Store";
+import { toast,ToastContainer } from "react-toastify";
 
 interface AddressData {
   fullName: string;
@@ -25,7 +27,7 @@ interface AddressModalProps {
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
-  // const [mobileNumber, setMobileNumber] = useState<string>("");
+const {createAddress}=useMystoreStore((s)=>s)
   const [addressData, setAddressData] = useState<AddressData>({
     fullName: "",
     mobileNumber: "",
@@ -80,16 +82,24 @@ const setMobileNumber=(n:string)=>{
     return Object.keys(newErrors).length === 0;
   };
 
-  const handleAddressSubmit = (e: FormEvent<HTMLFormElement>) => {
+  const handleAddressSubmit = async(e: FormEvent<HTMLFormElement>) => {
     e.preventDefault();
     if (validateAddress()) {
-      closeModal();
+      const data=await createAddress(addressData)
+      if (data.error) {
+        toast.error("Address can't created try again")
+      }else{
+        toast.success("Address created successfully")
 
-      alert(addressData.mobileNumber);
+        closeModal();
+      }
+
+      
     }
   };
 
   return (
+    <>
     <div className="modal-overlay">
       <div className="modal-content">
         <h2>Select Delivery Address</h2>
@@ -195,6 +205,8 @@ const setMobileNumber=(n:string)=>{
         </form>
       </div>
     </div>
+    <ToastContainer/>
+    </>
   );
 };
 

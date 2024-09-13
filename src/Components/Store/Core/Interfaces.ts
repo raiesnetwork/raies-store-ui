@@ -43,6 +43,9 @@ export interface MystoreStore {
   loginUser: (data: string, otp: string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   latestProduct: (hostName: string) => Promise<ApiResponce>;
+  createAddress: (data: StoreAddress) => Promise<ApiResponce>;
+  deleteAddress: (hostName: string) => Promise<ApiResponce>;
+  getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
   homeLoader: boolean;
   isOpenBarteModal: boolean;
@@ -55,7 +58,13 @@ export interface MystoreStore {
   isOpenSignupModal: boolean;
   userName: string | null;
   setUserName: (name: string | null) => void;
+  addressData:respStoreAddress[]
+  selectedAddress:respStoreAddress,
+  setSelectedAddress:(data:respStoreAddress)=>void
+  isOpenselectAddressModal:boolean
+  setIsOpenSelectAddressModal:()=>void
 }
+
 export interface ApiResponce {
   [x: string]: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
