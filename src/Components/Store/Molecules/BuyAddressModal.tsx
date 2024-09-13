@@ -1,5 +1,8 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
-import '../Helpers/scss/BuyAddress.scss'
+import "../Helpers/scss/BuyAddress.scss";
+import PhoneInput from "react-phone-input-2";
+import "react-phone-input-2/lib/style.css";
+
 interface AddressData {
   fullName: string;
   mobileNumber: string;
@@ -18,10 +21,11 @@ interface AddressErrors {
 
 interface AddressModalProps {
   closeModal: () => void;
-//   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+  //   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
+  // const [mobileNumber, setMobileNumber] = useState<string>("");
   const [addressData, setAddressData] = useState<AddressData>({
     fullName: "",
     mobileNumber: "",
@@ -29,27 +33,46 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
     landmark: "",
     pincode: "",
   });
-
   const [addressErrors, setAddressErrors] = useState<AddressErrors>({});
 
-  const handleChange = (e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
+  const handleChange = (
+    e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
     const { name, value } = e.target;
     setAddressData((prevData) => ({
       ...prevData,
       [name]: value,
-    }));
+      
+    }
+  ));
     setAddressErrors((prevErrors) => ({
       ...prevErrors,
       [name]: "",
     }));
-  };
 
+  };
+const setMobileNumber=(n:string)=>{
+  
+    setAddressData((prevData) => ({
+      ...prevData,
+      mobileNumber:n,
+      
+    }
+  ));
+  
+}
   const validateAddress = (): boolean => {
     const newErrors: AddressErrors = {};
-    if (!addressData.fullName.trim()) newErrors.fullName = "Full name is required.";
-    if (!addressData.mobileNumber.trim() || !/^\d{10}$/.test(addressData.mobileNumber))
-      newErrors.mobileNumber = "Valid 10-digit mobile number is required.";
-    if (!addressData.fullAddress.trim()) newErrors.fullAddress = "Full address is required.";
+    if (!addressData.fullName.trim())
+      newErrors.fullName = "Full name is required.";
+    if (
+      !addressData.mobileNumber.trim() ||
+      !/^\d{7,}$/.test(addressData.mobileNumber)
+    ) {
+      newErrors.mobileNumber = "Valid mobile number is required.";
+    }
+    if (!addressData.fullAddress.trim())
+      newErrors.fullAddress = "Full address is required.";
     if (!addressData.pincode.trim() || !/^\d{6}$/.test(addressData.pincode))
       newErrors.pincode = "Valid 6-digit pincode is required.";
 
@@ -61,8 +84,8 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
     e.preventDefault();
     if (validateAddress()) {
       closeModal();
-      
-      alert("Address selected successfully!");
+
+      alert(addressData.mobileNumber);
     }
   };
 
@@ -79,22 +102,40 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
               name="fullName"
               value={addressData.fullName}
               onChange={handleChange}
-              className={`form-control ${addressErrors.fullName ? "is-invalid" : ""}`}
+              className={`form-control `}
             />
-            {addressErrors.fullName && <div className="invalid-feedback">{addressErrors.fullName}</div>}
+            {addressErrors.fullName && (
+              <div className="invalid-feedback">{addressErrors.fullName}</div>
+            )}
           </div>
 
-          <div className="form-group">
-            <label htmlFor="mobileNumber">Mobile Number</label>
-            <input
-              type="text"
-              id="mobileNumber"
-              name="mobileNumber"
+          <div style={{
+            marginBottom:"15px",
+            width:"100%",
+            display:"block"
+          }}>
+            <label
+            style={{
+              marginBottom:"5px"
+            }}
+            htmlFor="mobileNumber">Mobile Number</label>
+            <PhoneInput
+              country={"in"}
               value={addressData.mobileNumber}
-              onChange={handleChange}
-              className={`form-control ${addressErrors.mobileNumber ? "is-invalid" : ""}`}
+              onChange={(phone) => {
+                setMobileNumber(phone) 
+               }}
+              inputProps={{
+                name: "mobileNumber",
+                required: true,
+              }}
             />
-            {addressErrors.mobileNumber && <div className="invalid-feedback">{addressErrors.mobileNumber}</div>}
+
+            {addressErrors.mobileNumber && (
+              <div style={{color:"red",fontSize: "0.875rem"}}>
+                {addressErrors.mobileNumber}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -104,9 +145,13 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
               name="fullAddress"
               value={addressData.fullAddress}
               onChange={handleChange}
-              className={`form-control ${addressErrors.fullAddress ? "is-invalid" : ""}`}
+              className={`form-control`}
             />
-            {addressErrors.fullAddress && <div className="invalid-feedback">{addressErrors.fullAddress}</div>}
+            {addressErrors.fullAddress && (
+              <div className="invalid-feedback">
+                {addressErrors.fullAddress}
+              </div>
+            )}
           </div>
 
           <div className="form-group">
@@ -124,20 +169,27 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
           <div className="form-group">
             <label htmlFor="pincode">Pincode</label>
             <input
-              type="text"
+              type="number"
               id="pincode"
               name="pincode"
               value={addressData.pincode}
               onChange={handleChange}
-              className={`form-control ${addressErrors.pincode ? "is-invalid" : ""}`}
+              className={`form-control `}
+              maxLength={6}
             />
-            {addressErrors.pincode && <div className="invalid-feedback">{addressErrors.pincode}</div>}
+            {addressErrors.pincode && (
+              <div className="invalid-feedback">{addressErrors.pincode}</div>
+            )}
           </div>
 
           <button type="submit" className="btn btn-primary">
             Confirm Address
           </button>
-          <button type="button" className="btn btn-secondary" onClick={closeModal}>
+          <button
+            type="button"
+            className="btn btn-secondary btn-c"
+            onClick={closeModal}
+          >
             Cancel
           </button>
         </form>

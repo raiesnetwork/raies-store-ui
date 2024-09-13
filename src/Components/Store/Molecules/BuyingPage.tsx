@@ -1,9 +1,14 @@
 import React, { useState } from "react";
 import '../Helpers/scss/BuyPage.scss'
+import Header from "./Header";
+import { useLocation } from "react-router-dom";
+import { respProduct } from "../Core/Interfaces";
+import AddressModal from "./BuyAddressModal";
 const CheckoutPage: React.FC = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const [address, setAddress] = useState("Edacheri, Kerala 675503");
-
+  const location=useLocation()
+  const {details,type}=location.state||{}
   const products = [
     {
       id: 1,
@@ -20,17 +25,29 @@ const CheckoutPage: React.FC = () => {
     0
   );
 
+  const [isOpenAddressModal,setAddressModal]=useState<boolean>(false)
+  const OpenAddressModal=()=>{
+      setAddressModal(true)
+  }
+  const closeAddressModal=()=>{
+    setAddressModal(false)
+
+  }
   return (
+    <>
+    <Header/>
     <div className="checkout-page">
       {/* Delivery Address Section */}
       <div className="section address-section">
         <div className="section-header">1. Delivery Address</div>
         <div className="address-details">
-          <div>
+          {/* <div>
             <p><strong>Kk</strong></p>
             <p>{address}</p>
-          </div>
-          <button onClick={() => alert("Change Address Clicked!")}>Change</button>
+          </div> */}
+          {/* <button onClick={() => alert("Change Address Clicked!")}>Change</button> */}
+          <button onClick={OpenAddressModal}>Add new Address</button>
+
         </div>
       </div>
 
@@ -67,16 +84,16 @@ const CheckoutPage: React.FC = () => {
       <div className="section product-review-section">
         <div className="section-header">3. Review Items and Delivery</div>
         <div className="product-list">
-          {products.map((product) => (
+          {details?.map((product:respProduct) => (
             <div key={product.id} className="product-card">
-              <img src={product.image} alt={product.name} />
+              <img src={product.mainImage} alt={product.productName} />
               <div className="product-details">
-                <h4>{product.name}</h4>
+                <h4>{product.productName}</h4>
                 <p>Price: ₹{product.price}.00</p>
-                <p>Delivery: {product.deliveryDate}</p>
+                {/* <p>Delivery: {product.deliveryDate}</p> */}
               </div>
               <div className="quantity">
-                <p>Qty: {product.quantity}</p>
+                <p>Qty: 1</p>
               </div>
             </div>
           ))}
@@ -85,9 +102,11 @@ const CheckoutPage: React.FC = () => {
 
       {/* Order Summary Section */}
       <div className="section order-summary">
-        <div className="summary-row">
+        {type==="single"&&
+          <>
+          <div className="summary-row">
           <span>Items:</span>
-          <span>₹{totalPrice}</span>
+          <span>{details[0].currency+ ' '+details[0].price}</span>
         </div>
         <div className="summary-row">
           <span>Delivery:</span>
@@ -95,11 +114,15 @@ const CheckoutPage: React.FC = () => {
         </div>
         <div className="summary-row">
           <span>Total:</span>
-          <span className="total-price">₹{totalPrice + 80}</span>
+          <span className="total-price">{ details[0].currency+''+Number(details[0].price+ 80) }</span>
         </div>
+          </>
+        }
         <button onClick={() => alert("Order Placed!")}>Place Your Order</button>
       </div>
     </div>
+    {isOpenAddressModal&&(<AddressModal closeModal={closeAddressModal}/>)}
+    </>
   );
 };
 
