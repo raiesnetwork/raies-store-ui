@@ -1,5 +1,5 @@
 import { createAxiosInstance } from "../../../Utils/Axios";
-import { userStoreCreate } from "./Interfaces";
+import { StoreAddress, userStoreCreate } from "./Interfaces";
 
 const axiosInstance = createAxiosInstance();
 
@@ -113,6 +113,45 @@ export const loginUserApi = async (mobileNumber:string,otp:string) => {
 export const latestProductApi = async (hostName:string) => {
   try {
     const { data } = await axiosInstance.get(`/userstore/auth/latest/${hostName}`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data:error
+
+    };
+  }
+};
+export const DeleteAddressApi = async (id: string) => {
+  try {
+    const { data } = await axiosInstance.delete(`/storuser/address/${id}`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data:error
+
+    };
+  }
+};
+export const createAddressApi = async (datas: StoreAddress) => {
+  try {
+    const { data } = await axiosInstance.post(`/storuser/address`,{...datas});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data:error
+
+    };
+  }
+};
+export const getAddressApi = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/storuser/address`,);
     return data;
   } catch (error) {
     return {

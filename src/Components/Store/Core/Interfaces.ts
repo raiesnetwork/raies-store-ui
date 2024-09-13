@@ -24,11 +24,15 @@ export interface respProduct {
 }
 
 export interface MystoreStore {
-  getAllProduct: (id?: string) =>Promise<ApiResponce>;
+  getAllProduct: (id?: string) => Promise<ApiResponce>;
   AllProducts: respProduct[];
   singleProductData: respProduct;
   updateSingleProductData: (data: respProduct) => void;
-  AddToCart: (id: string, count: number,userId:string) => Promise<ApiResponce>;
+  AddToCart: (
+    id: string,
+    count: number,
+    userId: string
+  ) => Promise<ApiResponce>;
   cartData: respStoreCart[];
   FetchToCart: () => void;
   cartLoader: boolean;
@@ -36,7 +40,7 @@ export interface MystoreStore {
   deleteCart: (id: string) => Promise<ApiResponce>;
   verifyNumber: (number: string) => Promise<ApiResponce>;
   createUser: (data: userStoreCreate) => Promise<ApiResponce>;
-  loginUser: (data: string,otp:string) => Promise<ApiResponce>;
+  loginUser: (data: string, otp: string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   latestProduct: (hostName: string) => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
@@ -45,14 +49,12 @@ export interface MystoreStore {
   setOpenBarterModal: () => void;
   setOpenBiddingModal: () => void;
   isOpenBiddingModal: boolean;
-  logedIn:boolean,
-checkLoggedIn:(data:boolean)=>void
-signupModal:()=>void
-isOpenSignupModal:boolean
-userName:string|null
-setUserName:(name:string|null)=>void
-
-
+  logedIn: boolean;
+  checkLoggedIn: (data: boolean) => void;
+  signupModal: () => void;
+  isOpenSignupModal: boolean;
+  userName: string | null;
+  setUserName: (name: string | null) => void;
 }
 export interface ApiResponce {
   [x: string]: boolean;
@@ -60,7 +62,7 @@ export interface ApiResponce {
   message: string | any;
   error: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  data:any
+  data: any;
 }
 export interface myStoreCart {
   productName: string;
@@ -81,10 +83,23 @@ export interface respStoreCart {
   quantity: number;
   productDetails: myStoreCart;
 }
-export interface userStoreCreate{
-  fullName:string
-  mobileNumber:string
-  otp:string
-  hostname:string
-
+export interface userStoreCreate {
+  fullName: string;
+  mobileNumber: string;
+  otp: string;
+  hostname: string;
+}
+export interface respStoreAddress {
+  id: string;
+  fullName: string;
+  mobileNumber: string;
+  fullAddress: string;
+  landmark: string;
+  pincode: string;
+}export interface StoreAddress {
+  fullName: string;
+  mobileNumber: string;
+  fullAddress: string;
+  landmark: string;
+  pincode: string;
 }
