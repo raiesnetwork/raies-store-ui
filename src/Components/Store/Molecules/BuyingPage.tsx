@@ -4,9 +4,10 @@ import Header from "./Header";
 import { useLocation } from "react-router-dom";
 import { respProduct } from "../Core/Interfaces";
 import AddressModal from "./BuyAddressModal";
-import { ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
+
 const CheckoutPage: React.FC = () => {
   const {selectedAddress,addressData,getAddress,isOpenselectAddressModal,setIsOpenSelectAddressModal
 
@@ -41,6 +42,8 @@ const CheckoutPage: React.FC = () => {
       if (selectedPaymentMethod==="offline") {
         alert("hii")
       }
+    }else{      
+      toast.error("Plese select the delivery address and payment method properly")
     }
   }
   return (

@@ -22,6 +22,7 @@ const StoreCart: React.FC = () => {
       setCartLoader(false);
       setCartItems(cartData);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartData]);
 
   // Update the total price when quantities change
