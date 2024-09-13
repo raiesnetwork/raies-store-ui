@@ -1,7 +1,7 @@
 import React, { useEffect, useState } from "react";
 import '../Helpers/scss/BuyPage.scss'
 import Header from "./Header";
-import { useLocation } from "react-router-dom";
+import { useLocation, useNavigate } from "react-router-dom";
 import { respProduct } from "../Core/Interfaces";
 import AddressModal from "./BuyAddressModal";
 import { toast, ToastContainer } from "react-toastify";
@@ -37,10 +37,13 @@ const CheckoutPage: React.FC = () => {
     apiHelper()
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
+  const navigate=useNavigate()
   const handilPlaceOrder=()=>{
     if (selectedAddress.id.trim()&&selectedPaymentMethod.trim()) {
       if (selectedPaymentMethod==="offline") {
-        alert("hii")
+        navigate('/success',{state:{orderDetails:details,quantity:1}})
+      }else{
+        alert('online')
       }
     }else{      
       toast.error("Plese select the delivery address and payment method properly")

@@ -1,17 +1,13 @@
 import React from "react";
 import "../Helpers/scss/CodSuccsPage.scss";
 import Header from "./Header";
+import { Link, useLocation } from "react-router-dom";
+import { respProduct } from "../Core/Interfaces";
 
 const SuccessPage: React.FC = () => {
-  // Demo data
-  const orderDetails = {
-    orderNumber: "123456789",
-    productName: "Cool Gadget",
-    quantity: 1,
-    price: "$199.99",
-    deliveryDate: "2024-09-25",
-    trackingNumber: "TRK123456789",
-  };
+    const location=useLocation()
+    const {orderDetails,quantity}=location.state||{}
+  
 
   return (
     <>
@@ -23,17 +19,26 @@ const SuccessPage: React.FC = () => {
         
         <div className="order-summary">
           <h2>Order Summary</h2>
-          <p><strong>Order Number:</strong> {orderDetails.orderNumber}</p>
-          <p><strong>Product Name:</strong> {orderDetails.productName}</p>
-          <p><strong>Quantity:</strong> {orderDetails.quantity}</p>
-          <p><strong>Price:</strong> {orderDetails.price}</p>
-          <p><strong>Estimated Delivery Date:</strong> {orderDetails.deliveryDate}</p>
-          <p><strong>Tracking Number:</strong> {orderDetails.trackingNumber}</p>
+          {
+            orderDetails.map((val:respProduct)=>(
+
+                <>
+
+              <p><strong>Order Number:</strong> {val.id}</p>
+          <p><strong>Product Name:</strong> {val.productName}</p>
+
+          <p><strong>Quantity:</strong> {quantity>=1?quantity:val.productCount}</p>
+          <p><strong>Price:</strong> {val.price}</p>
+          {/* <p><strong>Estimated Delivery Date:</strong> {}</p> */}
+          {/* <p><strong>Tracking Number:</strong> {ingNumber}</p> */}
+          </>
+        ))
+          }
         </div>
         
         <div className="actions">
-          <a href="/" className="button">Go to Home</a>
-          <a href="/orders" className="button">View Your Orders</a>
+          <Link to="/" className="button">Go to Home</Link>
+          <Link to="/orders" className="button">View Your Orders</Link>
         </div>
       </div>
     </div>

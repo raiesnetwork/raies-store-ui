@@ -1,5 +1,6 @@
 import React from "react";
-import "../Helpers/scss/O.scss";
+import "../Helpers/scss/Orders.scss";
+import Header from "./Header";
 
 const orders = [
   {
@@ -24,7 +25,10 @@ const orders = [
 ];
 
 const UserOrdersPage: React.FC = () => {
+
   return (
+    <>
+    <Header/>
     <div className="user-orders-page">
       <h1>Your Orders</h1>
       <div className="orders-list">
@@ -52,6 +56,7 @@ const UserOrdersPage: React.FC = () => {
         ))}
       </div>
     </div>
+    </>
   );
 };
 

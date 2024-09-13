@@ -64,7 +64,13 @@ export interface MystoreStore {
   isOpenselectAddressModal:boolean
   setIsOpenSelectAddressModal:()=>void
 }
-
+export interface createOrder{
+  productId:string          
+    totalAmount:string  
+    quantity  :string    
+    paymentMethod :string
+    addressId  :string
+}
 export interface ApiResponce {
   [x: string]: boolean;
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
