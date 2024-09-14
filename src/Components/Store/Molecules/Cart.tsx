@@ -33,7 +33,7 @@ const StoreCart: React.FC = () => {
         (total, item) =>
           total +
           Number(item.productDetails.price) *
-            Number(item.productDetails.productCount),
+            Number(item.quantity),
         0
       )
       .toFixed(2);
@@ -158,7 +158,7 @@ const StoreCart: React.FC = () => {
               )}
             </div>
             <div className="cart-summary">
-              <h3>Total: ${getTotal()}</h3>
+              <h3>Total:{getTotal()}</h3>
              <Link to='/buy' state={{details:cartItems,type:"cart"}}>
              <button 
               

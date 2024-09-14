@@ -26,6 +26,7 @@ export const MyStore: React.FC = () => {
 useEffect(()=>{
  const name= localStorage.getItem('suname')
  setUserName(name)
+// eslint-disable-next-line react-hooks/exhaustive-deps
 },[])
   useEffect(() => {
     const ApiHelper = async () => {

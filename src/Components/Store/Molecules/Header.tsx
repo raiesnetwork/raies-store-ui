@@ -48,14 +48,16 @@ const Header: React.FC = () => {
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
-              <div >
-              <BsCart style={{position:"relative"}}  size={28} color="black" />
+              <div style={{position:"relative"}} >
+              <BsCart  size={28} color="black" />
               <p style={{
                 position:"absolute",
                 top:"0",
-
-              fontSize:"15px",
-              color:"red"
+                left:"0",
+                right:"0",bottom:"0",
+              fontSize:"20px",
+              color:"red",
+             
               
               }}>{cartData?.length}</p>
               </div>

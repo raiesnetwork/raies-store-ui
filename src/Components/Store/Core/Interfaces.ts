@@ -71,6 +71,7 @@ export interface createOrder{
     totalAmount:string  
     paymentMethod :string
     addressId  :string
+    
 }
 export interface ApiResponce {
   [x: string]: boolean;

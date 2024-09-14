@@ -157,7 +157,7 @@ const [disable,setDisable]=useState<boolean>(false)
                   <>
                     <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
                     <button><Link style={{textDecoration:"none",color:"black"}} to='/buy' state={
-                      {details:[{quantity:1,productDetails:singleProductData}],
+                      {details:[{id:"",quantity:1,productDetails:singleProductData}],
                         type:"single"}
                       } >Buy Now</Link></button>
                   </>
@@ -168,7 +168,7 @@ const [disable,setDisable]=useState<boolean>(false)
                     <button><Link style={{textDecoration:"none",color:"black"}} 
                     to='/buy' 
                     state={
-                      {details:[{quantity:1,productDetails:singleProductData}],
+                      {details:[{id:"",quantity:1,productDetails:singleProductData}],
                         type:"single"}
                       }>Buy Now</Link></button>
                   </>
