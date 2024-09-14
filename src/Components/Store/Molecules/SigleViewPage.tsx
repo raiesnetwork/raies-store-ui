@@ -156,13 +156,21 @@ const [disable,setDisable]=useState<boolean>(false)
                 {singleProductData.priceOption === "free" && (
                   <>
                     <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
-                    <button><Link style={{textDecoration:"none",color:"black"}} to='/buy' state={{details:[singleProductData],type:"single"}} >Buy Now</Link></button>
+                    <button><Link style={{textDecoration:"none",color:"black"}} to='/buy' state={
+                      {details:[{quantity:1,productDetails:singleProductData}],
+                        type:"single"}
+                      } >Buy Now</Link></button>
                   </>
                 )}
                 {singleProductData.priceOption === "normal" && (
                   <>
                     <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
-                    <button><Link style={{textDecoration:"none",color:"black"}} to='/buy' state={{details:[singleProductData],type:"single"}}>Buy Now</Link></button>
+                    <button><Link style={{textDecoration:"none",color:"black"}} 
+                    to='/buy' 
+                    state={
+                      {details:[{quantity:1,productDetails:singleProductData}],
+                        type:"single"}
+                      }>Buy Now</Link></button>
                   </>
                 )}
                 {singleProductData.priceOption === "bidding" && (

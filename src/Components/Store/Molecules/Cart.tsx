@@ -6,6 +6,7 @@ import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { respStoreCart } from "../Core/Interfaces";
 import Header from "./Header";
+import { Link } from "react-router-dom";
 const StoreCart: React.FC = () => {
   const {
     cartData,
@@ -158,7 +159,11 @@ const StoreCart: React.FC = () => {
             </div>
             <div className="cart-summary">
               <h3>Total: ${getTotal()}</h3>
-              <button className="checkout-btn">Proceed to Checkout</button>
+             <Link to='/buy' state={{details:cartItems,type:"cart"}}>
+             <button 
+              
+              className="checkout-btn">Proceed to Checkout</button>
+             </Link>
             </div>
           </div>
         </div>

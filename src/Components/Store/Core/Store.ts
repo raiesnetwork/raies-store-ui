@@ -3,12 +3,14 @@ import { MystoreStore } from "./Interfaces";
 import {
   AddToCartApi,
   createAddressApi,
+  createOrderApi,
   createStoreUserApi,
   DeleteAddressApi,
   DeleteCartApi,
   FetchToCartApi,
   getAddressApi,
   getAllProductApi,
+  getUserOrderApi,
   latestProductApi,
   loginUserApi,
   updateCartApi,
@@ -159,6 +161,14 @@ set(()=>({selectedAddress:data}))
 isOpenselectAddressModal:false,
 setIsOpenSelectAddressModal:()=>{
   set((s)=>({isOpenselectAddressModal:!s.isOpenselectAddressModal}))
+},
+createOrdr:async(data)=>{
+  const dataa=await createOrderApi(data)
+  return dataa
+},
+getUserOrder:async()=>{
+  const data=await getUserOrderApi()
+  return data
 }
 }));
 

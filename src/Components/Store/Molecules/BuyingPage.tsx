@@ -2,25 +2,26 @@ import React, { useEffect, useState } from "react";
 import '../Helpers/scss/BuyPage.scss'
 import Header from "./Header";
 import { useLocation, useNavigate } from "react-router-dom";
-import { respProduct } from "../Core/Interfaces";
+import {  respStoreCart } from "../Core/Interfaces";
 import AddressModal from "./BuyAddressModal";
 import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
 
 const CheckoutPage: React.FC = () => {
-  const {selectedAddress,addressData,getAddress,isOpenselectAddressModal,setIsOpenSelectAddressModal
+  const {selectedAddress,addressData,getAddress,isOpenselectAddressModal
+    ,setIsOpenSelectAddressModal,createOrdr
 
   }=useMystoreStore((s)=>s)
   const [selectedPaymentMethod, setSelectedPaymentMethod] = useState<string>("");
   const location=useLocation()
-  const {details,type}=location.state||{}
+  const {details}=location.state||{}
   
 
-  // const totalPrice = products.reduce(
-  //   (total, product) => total + product.price * product.quantity,
-  //   0
-  // );
+  const totalPrice = details.reduce(
+    (total:number, product:respStoreCart) => total + Number(product.productDetails.price) * product.quantity,
+    0
+  );
 
   const [isOpenAddressModal,setAddressModal]=useState<boolean>(false)
   const OpenAddressModal=()=>{
@@ -38,9 +39,24 @@ const CheckoutPage: React.FC = () => {
   // eslint-disable-next-line react-hooks/exhaustive-deps
   },[])
   const navigate=useNavigate()
-  const handilPlaceOrder=()=>{
+  const handilPlaceOrder=async()=>{
     if (selectedAddress.id.trim()&&selectedPaymentMethod.trim()) {
+        const productDetais=details.map((val:respStoreCart)=>{
+          return {
+            id:val.id,
+            quantity:val.quantity,
+            productName:val.productDetails.productName,
+            mainImage:val.productDetails.mainImage
+          }
+        })
+        
       if (selectedPaymentMethod==="offline") {
+       await createOrdr({
+          addressId:selectedAddress.id,
+          paymentMethod:selectedPaymentMethod,
+          productDetails:productDetais,
+          totalAmount:totalPrice
+        })
         navigate('/success',{state:{orderDetails:details,quantity:1}})
       }else{
         alert('online')
@@ -113,29 +129,46 @@ const CheckoutPage: React.FC = () => {
       <div className="section product-review-section">
         <div className="section-header">3. Review Items and Delivery</div>
         <div className="product-list">
-          {details?.map((product:respProduct) => (
-            <div key={product.id} className="product-card">
-              <img src={product.mainImage} alt={product.productName} />
+          <div style={{overflowY:"scroll",width:"100%"}}>
+          {details?.map((product:respStoreCart) => (
+            <>
+                          <hr/>
+
+              <div key={product.id} style={{
+                display:"flex",
+                alignItems:"center",
+                justifyContent:"space-between",
+                gap:"15px",
+                
+                width:"100%"
+              }}>
+                
+              <img style={{ maxWidth: "100px",
+            marginRight:"20px",marginBottom:"5px"}} src={product.productDetails.mainImage} alt={product.productDetails.productName} />
               <div className="product-details">
-                <h4>{product.productName}</h4>
-                <p>Price: ₹{product.price}.00</p>
+                <h4>{product.productDetails.productName}</h4>
+                <p>Price: ₹{product.productDetails.price}.00</p>
                 {/* <p>Delivery: {product.deliveryDate}</p> */}
               </div>
               <div className="quantity">
-                <p>Qty: 1</p>
+                <p>Qty: {
+                product.quantity}</p>
               </div>
             </div>
+              <hr/>
+              </>
           ))}
+          </div>
         </div>
       </div>
 
       {/* Order Summary Section */}
       <div className="section order-summary">
-        {type==="single"&&
+        
           <>
           <div className="summary-row">
           <span>Items:</span>
-          <span>{details[0].currency+ ' '+details[0].price}</span>
+          <span>₹{totalPrice}</span>
         </div>
         <div className="summary-row">
           <span>Delivery:</span>
@@ -143,10 +176,10 @@ const CheckoutPage: React.FC = () => {
         </div>
         <div className="summary-row">
           <span>Total:</span>
-          <span className="total-price">{ details[0].currency+''+Number(details[0].price+ 80) }</span>
+          <span className="total-price">₹{ totalPrice + 80 }</span>
         </div>
           </>
-        }
+        
         <button onClick={handilPlaceOrder}>Place Your Order</button>
       </div>
     </div>

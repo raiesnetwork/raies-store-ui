@@ -45,6 +45,8 @@ export interface MystoreStore {
   latestProduct: (hostName: string) => Promise<ApiResponce>;
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;
   deleteAddress: (hostName: string) => Promise<ApiResponce>;
+  createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
+  getUserOrder: () => Promise<ApiResponce>;
   getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
   homeLoader: boolean;
@@ -65,9 +67,8 @@ export interface MystoreStore {
   setIsOpenSelectAddressModal:()=>void
 }
 export interface createOrder{
-  productId:string          
+  productDetails:[]          
     totalAmount:string  
-    quantity  :string    
     paymentMethod :string
     addressId  :string
 }
