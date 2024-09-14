@@ -16,6 +16,7 @@ const CheckoutPage: React.FC = () => {
     isOpenselectAddressModal,
     setIsOpenSelectAddressModal,
     createOrdr,
+    FetchToCart
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("");
@@ -73,7 +74,7 @@ const CheckoutPage: React.FC = () => {
           toast.error("cant create order");
         } else {
           setBtndesable(false);
-
+          FetchToCart()
           navigate("/success", { state: { orderDetails: details } });
         }
       } else {
