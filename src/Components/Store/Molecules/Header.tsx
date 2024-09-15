@@ -69,7 +69,8 @@ const Header: React.FC = () => {
               {isDropdownOpen && (
                 <div className="header__dropdown">
                   <ul>
-                    <li><a href="/settings">Settings</a></li>
+                    <li><Link to='/orders'>My Orders</Link></li>
+                    <li><a href="/settings">Profile</a></li>
                     <li><a href="/logout">Logout</a></li>
                   </ul>
                 </div>

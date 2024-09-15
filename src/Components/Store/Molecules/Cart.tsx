@@ -157,7 +157,9 @@ const StoreCart: React.FC = () => {
                 </>
               )}
             </div>
-            <div className="cart-summary">
+            {
+              cartItems.length > 0&&
+              <div className="cart-summary">
               <h3>Total:{getTotal()}</h3>
              <Link to='/buy' state={{details:cartItems,type:"cart"}}>
              <button 
@@ -165,6 +167,7 @@ const StoreCart: React.FC = () => {
               className="checkout-btn">Proceed to Checkout</button>
              </Link>
             </div>
+            }
           </div>
         </div>
       )}
