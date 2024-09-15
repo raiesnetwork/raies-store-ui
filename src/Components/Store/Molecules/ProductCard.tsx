@@ -20,13 +20,13 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
       const data=await AddToCart(id,count,userId)
       setDisable(false)
       if (data.error) {
-        toast.error("item coun't add to cart")
+      return  toast.error("item coun't add to cart")
       }else{
         FetchToCart()
         toast.success("Item added Successfully")
       }
     }else{
-      toast("You need to login first")
+     return toast("You need to login first")
 
     }
   }
@@ -68,9 +68,9 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
         </Link>
       </div>
       {
-       ( data.priceOption==="normal"|| data.priceOption==="free")&&(
+       ( data.priceOption==="normal"|| data.priceOption==="free")&&data.productCount>0&&(
 
-        
+       
           <button 
           disabled={btnDisable}
           onClick={()=>handileCart(data.id,data.productCount,data.userId)} 

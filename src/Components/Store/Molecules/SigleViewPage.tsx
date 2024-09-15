@@ -153,7 +153,8 @@ const [disable,setDisable]=useState<boolean>(false)
                     onClick={setOpenBarterModal}>Exchange</button>
                   </>
                 )}
-                {singleProductData.priceOption === "free" && (
+                {singleProductData.priceOption === "free" && singleProductData.productCount>0&& (
+                    
                   <>
                     <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
                     <button><Link style={{textDecoration:"none",color:"black"}} to='/buy' state={
@@ -161,8 +162,9 @@ const [disable,setDisable]=useState<boolean>(false)
                         type:"single"}
                       } >Buy Now</Link></button>
                   </>
+                    
                 )}
-                {singleProductData.priceOption === "normal" && (
+                {singleProductData.priceOption === "normal" && singleProductData.productCount>0&&  (
                   <>
                     <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
                     <button><Link style={{textDecoration:"none",color:"black"}} 

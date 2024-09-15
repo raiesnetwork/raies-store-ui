@@ -14,8 +14,6 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [otpFieldSet, setOtpField] = useState<boolean>(false);
-console.log(mobileNumber);
-
   const handleSubmit = async (e: React.FormEvent) => {
     e.preventDefault();
     let data=null
@@ -45,6 +43,7 @@ console.log(mobileNumber);
         localStorage.setItem('suname',datas?.data?.username)
         localStorage.setItem('kt-auth-react-st', JSON.stringify({ api_token: datas?.data?.token }));
         closeModal()
+        window.location.reload()
       }
     }
     

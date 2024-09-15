@@ -59,7 +59,7 @@ export const MyStore: React.FC = () => {
       apiHelper();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [logedIn,hostname]);
   useEffect(() => {
     // Filter the products based on the selected filter
     let filteredData = AllProducts;

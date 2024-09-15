@@ -27,7 +27,7 @@ interface AddressModalProps {
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
-const {createAddress}=useMystoreStore((s)=>s)
+const {createAddress,getAddress}=useMystoreStore((s)=>s)
   const [addressData, setAddressData] = useState<AddressData>({
     fullName: "",
     mobileNumber: "",
@@ -90,8 +90,9 @@ const setMobileNumber=(n:string)=>{
         toast.error("Address can't created try again")
       }else{
         toast.success("Address created successfully")
-
+         await getAddress()
         closeModal();
+
       }
 
       
