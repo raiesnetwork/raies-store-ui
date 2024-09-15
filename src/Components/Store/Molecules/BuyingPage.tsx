@@ -227,7 +227,7 @@ const CheckoutPage: React.FC = () => {
           </>
 
           <button disabled={btnDisable} onClick={handilPlaceOrder}>
-            Place Your Order
+           {btnDisable?"Loading...":" Place Your Order"}
           </button>
         </div>
       </div>

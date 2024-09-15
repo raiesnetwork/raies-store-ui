@@ -5,14 +5,19 @@ import ProductViewCard from "./Molecules/ProductCard";
 import Header from "./Molecules/Header";
 import "react-toastify/dist/ReactToastify.css";
 
-
 const { hostname } = window.location;
 
 export const MyStore: React.FC = () => {
-  const {FetchToCart, getAllProduct, AllProducts, setHomeLoader, homeLoader ,
-    logedIn,latestProduct,setUserName
-  } =
-    useMystoreStore((state) => state);
+  const {
+    FetchToCart,
+    getAllProduct,
+    AllProducts,
+    setHomeLoader,
+    homeLoader,
+    logedIn,
+    latestProduct,
+    setUserName,
+  } = useMystoreStore((state) => state);
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
 
@@ -23,30 +28,38 @@ export const MyStore: React.FC = () => {
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AllProducts]);
-useEffect(()=>{
- const name= localStorage.getItem('suname')
- setUserName(name)
-// eslint-disable-next-line react-hooks/exhaustive-deps
-},[])
+  useEffect(() => {
+    const name = localStorage.getItem("suname");
+    setUserName(name);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     const ApiHelper = async () => {
-      setHomeLoader(true); 
-      if (logedIn===true) {
-        await getAllProduct(hostname);
+      setHomeLoader(true);
+      if (logedIn === true) {
         FetchToCart();
-        
-      }else{
-       await latestProduct(hostname)
+        await getAllProduct(hostname);
+        setHomeLoader(false);
       }
-      setHomeLoader(false); 
     };
 
-    if (hostname) {
+    if (logedIn === true && hostname) {
       ApiHelper();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hostname,logedIn]);
+  }, [hostname, logedIn]);
+  useEffect(() => {
+    const apiHelper = async () => {
+      setHomeLoader(true);
 
+      await latestProduct(hostname);
+      setHomeLoader(false);
+    };
+    if (logedIn === false && hostname) {
+      apiHelper();
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   useEffect(() => {
     // Filter the products based on the selected filter
     let filteredData = AllProducts;
@@ -75,7 +88,7 @@ useEffect(()=>{
 
   return (
     <>
-        <Header/>
+      <Header />
       {homeLoader ? (
         <div style={{ textAlign: "center" }}>Loading...</div>
       ) : (
@@ -118,9 +131,7 @@ useEffect(()=>{
           >
             {data?.length > 0 ? (
               data?.map((val) =>
-                !val.flag ? (
-                  <ProductViewCard key={val.id} data={val} />
-                ) : null
+                !val.flag ? <ProductViewCard key={val.id} data={val} /> : null
               )
             ) : (
               <div style={{ fontSize: "50px" }}>(Store is empty)</div>
