@@ -30,6 +30,8 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
 
       if (mobileNumber.trim()&&otp.trim()) {
         const  datas=await loginUser(mobileNumber,otp)
+        console.log(data);
+        
         if (datas.error) {
       return toast.error("Enter registred mobile number")
 

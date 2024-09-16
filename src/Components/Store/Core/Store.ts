@@ -49,26 +49,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   updateSingleProductData: (data) => {
     set(() => ({ singleProductData: data }));
   },
-  cartData: [
-    {
-      id: "",
-      quantity: 0,
-      productDetails: {
-        barterProductName: "",
-        currency: "",
-        endDate: "",
-        id: "",
-        mainImage: "",
-        maxBidPrice: "",
-        maxBidPriceCurrency: "",
-        minBidPrice: "",
-        minBidPriceCurrency: "",
-        price: "",
-        productCount: 0,
-        productName: "",
-      },
-    },
-  ],
+  cartData: [],
   AddToCart: async (id, quantity,userId) => {
     const data = await AddToCartApi(id, quantity,userId);
     return data;

@@ -40,25 +40,26 @@ const SignupModal: React.FC = () => {
 
   const handleSubmit = async(e: React.FormEvent) => {
     e.preventDefault();
+    
     const validOtp = otp.trim().length === 6;
         setIsOTpValid(validOtp)
-        if (validOtp&&isMobileNumberValid&&isUsernameValid) {
+        if (validOtp&&isMobileNumberValid&&isUsernameValid&&hostname.trim()) {
           setBtnFalse(true)
           const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp,hostname:hostname})
           setBtnFalse(false)
 
          if (data.error) {
-          toast.error("Faild to create try again")
+         return toast.error("Faild to create try again")
 
          }else{
           if (data.data===false) {
-            toast.error("Invalid OTP")
+          return  toast.error("Invalid OTP")
 
           }else if (data.data==="exist") {
-            toast.success("Already Youhave an account")
+           return toast.success("Already Youhave an account")
 
           } else{
-            toast.success("User Created Successfully")
+           return toast.success("User Created Successfully")
 
           }
          }
@@ -136,7 +137,7 @@ const SignupModal: React.FC = () => {
           {/* Actions */}
           <div className="login-modal__actions">
             <button disabled={btnFalse} type="submit">{isOtpVisible ? "Submit" : "Verify"}</button>
-            <button type="button" onClick={signupModal}>Close</button>
+            <button type="button" style={{color:"black"}} onClick={signupModal}>Close</button>
           </div>
         </form>
       </div>

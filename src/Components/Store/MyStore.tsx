@@ -18,48 +18,42 @@ export const MyStore: React.FC = () => {
     latestProduct,
     setUserName,
   } = useMystoreStore((state) => state);
+  
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
 
   useEffect(() => {
     if (AllProducts.length > 0) {
       setData(AllProducts);
-      setHomeLoader(false); // Move this to indicate loading is done
+      setHomeLoader(false);
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AllProducts]);
+
   useEffect(() => {
     const name = localStorage.getItem("suname");
     setUserName(name);
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
+
   useEffect(() => {
-    const ApiHelper = async () => {
+    const fetchProducts = async () => {
       setHomeLoader(true);
-      if (logedIn === true) {
+      if (logedIn) {
         FetchToCart();
         await getAllProduct(hostname);
-        setHomeLoader(false);
+      } else {
+        await latestProduct(hostname);
       }
-    };
-
-    if (logedIn === true && hostname) {
-      ApiHelper();
-    }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [hostname, logedIn]);
-  useEffect(() => {
-    const apiHelper = async () => {
-      setHomeLoader(true);
-
-      await latestProduct(hostname);
       setHomeLoader(false);
     };
-    if (logedIn === false && hostname) {
-      apiHelper();
+
+    if (hostname) {
+      fetchProducts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [logedIn,hostname]);
+  }, [logedIn, hostname]);
+
   useEffect(() => {
     // Filter the products based on the selected filter
     let filteredData = AllProducts;
