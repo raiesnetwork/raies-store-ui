@@ -7,7 +7,8 @@ import 'react-phone-input-2/lib/style.css';
 import { toast ,ToastContainer} from "react-toastify";
 import { getSubdomain } from "../../../Utils/Subdomain";
 const {hostname}=window.location
-  getSubdomain(hostname)
+ // eslint-disable-next-line prefer-const
+ let subdomain= getSubdomain(hostname)
 const SignupModal: React.FC = () => {
   const { signupModal ,verifyNumber,createUser} = useMystoreStore((s) => s);
   const [username, setUsername] = useState<string>('');
@@ -45,9 +46,9 @@ const SignupModal: React.FC = () => {
     
     const validOtp = otp.trim().length === 6;
         setIsOTpValid(validOtp)
-        if (validOtp&&isMobileNumberValid&&isUsernameValid&&hostname.trim()) {
+        if (validOtp&&isMobileNumberValid&&isUsernameValid) {
           setBtnFalse(true)
-          const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp,hostname:hostname})
+          const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp,hostname:subdomain})
           setBtnFalse(false)
 
          if (data.error) {

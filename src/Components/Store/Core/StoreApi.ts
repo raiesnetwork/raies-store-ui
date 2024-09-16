@@ -3,7 +3,7 @@ import { createOrder, StoreAddress, userStoreCreate } from "./Interfaces";
 
 const axiosInstance = createAxiosInstance();
 
-export const getAllProductApi = async (hostName?: string) => {
+export const getAllProductApi = async (hostName?: string|null) => {
   try {
     const {data} = await axiosInstance.get(`/storuser/getall/${hostName}`);
     return data;
@@ -110,7 +110,7 @@ export const loginUserApi = async (mobileNumber:string,otp:string) => {
     };
   }
 };
-export const latestProductApi = async (hostName:string) => {
+export const latestProductApi = async (hostName:string|null) => {
   try {
     const { data } = await axiosInstance.get(`/userstore/auth/latest/${hostName}`);
     return data;
