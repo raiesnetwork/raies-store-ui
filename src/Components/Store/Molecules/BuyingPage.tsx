@@ -71,10 +71,10 @@ const CheckoutPage: React.FC = () => {
         if (data.error) {
           setBtndesable(false);
 
-          toast.error("cant create order");
+        return  toast.error("cant create order");
         } else {
           setBtndesable(false);
-          FetchToCart()
+         await FetchToCart()
           navigate("/success", { state: { orderDetails: details } });
         }
       } else {

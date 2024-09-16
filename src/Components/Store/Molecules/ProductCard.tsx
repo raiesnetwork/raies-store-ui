@@ -22,8 +22,8 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
       if (data.error) {
       return  toast.error("item coun't add to cart")
       }else{
-        FetchToCart()
-        toast.success("Item added Successfully")
+       await FetchToCart()
+       return toast.success("Item added Successfully")
       }
     }else{
      return toast("You need to login first")
