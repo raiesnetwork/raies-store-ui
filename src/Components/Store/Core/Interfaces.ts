@@ -24,7 +24,7 @@ export interface respProduct {
 }
 
 export interface MystoreStore {
-  getAllProduct: (id?: string) => Promise<ApiResponce>;
+  getAllProduct: (id?: string|null) => Promise<ApiResponce>;
   AllProducts: respProduct[];
   singleProductData: respProduct;
   updateSingleProductData: (data: respProduct) => void;
@@ -42,7 +42,7 @@ export interface MystoreStore {
   createUser: (data: userStoreCreate) => Promise<ApiResponce>;
   loginUser: (data: string, otp: string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
-  latestProduct: (hostName: string) => Promise<ApiResponce>;
+  latestProduct: (hostName: string|null) => Promise<ApiResponce>;
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;
   deleteAddress: (hostName: string) => Promise<ApiResponce>;
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
@@ -104,7 +104,7 @@ export interface userStoreCreate {
   fullName: string;
   mobileNumber: string;
   otp: string;
-  hostname: string;
+  hostname: string|null;
 }
 export interface respStoreAddress {
   id: string;

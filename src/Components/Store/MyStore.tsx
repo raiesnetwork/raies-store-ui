@@ -4,9 +4,11 @@ import { respProduct } from "./Core/Interfaces";
 import ProductViewCard from "./Molecules/ProductCard";
 import Header from "./Molecules/Header";
 import "react-toastify/dist/ReactToastify.css";
+import { getSubdomain } from "../../Utils/Subdomain";
 
 const { hostname } = window.location;
-
+// eslint-disable-next-line prefer-const
+let subdomain=getSubdomain(hostname)
 export const MyStore: React.FC = () => {
   const {
     FetchToCart,
@@ -41,18 +43,18 @@ export const MyStore: React.FC = () => {
       setHomeLoader(true);
       if (logedIn) {
         FetchToCart();
-        await getAllProduct(hostname);
+        await getAllProduct(subdomain);
       } else {
-        await latestProduct(hostname);
+        await latestProduct(subdomain);
       }
       setHomeLoader(false);
     };
 
-    if (hostname) {
+    if (subdomain) {
       fetchProducts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [logedIn, hostname]);
+  }, [logedIn, subdomain]);
 
   useEffect(() => {
     // Filter the products based on the selected filter

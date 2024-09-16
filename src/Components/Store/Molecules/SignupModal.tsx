@@ -5,7 +5,9 @@ import useMystoreStore from "../Core/Store";
 import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import { toast ,ToastContainer} from "react-toastify";
+import { getSubdomain } from "../../../Utils/Subdomain";
 const {hostname}=window.location
+  getSubdomain(hostname)
 const SignupModal: React.FC = () => {
   const { signupModal ,verifyNumber,createUser} = useMystoreStore((s) => s);
   const [username, setUsername] = useState<string>('');
