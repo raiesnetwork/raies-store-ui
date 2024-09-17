@@ -69,7 +69,6 @@ const BarterModal: React.FC = () => {
     if (validateForm()) {
       try {
         const data = await createBarterOrder(formData);
-        console.log(data);
         
         if (data.error) {
           setDisable(false);
