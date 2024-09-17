@@ -51,7 +51,7 @@ const BiddingModal: React.FC = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.fullName.trim()) newErrors.fullName = "Full name is required.";
-    if (!formData.mobileNumber.trim() || !/^\d{7}$/.test(formData.mobileNumber))
+    if (!formData.mobileNumber.trim() ||formData?.mobileNumber?.length<=7 )
       newErrors.mobileNumber = "Valid mobile number is required.";
     if (!formData.fullAddress.trim()) newErrors.fullAddress = "Full address is required.";
     if (!formData.pincode.trim() || !/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Valid 6-digit pincode is required.";
@@ -69,9 +69,9 @@ const BiddingModal: React.FC = () => {
         const data = await createBiddingOrder(formData);
         if (data.error) {
           setDisable(false);
-          toast.error(data.message);
+          toast.error("Something wrong try again later");
         } else {
-          toast.success(data.message);
+          toast.success("order Created successfully");
           setOpenBiddingModal();
         }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
