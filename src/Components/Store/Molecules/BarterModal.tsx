@@ -54,8 +54,8 @@ const BarterModal: React.FC = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.fullName.trim()) newErrors.fullName = "Full name is required.";
-    if (!formData.mobileNumber.trim() || !/^\d{10}$/.test(formData.mobileNumber))
-      newErrors.mobileNumber = "Valid 10-digit mobile number is required.";
+    if (!formData.mobileNumber.trim() || !/^\d{7}$/.test(formData.mobileNumber))
+      newErrors.mobileNumber = "Valid mobile number is required.";
     if (!formData.fullAddress.trim()) newErrors.fullAddress = "Full address is required.";
     if (!formData.pincode.trim() || !/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Valid 6-digit pincode is required.";
     if (!formData.productImage.trim()) newErrors.productImage = "Product image is required.";
@@ -72,9 +72,9 @@ const BarterModal: React.FC = () => {
         const data = await createBarterOrder(formData);
         if (data.error) {
           setDisable(false);
-          toast.error(data.message);
+          toast.error("order can't creted");
         } else {
-          toast.success(data.message);
+          toast.success("order Created successfully");
           setOpenBarterModal();
              
 
@@ -150,7 +150,7 @@ const BarterModal: React.FC = () => {
               <div className="form-group">
                 <label htmlFor="mobileNumber">Mobile Number</label>
                 <input
-                  type="text"
+                  type="number"
                   id="mobileNumber"
                   name="mobileNumber"
                   value={formData.mobileNumber}
@@ -190,11 +190,12 @@ const BarterModal: React.FC = () => {
               <div className="form-group">
                 <label htmlFor="pincode">Pincode</label>
                 <input
-                  type="text"
+                  type="number"
                   id="pincode"
                   name="pincode"
                   value={formData.pincode}
                   onChange={handleChange}
+                  maxLength={6}
                   className={`form-control ${errors.pincode ? "is-invalid" : ""}`}
                 />
                 {errors.pincode && <div className="invalid-feedback">{errors.pincode}</div>}
