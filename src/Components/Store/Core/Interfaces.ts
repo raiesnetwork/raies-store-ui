@@ -22,7 +22,23 @@ export interface respProduct {
   maxBidPriceCurrency: string;
   barterProductName: string;
 }
-
+export interface barterOrder{
+  fullName: string
+    mobileNumber: string
+    fullAddress: string
+    landmark: string
+    pincode: string
+    productImage: string
+    productId:string
+}export interface biddingOrder{
+  fullName: string
+    mobileNumber: string
+    fullAddress: string
+    landmark: string
+    pincode: string
+    biddingAmount: string
+    productId:string
+}
 export interface MystoreStore {
   getAllProduct: (id?: string|null) => Promise<ApiResponce>;
   AllProducts: respProduct[];
@@ -46,6 +62,8 @@ export interface MystoreStore {
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;
   deleteAddress: (hostName: string) => Promise<ApiResponce>;
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
+  createBarterOrder: (hostName: barterOrder) => Promise<ApiResponce>;
+  createBiddingOrder: (hostName: biddingOrder) => Promise<ApiResponce>;
   getUserOrder: () => Promise<ApiResponce>;
   getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;

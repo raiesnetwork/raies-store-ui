@@ -3,6 +3,8 @@ import { MystoreStore } from "./Interfaces";
 import {
   AddToCartApi,
   createAddressApi,
+  createBarterOrderApi,
+  createBiddingOrderApi,
   createOrderApi,
   createStoreUserApi,
   DeleteAddressApi,
@@ -150,7 +152,15 @@ createOrdr:async(data)=>{
 getUserOrder:async()=>{
   const data=await getUserOrderApi()
   return data
-}
+},
+createBarterOrder:async(data)=> {
+  const datas=await createBarterOrderApi(data)
+  return datas
+},
+createBiddingOrder:async(data)=> {
+  const datas=await createBiddingOrderApi(data)
+  return datas
+},
 }));
 
 export default useMystoreStore;
