@@ -1,6 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
-import "react-toastify/dist/ReactToastify.css";
 import useMystoreStore from "../Core/Store";
 // import { KTSVG } from "../../../../_metronic/helpers";
 
@@ -120,6 +119,7 @@ const BarterModal: React.FC = () => {
   };
 
   return (
+    <>
     <div className={`modal ${isOpenBarteModal ? "d-block show" : "d-none fade"}`} id="kt_modal_barter_form" tabIndex={-1}>
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content">
@@ -225,11 +225,12 @@ const BarterModal: React.FC = () => {
                 Close
               </button>
             </form>
-            <ToastContainer />
           </div>
         </div>
       </div>
     </div>
+            <ToastContainer />
+    </>
   );
 };
 
