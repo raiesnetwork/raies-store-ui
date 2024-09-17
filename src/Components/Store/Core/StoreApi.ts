@@ -1,5 +1,5 @@
 import { createAxiosInstance } from "../../../Utils/Axios";
-import { createOrder, StoreAddress, userStoreCreate } from "./Interfaces";
+import { barterOrder, createOrder, StoreAddress, userStoreCreate } from "./Interfaces";
 
 const axiosInstance = createAxiosInstance();
 
@@ -174,9 +174,23 @@ export const createOrderApi = async (datas:createOrder) => {
 
     };
   }
-};export const getUserOrderApi = async () => {
+};
+export const getUserOrderApi = async () => {
   try {
     const { data } = await axiosInstance.get(`/storuser/order`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data:error
+
+    };
+  }
+};
+export const createBarterOrderApi = async (datas:barterOrder) => {
+  try {
+    const { data } = await axiosInstance.post(`/storuser/createbarterorder`, { ...datas });
     return data;
   } catch (error) {
     return {

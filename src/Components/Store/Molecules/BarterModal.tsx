@@ -5,7 +5,7 @@ import useMystoreStore from "../Core/Store";
 // import { KTSVG } from "../../../../_metronic/helpers";
 
 const BarterModal: React.FC = () => {
-  const { setOpenBarterModal, isOpenBarteModal } = useMystoreStore((state) => state);
+  const { createBarterOrder,singleProductData,setOpenBarterModal, isOpenBarteModal } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -14,12 +14,14 @@ const BarterModal: React.FC = () => {
     landmark: "",
     pincode: "",
     productImage: "",
+    productId:singleProductData.id
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [btnDisable, setDisable] = useState<boolean>(false);
   const [imageErrors, setImageErrors] = useState<string | null>(null);
-  const ProductImageRef = useRef(null);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any, prefer-const
+  let ProductImageRef:any = useRef(null);
 
   useEffect(() => {
     setFormData({
@@ -29,9 +31,10 @@ const BarterModal: React.FC = () => {
       landmark: "",
       pincode: "",
       productImage: "",
+      productId:singleProductData.id
     });
     setErrors({});
-  }, [isOpenBarteModal]);
+  }, [isOpenBarteModal,singleProductData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setDisable(false);
@@ -66,15 +69,17 @@ const BarterModal: React.FC = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        // const data = await updateModalApiHelper(formData);
-        // if (data.error) {
-        //   setDisable(false);
-        //   toast.error(data.message);
-        // } else {
-        //   toast.success(data.message);
-        //   updateModalOpen();
-        //   ProductImageRef.current.value = "";
-        // }
+        const data = await createBarterOrder(formData);
+        if (data.error) {
+          setDisable(false);
+          toast.error(data.message);
+        } else {
+          toast.success(data.message);
+          setOpenBarterModal();
+             
+
+          ProductImageRef.current.value = "";
+        }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         setDisable(false);
