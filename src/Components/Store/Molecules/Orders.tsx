@@ -3,7 +3,7 @@ import "../Helpers/scss/Orders.scss";
 import Header from "./Header";
 import useMystoreStore from "../Core/Store";
 import { toast, ToastContainer } from "react-toastify";
-import {LineWave,Circles} from "react-loader-spinner"; // Add a loader package
+import {LineWave} from "react-loader-spinner"; 
 
 interface resp {
   id: string;
@@ -22,7 +22,7 @@ interface details {
 const UserOrdersPage: React.FC = () => {
   const { getUserOrder } = useMystoreStore((s) => s);
   const [orders, setOrders] = useState<resp[]>([]);
-  const [loading, setLoading] = useState<boolean>(true); // Loader state
+  const [loading, setLoading] = useState<boolean>(true); 
 
   useEffect(() => {
     const apiHelper = async () => {
@@ -33,26 +33,27 @@ const UserOrdersPage: React.FC = () => {
       } else {
         setOrders(data.data);
       }
-      setLoading(false); // Stop loading
+      setLoading(false); 
     };
     apiHelper();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
       <Header />
       <div className="user-orders-page">
-        <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Your Orders</h1> {/* Inline style for center heading */}
+        <h1 style={{ textAlign: "center", marginBottom: "20px" }}>Your Orders</h1> 
         {loading ? (
           <div
             style={{
               display: "flex",
               justifyContent: "center",
               alignItems: "center",
-              height: "200px", // Adjust height as needed
+              height: "200px", 
             }}
           >
-            <Circles  />
+            <LineWave  />
           </div>
         ) : (
           <div className="orders-list">
