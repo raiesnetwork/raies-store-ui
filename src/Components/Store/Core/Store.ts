@@ -4,6 +4,7 @@ import {
   AddToCartApi,
   createAddressApi,
   createBarterOrderApi,
+  createBiddingOrderApi,
   createOrderApi,
   createStoreUserApi,
   DeleteAddressApi,
@@ -154,6 +155,10 @@ getUserOrder:async()=>{
 },
 createBarterOrder:async(data)=> {
   const datas=await createBarterOrderApi(data)
+  return datas
+},
+createBiddingOrder:async(data)=> {
+  const datas=await createBiddingOrderApi(data)
   return datas
 },
 }));

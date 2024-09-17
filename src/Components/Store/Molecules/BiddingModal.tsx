@@ -5,7 +5,7 @@ import '../Helpers/scss/BiddingModal.scss'
 // import { KTSVG } from "../../../../_metronic/helpers";
 
 const BiddingModal: React.FC = () => {
-  const { setOpenBiddingModal, isOpenBiddingModal } = useMystoreStore((state) => state);
+  const {singleProductData ,createBiddingOrder,setOpenBiddingModal, isOpenBiddingModal } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -13,7 +13,8 @@ const BiddingModal: React.FC = () => {
     fullAddress: "",
     landmark: "",
     pincode: "",
-    bidAmount: "",
+    biddingAmount: "",
+    productId:singleProductData.id
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
@@ -26,10 +27,11 @@ const BiddingModal: React.FC = () => {
       fullAddress: "",
       landmark: "",
       pincode: "",
-      bidAmount: "",
+      biddingAmount: "",
+      productId:singleProductData.id
     });
     setErrors({});
-  }, [isOpenBiddingModal]);
+  }, [isOpenBiddingModal,singleProductData]);
 
   const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
     setDisable(false);
@@ -49,11 +51,11 @@ const BiddingModal: React.FC = () => {
     const newErrors: { [key: string]: string } = {};
 
     if (!formData.fullName.trim()) newErrors.fullName = "Full name is required.";
-    if (!formData.mobileNumber.trim() || !/^\d{10}$/.test(formData.mobileNumber))
-      newErrors.mobileNumber = "Valid 10-digit mobile number is required.";
+    if (!formData.mobileNumber.trim() || !/^\d{7}$/.test(formData.mobileNumber))
+      newErrors.mobileNumber = "Valid mobile number is required.";
     if (!formData.fullAddress.trim()) newErrors.fullAddress = "Full address is required.";
     if (!formData.pincode.trim() || !/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Valid 6-digit pincode is required.";
-    if (!formData.bidAmount.trim()) newErrors.bidAmount = "Bid Amount is required.";
+    if (!formData.biddingAmount.trim()) newErrors.biddingAmount = "Bid Amount is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -64,15 +66,14 @@ const BiddingModal: React.FC = () => {
     e.preventDefault();
     if (validateForm()) {
       try {
-        // const data = await updateModalApiHelper(formData);
-        // if (data.error) {
-        //   setDisable(false);
-        //   toast.error(data.message);
-        // } else {
-        //   toast.success(data.message);
-        //   updateModalOpen();
-        //   ProductImageRef.current.value = "";
-        // }
+        const data = await createBiddingOrder(formData);
+        if (data.error) {
+          setDisable(false);
+          toast.error(data.message);
+        } else {
+          toast.success(data.message);
+          setOpenBiddingModal();
+        }
       // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         setDisable(false);
@@ -112,7 +113,7 @@ const BiddingModal: React.FC = () => {
               <div className="form-group">
                 <label htmlFor="mobileNumber">Mobile Number</label>
                 <input
-                  type="text"
+                  type="number"
                   id="mobileNumber"
                   name="mobileNumber"
                   value={formData.mobileNumber}
@@ -152,28 +153,29 @@ const BiddingModal: React.FC = () => {
               <div className="form-group">
                 <label htmlFor="pincode">Pincode</label>
                 <input
-                  type="text"
+                  type="number"
                   id="pincode"
                   name="pincode"
                   value={formData.pincode}
                   onChange={handleChange}
+                  maxLength={6}
                   className={`form-control ${errors.pincode ? "is-invalid" : ""}`}
                 />
                 {errors.pincode && <div className="invalid-feedback">{errors.pincode}</div>}
               </div>
 
-              {/* Product bidAmount */}
+              {/* Product biddingAmount */}
               <div className="form-group">
-                <label htmlFor="bidAmount">Bid Amount</label>
+                <label htmlFor="biddingAmount">Bid Amount</label>
                 <input
                   type="number"
-                  id="bidAmount"
-                  value={formData.bidAmount}
-                  name="bidAmount"
+                  id="biddingAmount"
+                  value={formData.biddingAmount}
+                  name="biddingAmount"
                   onChange={handleChange}
-                  className={`form-control ${errors.bidAmount ? "is-invalid" : ""}`}
+                  className={`form-control ${errors.biddingAmount ? "is-invalid" : ""}`}
                 />
-                {errors.bidAmount && <div className="invalid-feedback">{errors.bidAmount}</div>}
+                {errors.biddingAmount && <div className="invalid-feedback">{errors.biddingAmount}</div>}
               </div>
 
               <button type="submit" className="btn btn-primary" disabled={btnDisable}>

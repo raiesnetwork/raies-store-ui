@@ -30,6 +30,14 @@ export interface barterOrder{
     pincode: string
     productImage: string
     productId:string
+}export interface biddingOrder{
+  fullName: string
+    mobileNumber: string
+    fullAddress: string
+    landmark: string
+    pincode: string
+    biddingAmount: string
+    productId:string
 }
 export interface MystoreStore {
   getAllProduct: (id?: string|null) => Promise<ApiResponce>;
@@ -55,6 +63,7 @@ export interface MystoreStore {
   deleteAddress: (hostName: string) => Promise<ApiResponce>;
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
   createBarterOrder: (hostName: barterOrder) => Promise<ApiResponce>;
+  createBiddingOrder: (hostName: biddingOrder) => Promise<ApiResponce>;
   getUserOrder: () => Promise<ApiResponce>;
   getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
