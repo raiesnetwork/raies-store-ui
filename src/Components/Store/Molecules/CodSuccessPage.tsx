@@ -28,7 +28,7 @@ const SuccessPage: React.FC = () => {
             data?.map((val:respStoreCart)=>(
 
                 <>
-          <hr/>
+          <hr key={val.id} />
 
               <p><strong>Order Number:</strong> {val.id}</p>
           <p><strong>Product Name:</strong> {val.productDetails.productName}</p>

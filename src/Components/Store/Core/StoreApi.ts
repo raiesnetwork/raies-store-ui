@@ -164,7 +164,7 @@ export const getAddressApi = async () => {
 };
 export const createOrderApi = async (datas:createOrder) => {
   try {
-    const { data } = await axiosInstance.post(`/storuser/order`,{...datas},);
+    const { data } = await axiosInstance.post(`/storuser/order`,{...datas});
     return data;
   } catch (error) {
     return {
