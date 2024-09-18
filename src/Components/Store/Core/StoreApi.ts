@@ -97,9 +97,9 @@ export const createStoreUserApi = async (datas:userStoreCreate) => {
     };
   }
 };
-export const loginUserApi = async (mobileNumber:string,otp:string) => {
+export const loginUserApi = async (mobileNumber:string,otp:string,subdomain:string) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/auth/login`, { mobileNumber,otp });
+    const { data } = await axiosInstance.post(`/userstore/auth/login`, { mobileNumber,otp,subdomain });
     return data;
   } catch (error) {
     return {

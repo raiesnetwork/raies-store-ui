@@ -12,7 +12,7 @@ let subdomain=getSubdomain(hostname)
 export const MyStore: React.FC = () => {
   const {
     FetchToCart,
-    getAllProduct,
+    // getAllProduct,
     AllProducts,
     setHomeLoader,
     homeLoader,
@@ -41,14 +41,11 @@ export const MyStore: React.FC = () => {
   useEffect(() => {
     const fetchProducts = async () => {
       setHomeLoader(true);
-      if (logedIn) {
         FetchToCart();
-        await getAllProduct(subdomain);
-      } else {
         await latestProduct(subdomain);
       }
       setHomeLoader(false);
-    };
+    
 
     if (subdomain) {
       fetchProducts();

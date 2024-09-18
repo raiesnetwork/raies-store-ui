@@ -56,7 +56,7 @@ export interface MystoreStore {
   deleteCart: (id: string) => Promise<ApiResponce>;
   verifyNumber: (number: string) => Promise<ApiResponce>;
   createUser: (data: userStoreCreate) => Promise<ApiResponce>;
-  loginUser: (data: string, otp: string) => Promise<ApiResponce>;
+  loginUser: (data: string, otp: string,subdomain:string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   latestProduct: (hostName: string|null) => Promise<ApiResponce>;
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;

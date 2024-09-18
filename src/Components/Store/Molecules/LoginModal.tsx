@@ -4,11 +4,14 @@ import PhoneInput from 'react-phone-input-2';
 import 'react-phone-input-2/lib/style.css';
 import useMystoreStore from "../Core/Store";
 import { toast,ToastContainer } from "react-toastify";
+import { getSubdomain } from "../../../Utils/Subdomain";
 
 interface LoginModalProps {
   closeModal: () => void;
 }
-
+const {hostname}=window.location
+ // eslint-disable-next-line prefer-const
+ let subdomain= getSubdomain(hostname)
 const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   const {setUserName,loginUser,verifyNumber,checkLoggedIn,signupModal}=useMystoreStore((s)=>s)
   const [mobileNumber, setMobileNumber] = useState<string>('');
@@ -29,7 +32,7 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
      
 
       if (mobileNumber.trim()&&otp.trim()) {
-        const  datas=await loginUser(mobileNumber,otp)
+        const  datas=await loginUser(mobileNumber,otp,subdomain)
         console.log(data);
         
         if (datas.error) {

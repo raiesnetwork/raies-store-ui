@@ -94,8 +94,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     return data
   },
 
-  loginUser:async(number,otp)=>{
-    const data=await loginUserApi(number,otp)
+  loginUser:async(number,otp,subdomain)=>{
+    const data=await loginUserApi(number,otp,subdomain)
     return data
   },
 logedIn:false,
