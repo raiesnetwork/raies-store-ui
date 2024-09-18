@@ -1,5 +1,5 @@
 import { createAxiosInstance } from "../../../Utils/Axios";
-import { barterOrder, biddingOrder, createOrder, StoreAddress, userStoreCreate } from "./Interfaces";
+import { barterOrder, biddingOrder, createOrder, onlinePayment, StoreAddress, userStoreCreate } from "./Interfaces";
 
 const axiosInstance = createAxiosInstance();
 
@@ -173,6 +173,21 @@ export const createOrderApi = async (datas:createOrder) => {
       data:error
 
     };
+  }
+};
+export const createRazorpayOrderApi= async (amount: number): Promise<any> => {
+  try {
+    const response = await axiosInstance.post(`/storuser/online-payment`, { amount });
+    return response.data;
+  } catch (error) {
+  }
+};
+
+export const verifyRazorpayPaymentApi= async(datas:onlinePayment ): Promise<any> => {
+  try {
+   const {data}= await axiosInstance.post(`/storuser/verify-payment`, { datas  });
+   return data;
+  } catch (error) {
   }
 };
 export const getUserOrderApi = async () => {

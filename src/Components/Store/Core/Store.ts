@@ -1,11 +1,12 @@
 import { create } from "zustand";
-import { MystoreStore } from "./Interfaces";
+import { MystoreStore, onlinePayment } from "./Interfaces";
 import {
   AddToCartApi,
   createAddressApi,
   createBarterOrderApi,
   createBiddingOrderApi,
   createOrderApi,
+  createRazorpayOrderApi,
   createStoreUserApi,
   DeleteAddressApi,
   DeleteCartApi,
@@ -17,9 +18,11 @@ import {
   loginUserApi,
   updateCartApi,
   verifyNumberApi,
+  verifyRazorpayPaymentApi,
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set) => ({
+  onlinePaymenterror:"",
   AllProducts: [],
   getAllProduct: async (hostName) => {
     if (hostName) {
@@ -160,6 +163,23 @@ createBarterOrder:async(data)=> {
 createBiddingOrder:async(data)=> {
   const datas=await createBiddingOrderApi(data)
   return datas
+},
+
+createRazorpayOrder: async (amount: number) => {
+  try {
+    const order = await createRazorpayOrderApi(amount);
+    return order;
+  } catch (error: any) {
+    set({ onlinePaymenterror: error.message });
+  }
+},
+
+verifyRazorpayPayment: async (data:onlinePayment) => {
+  try {
+    await verifyRazorpayPaymentApi(data);
+  } catch (error: any) {
+    set({ onlinePaymenterror: error.message });
+  }
 },
 }));
 

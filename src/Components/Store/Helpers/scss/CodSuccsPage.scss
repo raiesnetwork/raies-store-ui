@@ -1,11 +1,11 @@
 .success-page {
-    display: flex;
-    justify-content: center;
-    align-items: center;
-    height: 100vh;
-    background-color: #f4f4f4;
-    padding: 20px;
-  }
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 68vh;
+  background-color: #f4f4f4;
+  padding: 20px;
+}
   
   .success-page-content {
     background-color: #fff;
@@ -44,7 +44,8 @@
   .actions {
     margin-top: 20px;
     display: flex;
-    justify-content: space-between;
+    justify-content: flex-end;
+    gap: 10px;
   }
   
   .button {
