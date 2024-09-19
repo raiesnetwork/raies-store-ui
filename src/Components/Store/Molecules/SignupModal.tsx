@@ -12,6 +12,7 @@ const {hostname}=window.location
 const SignupModal: React.FC = () => {
   const { signupModal ,verifyNumber,createUser} = useMystoreStore((s) => s);
   const [username, setUsername] = useState<string>('');
+  const [password, setPassword] = useState<string>('');
   const [mobileNumber, setMobileNumber] = useState<string>('');
   const [otp, setOtp] = useState<string>('');
   const [isOtpVisible, setIsOtpVisible] = useState<boolean>(false);
@@ -19,6 +20,7 @@ const SignupModal: React.FC = () => {
   
   // Validation states
   const [isUsernameValid, setIsUsernameValid] = useState<boolean>(true);
+  const [isPasswordValid, setIsPasswordValid] = useState<boolean>(true);
   const [isMobileNumberValid, setIsMobileNumberValid] = useState<boolean>(true);
   const [isOtpValid, setIsOTpValid] = useState<boolean>(true);
 
@@ -27,9 +29,10 @@ const SignupModal: React.FC = () => {
 
     const validUsername = username.trim().length >= 3;
     const validMobileNumber = mobileNumber.trim().length >= 7;
-
+    const validPassword=password.trim().length>=3
     setIsUsernameValid(validUsername);
     setIsMobileNumberValid(validMobileNumber);
+    setIsPasswordValid(validPassword)
 
     if (validUsername && validMobileNumber) {
 
@@ -46,9 +49,9 @@ const SignupModal: React.FC = () => {
     
     const validOtp = otp.trim().length === 6;
         setIsOTpValid(validOtp)
-        if (validOtp&&isMobileNumberValid&&isUsernameValid) {
+        if (validOtp&&isMobileNumberValid&&isUsernameValid&&isPasswordValid) {
           setBtnFalse(true)
-          const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp,hostname:subdomain})
+          const data=await createUser({fullName:username,mobileNumber:mobileNumber,otp:otp,hostname:subdomain,password:password})
           setBtnFalse(false)
 
          if (data.error) {
@@ -115,6 +118,23 @@ const SignupModal: React.FC = () => {
           </div>
           </>
           )}
+
+          {/* password */}
+          <div className="login-modal__field">
+            <label>Password:</label>
+            <input
+              type="password"
+              value={password}
+              onChange={(e) => setPassword(e.target.value)}
+              required
+              className={!isUsernameValid ? 'input-error' : ''}
+              placeholder="Enter Password"
+            style={{
+              width:"94%"
+            }}
+            />
+            {!isPasswordValid && <span className="error-message">Password must be at least 3 characters long.</span>}
+          </div>
           {/* OTP Input (shown only after verification) */}
           {isOtpVisible && (
             <div className="login-modal__field">

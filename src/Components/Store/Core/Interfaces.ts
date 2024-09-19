@@ -124,6 +124,7 @@ export interface userStoreCreate {
   mobileNumber: string;
   otp: string;
   hostname: string|null;
+  password:string
 }
 export interface respStoreAddress {
   id: string;
