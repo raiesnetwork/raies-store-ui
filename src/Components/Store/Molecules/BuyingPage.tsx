@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-unused-vars */
 import React, { useEffect, useState } from "react";
 import "../Helpers/scss/BuyPage.scss";
 import Header from "./Header";
@@ -25,7 +26,7 @@ const CheckoutPage: React.FC = () => {
   const location = useLocation();
   const { details } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
-  const [loading, setLoading] = useState<boolean>(false);
+  // const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
 
   const totalPrice = details.reduce(
@@ -47,7 +48,7 @@ const CheckoutPage: React.FC = () => {
     };
     apiHelper();
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [refresh]);
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
     if (selectedAddress.id.trim() && selectedPaymentMethod.trim()) {
@@ -87,7 +88,7 @@ const CheckoutPage: React.FC = () => {
   
  
           try {
-            setLoading(true)
+            // setLoading(true)
       
             const { order } = await createRazorpayOrder(totalPrice);
             
@@ -98,18 +99,21 @@ const CheckoutPage: React.FC = () => {
               name: 'STORE CART PURCHASE',
               description: "Fund for the campaign",
               order_id: order.id,
+              // eslint-disable-next-line @typescript-eslint/no-explicit-any
               handler: async (response: any) => {
                 try {
+                  // eslint-disable-next-line prefer-const
                   let data={response,addressId: selectedAddress.id,
                     paymentMethod: selectedPaymentMethod,
                     productDetails: productDetais,
                     totalAmount: totalPrice}
                   await verifyRazorpayPayment(data);
            
-                  setLoading(false);
+                  // setLoading(false);
                   setRefresh(true);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
                 } catch (error: any) {
-                  setLoading(false);
+                  // setLoading(false);
                  toast.error("payment verification failed")
       
                 }
@@ -124,11 +128,13 @@ const CheckoutPage: React.FC = () => {
               },
               modal: {
                 ondismiss: () => {
-                  setLoading(false); // Optionally stop loading if the user dismisses the payment modal
+                  // setLoading(false); 
+                  // Optionally stop loading if the user dismisses the payment modal
                 },
               }
             };
       
+            // eslint-disable-next-line @typescript-eslint/no-explicit-any
             const rzp1 = new (window as any).Razorpay(options);
             rzp1.open();
           } catch (error) {
