@@ -1,0 +1,43 @@
+.mystore {
+
+    display: flex;
+    flex-direction: column;
+    padding: 19px 14px 16px 8px;
+
+    &__spinner-container {
+        display: flex;
+        justify-content: center;
+        align-items: center;
+        height: 300px;
+    }
+
+    &__category_container {
+        display: flex;
+        justify-content: flex-end;
+        align-items: center;
+    }
+
+    &__empty_msg {
+        display: flex;
+        justify-content: center;
+        margin-top: 32px;
+        font-size: 21px;
+        font-weight: 300;
+        letter-spacing: 1px;
+        color: #2d2d2d;
+        font-family: system-ui;
+    }
+
+    &__select_category {
+        padding: 4px 11px 6px 6px;
+        /* margin: 0px 20px 0px 10px; */
+        font-size: 12px;
+        font-family: system-ui;
+        font-weight: 300;
+        border: none;
+        width: 79px;
+        border-radius: 10px;
+        outline: none;
+
+    }
+}

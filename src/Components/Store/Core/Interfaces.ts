@@ -44,6 +44,7 @@ export interface MystoreStore {
   AllProducts: respProduct[];
   singleProductData: respProduct;
   updateSingleProductData: (data: respProduct) => void;
+  onlinePaymenterror:string;
   AddToCart: (
     id: string,
     count: number,
@@ -84,12 +85,23 @@ export interface MystoreStore {
   setSelectedAddress:(data:respStoreAddress)=>void
   isOpenselectAddressModal:boolean
   setIsOpenSelectAddressModal:()=>void
+  createRazorpayOrder: (amount: number) => Promise<any>;
+  verifyRazorpayPayment: (data:onlinePayment) => Promise<any>;
+
 }
 export interface createOrder{
   productDetails:[]          
     totalAmount:string  
     paymentMethod :string
     addressId  :string
+    
+}
+export interface onlinePayment{
+  productDetails:[]          
+    totalAmount:string  
+    paymentMethod :string
+    addressId  :string,
+    response:any
     
 }
 export interface ApiResponce {

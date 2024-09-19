@@ -1,11 +1,6 @@
 import { createAxiosInstance } from "../../../Utils/Axios";
-import {
-  barterOrder,
-  biddingOrder,
-  createOrder,
-  StoreAddress,
-  userStoreCreate,
-} from "./Interfaces";
+import { barterOrder, biddingOrder, createOrder, onlinePayment, StoreAddress, userStoreCreate } from "./Interfaces";
+
 
 const axiosInstance = createAxiosInstance();
 
@@ -204,6 +199,33 @@ export const createOrderApi = async (datas: createOrder) => {
   try {
     const { data } = await axiosInstance.post(`/storuser/order`, { ...datas });
     return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const createRazorpayOrderApi= async (amount: number): Promise<any> => {
+  try {
+    const response = await axiosInstance.post(`/storuser/online-payment`, { amount });
+    return response.data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
+export const verifyRazorpayPaymentApi= async(datas:onlinePayment ): Promise<any> => {
+  try {
+   const {data}= await axiosInstance.post(`/storuser/verify-payment`, { datas  });
+   return data;
   } catch (error) {
     return {
       error: true,

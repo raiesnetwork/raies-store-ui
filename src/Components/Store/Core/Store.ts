@@ -1,11 +1,12 @@
 import { create } from "zustand";
-import { MystoreStore } from "./Interfaces";
+import { MystoreStore, onlinePayment } from "./Interfaces";
 import {
   AddToCartApi,
   createAddressApi,
   createBarterOrderApi,
   createBiddingOrderApi,
   createOrderApi,
+  createRazorpayOrderApi,
   createStoreUserApi,
   DeleteAddressApi,
   DeleteCartApi,
@@ -18,9 +19,11 @@ import {
   loginWithPasswordApi,
   updateCartApi,
   verifyNumberApi,
+  verifyRazorpayPaymentApi,
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set) => ({
+  onlinePaymenterror:"",
   AllProducts: [],
   getAllProduct: async (hostName) => {
     if (hostName) {
@@ -165,6 +168,25 @@ createBiddingOrder:async(data)=> {
 loginWithPassword:async(number,password,subdomain)=>{
   const data=await loginWithPasswordApi(number,password,subdomain)
   return data
+},
+
+createRazorpayOrder: async (amount: number) => {
+  try {
+    const order = await createRazorpayOrderApi(amount);
+    return order;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    set({ onlinePaymenterror: error.message });
+  }
+},
+
+verifyRazorpayPayment: async (data:onlinePayment) => {
+  try {
+    await verifyRazorpayPaymentApi(data);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  } catch (error: any) {
+    set({ onlinePaymenterror: error.message });
+  }
 },
 }));
 

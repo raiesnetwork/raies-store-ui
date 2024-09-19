@@ -3,7 +3,7 @@ import "../Helpers/scss/CodSuccsPage.scss";
 import Header from "./Header";
 import { Link, useLocation } from "react-router-dom";
 import {  respStoreCart } from "../Core/Interfaces";
-
+import { IoHomeOutline } from "react-icons/io5";
 const SuccessPage: React.FC = () => {
     const location=useLocation()
     const {orderDetails}=location.state||{}
@@ -44,8 +44,8 @@ const SuccessPage: React.FC = () => {
         </div>
         
         <div className="actions">
-          <Link to="/" className="button">Go to Home</Link>
-          <Link to="/orders" className="button">View Your Orders</Link>
+          <Link to="/orders" className="view-order-btn"><span className="view-order">View Orders</span></Link>
+          <Link to="/" className="button"><IoHomeOutline className="pe-3"/></Link>
         </div>
       </div>
     </div>

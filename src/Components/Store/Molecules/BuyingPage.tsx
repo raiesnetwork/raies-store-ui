@@ -10,6 +10,8 @@ import AddressComponent from "./ShowAllAddressModal";
 
 const CheckoutPage: React.FC = () => {
   const {
+    createRazorpayOrder,
+    verifyRazorpayPayment,
     selectedAddress,
     addressData,
     getAddress,
@@ -23,6 +25,8 @@ const CheckoutPage: React.FC = () => {
   const location = useLocation();
   const { details } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
+  const [loading, setLoading] = useState<boolean>(false);
+  const [refresh, setRefresh] = useState<boolean>(false);
 
   const totalPrice = details.reduce(
     (total: number, product: respStoreCart) =>
@@ -64,24 +68,76 @@ const CheckoutPage: React.FC = () => {
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
           totalAmount: totalPrice,
-         
+
         });
         setBtndesable(false);
 
         if (data.error) {
           setBtndesable(false);
-            console.log(data.error);
-            
-        return  toast.error("can't create order");
+
+          return toast.error("cant create order");
         } else {
           setBtndesable(false);
-         await FetchToCart()
+          await FetchToCart()
           navigate("/success", { state: { orderDetails: details } });
         }
       } else {
         setBtndesable(false);
 
-        alert("online");
+  
+ 
+          try {
+            setLoading(true)
+      
+            const { order } = await createRazorpayOrder(totalPrice);
+            
+            const options = {
+              key: "rzp_test_7TGBri3PsjHg77",
+              amount: order.amount,
+              currency: "INR",
+              name: 'STORE CART PURCHASE',
+              description: "Fund for the campaign",
+              order_id: order.id,
+              handler: async (response: any) => {
+                try {
+                  let data={response,addressId: selectedAddress.id,
+                    paymentMethod: selectedPaymentMethod,
+                    productDetails: productDetais,
+                    totalAmount: totalPrice}
+                  await verifyRazorpayPayment(data);
+           
+                  setLoading(false);
+                  setRefresh(true);
+                } catch (error: any) {
+                  setLoading(false);
+                 toast.error("payment verification failed")
+      
+                }
+              },
+              profile: {
+                name: "John Doe",
+                email: "john.doe@example.com",
+                contact: "9999999999",
+              },
+              theme: {
+                color: "#3399cc",
+              },
+              modal: {
+                ondismiss: () => {
+                  setLoading(false); // Optionally stop loading if the user dismisses the payment modal
+                },
+              }
+            };
+      
+            const rzp1 = new (window as any).Razorpay(options);
+            rzp1.open();
+          } catch (error) {
+            console.error("Payment failed:", error);
+            toast.error('Payment failed Please try again.');
+          }
+          await FetchToCart()
+          navigate("/success", { state: { orderDetails: details } });
+      
       }
     } else {
       setBtndesable(false);
@@ -228,7 +284,7 @@ const CheckoutPage: React.FC = () => {
           </>
 
           <button disabled={btnDisable} onClick={handilPlaceOrder}>
-           {btnDisable?"Loading...":" Place Your Order"}
+            {btnDisable ? "Loading..." : " Place Your Order"}
           </button>
         </div>
       </div>
