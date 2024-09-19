@@ -15,6 +15,7 @@ import {
   getUserOrderApi,
   latestProductApi,
   loginUserApi,
+  loginWithPasswordApi,
   updateCartApi,
   verifyNumberApi,
 } from "./StoreApi";
@@ -160,6 +161,10 @@ createBarterOrder:async(data)=> {
 createBiddingOrder:async(data)=> {
   const datas=await createBiddingOrderApi(data)
   return datas
+},
+loginWithPassword:async(number,password,subdomain)=>{
+  const data=await loginWithPasswordApi(number,password,subdomain)
+  return data
 },
 }));
 

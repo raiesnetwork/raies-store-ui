@@ -110,6 +110,19 @@ export const loginUserApi = async (mobileNumber:string,otp:string,subdomain:stri
     };
   }
 };
+export const loginWithPasswordApi = async (mobileNumber:string,password:string,subdomain:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/userstore/auth/passlogin`, { mobileNumber,password,subdomain });
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data:error
+
+    };
+  }
+};
 export const latestProductApi = async (hostName:string|null) => {
   try {
     const { data } = await axiosInstance.get(`/userstore/auth/latest/${hostName}`);
