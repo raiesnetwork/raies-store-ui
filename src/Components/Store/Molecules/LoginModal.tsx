@@ -13,8 +13,14 @@ const { hostname } = window.location;
 // eslint-disable-next-line prefer-const
 let subdomain = getSubdomain(hostname);
 const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
-  const { setUserName, loginUser, verifyNumber, checkLoggedIn, signupModal,loginWithPassword } =
-    useMystoreStore((s) => s);
+  const {
+    setUserName,
+    loginUser,
+    verifyNumber,
+    checkLoggedIn,
+    signupModal,
+    loginWithPassword,
+  } = useMystoreStore((s) => s);
   const [mobileNumber, setMobileNumber] = useState<string>("");
   const [otp, setOtp] = useState<string>("");
   const [otpFieldSet, setOtpField] = useState<boolean>(false);
@@ -61,39 +67,36 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
   };
 
   const [checkBox, setCheckBox] = useState<boolean>(false);
-  const [password, setPassword] = useState<string>('');
-  const [passworderr, setPasswordErr] = useState<string>('');
-  const handilLogin=async(e:React.FormEvent)=>{
-    e.preventDefault()
-    if (mobileNumber.trim() && password.trim()&&  mobileNumber.length > 7) {
+  const [password, setPassword] = useState<string>("");
+  const [passworderr, setPasswordErr] = useState<string>("");
+  const handilLogin = async (e: React.FormEvent) => {
+    e.preventDefault();
+    if (mobileNumber.trim() && password.trim() && mobileNumber.length > 7) {
       const datas = await loginWithPassword(mobileNumber, password, subdomain);
-      
 
       if (datas.error) {
         return toast.error("Enter registred mobile number and Password");
       } else {
-        
-          setUserName(datas?.data?.username);
-          checkLoggedIn(true);
-          localStorage.setItem("suname", datas?.data?.username);
-          localStorage.setItem(
-            "kt-auth-react-st",
-            JSON.stringify({ api_token: datas?.data?.token })
-          );
-          closeModal();
-          window.location.reload();
-        
+        checkLoggedIn(true);
+        setUserName(datas?.data?.username);
+        localStorage.setItem("suname", datas?.data?.username);
+        localStorage.setItem(
+          "kt-auth-react-st",
+          JSON.stringify({ api_token: datas?.data?.token })
+        );
+        closeModal();
+        window.location.reload();
       }
-    }else{
-      setPasswordErr('Enter Valid Mob number and Password')
+    } else {
+      setPasswordErr("Enter Valid Mob number and Password");
     }
-  }
+  };
   return (
     <>
       <div className="login-modal-overlay">
         <div className="login-modal">
           <h2>Login</h2>
-          <form onSubmit={checkBox ?handleSubmit:handilLogin}>
+          <form onSubmit={checkBox ? handleSubmit : handilLogin}>
             {!otpFieldSet ? (
               <>
                 <div className="login-modal__field">
@@ -115,16 +118,15 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
                   <div className="login-modal__field">
                     <label>Password:</label>
                     <input
-                      type="text"
+                      type="password"
                       value={password}
                       onChange={(e) => setPassword(e.target.value)}
                       required
                       style={{
                         width: "93%",
                       }}
-                     
                     />
-                    <p style={{color:"red"}}>{passworderr}</p>
+                    <p style={{ color: "red" }}>{passworderr}</p>
                   </div>
                 )}
                 {/* check box */}
@@ -167,9 +169,9 @@ const LoginModal: React.FC<LoginModalProps> = ({ closeModal }) => {
               </div>
             )}
             <div className="login-modal__actions">
-              <button type="submit">{
-              checkBox?
-              otpFieldSet ? "Submit" : "Verify":"Login"}</button>
+              <button type="submit">
+                {checkBox ? (otpFieldSet ? "Submit" : "Verify") : "Login"}
+              </button>
               <button
                 type="button"
                 style={{ color: "black" }}

@@ -39,7 +39,7 @@ const [loaded,setLoaded]=useState<boolean>(false)
       setUserName(name);
     }
       // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
+  }, [logedIn]);
 
   useEffect(() => {
     const fetchProducts = async () => {
@@ -55,7 +55,7 @@ const [loaded,setLoaded]=useState<boolean>(false)
       fetchProducts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [logedIn, subdomain]);
+  }, [subdomain]);
 
   useEffect(() => {
     // Filter the products based on the selected filter
