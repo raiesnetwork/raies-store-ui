@@ -5,10 +5,12 @@ import ProductViewCard from "./Molecules/ProductCard";
 import Header from "./Molecules/Header";
 import "react-toastify/dist/ReactToastify.css";
 import { getSubdomain } from "../../Utils/Subdomain";
+import ClipLoader from "react-spinners/ClipLoader"; // Spinner import
+import "./Helpers/scss/mystore.scss"; // Import your custom styles
 
 const { hostname } = window.location;
-// eslint-disable-next-line prefer-const
-let subdomain=getSubdomain(hostname)
+let subdomain = getSubdomain(hostname);
+
 export const MyStore: React.FC = () => {
   const {
     FetchToCart,
@@ -20,7 +22,7 @@ export const MyStore: React.FC = () => {
     latestProduct,
     setUserName,
   } = useMystoreStore((state) => state);
-  
+
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
 
@@ -29,13 +31,11 @@ export const MyStore: React.FC = () => {
       setData(AllProducts);
       setHomeLoader(false);
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AllProducts]);
 
   useEffect(() => {
     const name = localStorage.getItem("suname");
     setUserName(name);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
@@ -53,11 +53,9 @@ export const MyStore: React.FC = () => {
     if (subdomain) {
       fetchProducts();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logedIn, subdomain]);
 
   useEffect(() => {
-    // Filter the products based on the selected filter
     let filteredData = AllProducts;
 
     if (filteredData?.length > 0) {
@@ -86,27 +84,19 @@ export const MyStore: React.FC = () => {
     <>
       <Header />
       {homeLoader ? (
-        <div style={{ textAlign: "center" }}>Loading...</div>
+        <div className="mystore__spinner-container">
+          <ClipLoader size={50} color={"#123abc"} loading={homeLoader} />
+        </div>
       ) : (
         <>
-          <div
-            style={{
-              padding: "15px",
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "flex-end",
-            }}
+        <div className="mystore">
+        <div className="mystore__category_container"
           >
             <select
               value={filter}
               onChange={(e) => setFilter(e.target.value)}
-              style={{
-                padding: "8px",
-                borderRadius: "4px",
-                border: "0px solid #ccc",
-                fontSize: "16px",
-                cursor: "pointer",
-              }}
+              className="mystore__select_category"
+          
             >
               <option value="All">All</option>
               <option value="free">Free</option>
@@ -116,23 +106,18 @@ export const MyStore: React.FC = () => {
             </select>
           </div>
 
-          <div
-            style={{
-              display: "flex",
-              alignItems: "center",
-              justifyContent: "center",
-              flexWrap: "wrap",
-              gap: "10px",
-            }}
+          <div className="myStore__banner"
           >
             {data?.length > 0 ? (
               data?.map((val) =>
                 !val.flag ? <ProductViewCard key={val.id} data={val} /> : null
               )
             ) : (
-              <div style={{ fontSize: "50px" }}>(Store is empty)</div>
+              <div className="mystore__empty_msg">Store is empty</div>
             )}
           </div>
+        </div>
+     
         </>
       )}
     </>
