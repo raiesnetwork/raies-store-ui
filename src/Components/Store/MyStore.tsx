@@ -23,7 +23,7 @@ export const MyStore: React.FC = () => {
   
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
-
+const [loaded,setLoaded]=useState<boolean>(false)
   useEffect(() => {
     if (AllProducts.length > 0) {
       setData(AllProducts);
@@ -33,13 +33,17 @@ export const MyStore: React.FC = () => {
   }, [AllProducts]);
 
   useEffect(() => {
-    const name = localStorage.getItem("suname");
-    setUserName(name);
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    if (logedIn) {
+      
+      const name = localStorage.getItem("suname");
+      setUserName(name);
+    }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoaded(true)
       setHomeLoader(true);
         FetchToCart();
         await latestProduct(subdomain);
@@ -47,7 +51,7 @@ export const MyStore: React.FC = () => {
       setHomeLoader(false);
     
 
-    if (subdomain) {
+    if (subdomain&&loaded===false) {
       fetchProducts();
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps

@@ -33,6 +33,8 @@ const [disable,setDisable]=useState<boolean>(false)
   return (
     <>
     <Header/>
+    {singleProductData.id?
+    <>
       <div style={{
         marginTop:"20px"
       }} className="single-product-container">
@@ -194,6 +196,10 @@ const [disable,setDisable]=useState<boolean>(false)
       {isOpenBarteModal&&<BarterModal/>}
       {isOpenBiddingModal&&<BiddingModal/>}
       <ToastContainer/>
+    </>
+  :<>
+  <div style={{textAlign:"center"}}>Please select any product...</div>
+  </>}
     </>
   );
 };
