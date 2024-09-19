@@ -7,6 +7,8 @@ import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
 import SignupModal from "./SignupModal";
 import { Link } from "react-router-dom";
+import { IoIosNotificationsOutline } from "react-icons/io";
+import { MdNotificationsActive } from "react-icons/md"
 
 const Header: React.FC = () => {
   const {userName,logedIn,isOpenSignupModal,cartData}=useMystoreStore((s)=>s)
@@ -45,6 +47,8 @@ const Header: React.FC = () => {
       <div className="header__right">
         {logedIn===true ? (
           <>
+          <IoIosNotificationsOutline size={28} color="black" />
+         < MdNotificationsActive size={28} color="red" />
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
