@@ -6,9 +6,10 @@ import BiddingModal from "./BiddingModal";
 import Header from "./Header";
 import { toast,ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
+import AddressModal from "./BuyAddressModal";
 
 const SingleProductView: React.FC = () => {
-  const {logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
+  const {OpenAddressModal,isOpenAddressModal,logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
     (s) => s
   );
   const [imageView, setImageView] = useState<string>(
@@ -29,6 +30,10 @@ const [disable,setDisable]=useState<boolean>(false)
     FetchToCart()
     toast.success("Item added Successfully")
    }
+  }
+  const handleBarterAddressModalClose=()=>{
+    OpenAddressModal()
+    setOpenBarterModal()
   }
   return (
     <>
@@ -147,7 +152,7 @@ const [disable,setDisable]=useState<boolean>(false)
                   item left
                 </p>
               )}
-              {logedIn&&
+              {!logedIn&&
               <div className="purchase-btns">
                 {singleProductData.priceOption === "barter" && (
                   <>
@@ -193,8 +198,11 @@ const [disable,setDisable]=useState<boolean>(false)
           <div>Related Products</div>
         </div>
       </div>
+      {isOpenAddressModal&&<AddressModal closeModal={handleBarterAddressModalClose} />}
+               
       {isOpenBarteModal&&<BarterModal/>}
       {isOpenBiddingModal&&<BiddingModal/>}
+      
       <ToastContainer/>
     </>
   :<>

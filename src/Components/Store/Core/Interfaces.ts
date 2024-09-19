@@ -85,8 +85,12 @@ export interface MystoreStore {
   setSelectedAddress:(data:respStoreAddress)=>void
   isOpenselectAddressModal:boolean
   setIsOpenSelectAddressModal:()=>void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createRazorpayOrder: (amount: number) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   verifyRazorpayPayment: (data:onlinePayment) => Promise<any>;
+  isOpenAddressModal:boolean,
+OpenAddressModal:()=>void
 
 }
 export interface createOrder{
@@ -101,6 +105,7 @@ export interface onlinePayment{
     totalAmount:string  
     paymentMethod :string
     addressId  :string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     response:any
     
 }

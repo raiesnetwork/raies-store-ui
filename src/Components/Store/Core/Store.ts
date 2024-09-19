@@ -188,6 +188,10 @@ verifyRazorpayPayment: async (data:onlinePayment) => {
     set({ onlinePaymenterror: error.message });
   }
 },
+isOpenAddressModal:false,
+OpenAddressModal:()=>{
+  set((s)=>({isOpenAddressModal:!s.isOpenAddressModal}))
+}
 }));
 
 export default useMystoreStore;

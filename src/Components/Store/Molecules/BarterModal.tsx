@@ -4,7 +4,7 @@ import useMystoreStore from "../Core/Store";
 // import { KTSVG } from "../../../../_metronic/helpers";
 
 const BarterModal: React.FC = () => {
-  const { createBarterOrder,singleProductData,setOpenBarterModal, isOpenBarteModal } = useMystoreStore((state) => state);
+  const { selectedAddress,getAddress,addressData,OpenAddressModal,setIsOpenSelectAddressModal,createBarterOrder,singleProductData,setOpenBarterModal, isOpenBarteModal } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
     fullName: "",
@@ -118,10 +118,15 @@ const BarterModal: React.FC = () => {
       setImageErrors(null);
     }
   };
-
+// ===================================
+const handlenewAddress=()=>{
+  OpenAddressModal()
+  setOpenBarterModal()
+}
   return (
     <>
-    <div className={`modal ${isOpenBarteModal ? "d-block show" : "d-none fade"}`} id="kt_modal_barter_form" tabIndex={-1}>
+    <div  className={`modal ${isOpenBarteModal ? "d-block show" : "d-none fade"}`}
+     id="kt_modal_barter_form" tabIndex={-1}>
       <div className="modal-dialog modal-dialog-centered modal-lg">
         <div className="modal-content">
           <div className="modal-header d-flex justify-content-between">
@@ -133,74 +138,38 @@ const BarterModal: React.FC = () => {
 
           <div className="modal-body">
             <form onSubmit={handleSubmit}>
-              {/* Full Name */}
-              <div className="form-group">
-                <label htmlFor="fullName">Full Name</label>
-                <input
-                  type="text"
-                  id="fullName"
-                  name="fullName"
-                  value={formData.fullName}
-                  onChange={handleChange}
-                  className={`form-control ${errors.fullName ? "is-invalid" : ""}`}
-                />
-                {errors.fullName && <div className="invalid-feedback">{errors.fullName}</div>}
-              </div>
-
-              {/* Mobile Number */}
-              <div className="form-group">
-                <label htmlFor="mobileNumber">Mobile Number</label>
-                <input
-                  type="number"
-                  id="mobileNumber"
-                  name="mobileNumber"
-                  value={formData.mobileNumber}
-                  onChange={handleChange}
-                  className={`form-control ${errors.mobileNumber ? "is-invalid" : ""}`}
-                />
-                {errors.mobileNumber && <div className="invalid-feedback">{errors.mobileNumber}</div>}
-              </div>
-
-              {/* Full Address */}
-              <div className="form-group">
-                <label htmlFor="fullAddress">Full Address</label>
-                <textarea
-                  id="fullAddress"
-                  name="fullAddress"
-                  value={formData.fullAddress}
-                  onChange={handleChange}
-                  className={`form-control ${errors.fullAddress ? "is-invalid" : ""}`}
-                />
-                {errors.fullAddress && <div className="invalid-feedback">{errors.fullAddress}</div>}
-              </div>
-
-              {/* Landmark */}
-              <div className="form-group">
-                <label htmlFor="landmark">Landmark</label>
-                <input
-                  type="text"
-                  id="landmark"
-                  name="landmark"
-                  value={formData.landmark}
-                  onChange={handleChange}
-                  className="form-control"
-                />
-              </div>
-
-              {/* Pincode */}
-              <div className="form-group">
-                <label htmlFor="pincode">Pincode</label>
-                <input
-                  type="number"
-                  id="pincode"
-                  name="pincode"
-                  value={formData.pincode}
-                  onChange={handleChange}
-                  maxLength={6}
-                  className={`form-control ${errors.pincode ? "is-invalid" : ""}`}
-                />
-                {errors.pincode && <div className="invalid-feedback">{errors.pincode}</div>}
-              </div>
+            <div className="section address-section">
+          <div className="section-header">1. Delivery Address</div>
+          <div className="address-details">
+            {selectedAddress.id && (
+              <>
+                <div>
+                  <p>
+                    <strong>{selectedAddress.fullName}</strong>
+                  </p>
+                  <p>{selectedAddress.fullAddress}</p>
+                  <p>
+                    {selectedAddress.landmark},{selectedAddress.pincode}
+                  </p>
+                  <p>{selectedAddress.mobileNumber}</p>
+                </div>
+                <button onClick={() => setIsOpenSelectAddressModal()}>
+                  Change
+                </button>
+              </>
+             )} 
+            {!addressData?.length && !selectedAddress.id && (
+              <button onClick={handlenewAddress}>Add new Address</button>
+             )} 
+            {(addressData?.length && !selectedAddress.id )&& (
+              <button 
+              onClick={setIsOpenSelectAddressModal}
+              >
+                Select Address
+              </button>
+            )}
+          </div>
+        </div>
 
               {/* Product Image */}
               <div className="form-group">
@@ -230,6 +199,7 @@ const BarterModal: React.FC = () => {
         </div>
       </div>
     </div>
+  
             <ToastContainer />
     </>
   );
