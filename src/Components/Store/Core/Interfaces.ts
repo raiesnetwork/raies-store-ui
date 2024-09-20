@@ -27,11 +27,7 @@ export interface barterOrder{
     productImage: string
     productId:string
 }export interface biddingOrder{
-  fullName: string
-    mobileNumber: string
-    fullAddress: string
-    landmark: string
-    pincode: string
+  addressId:string
     biddingAmount: string
     productId:string
 }
@@ -88,7 +84,9 @@ export interface MystoreStore {
   isOpenAddressModal:boolean,
 OpenAddressModal:()=>void
 addressSupparator:boolean,
+addressSupparatorBarter:boolean,
 setAddressSuparator:(s:boolean)=>void
+setaddressSupparatorBarter:(s:boolean)=>void
 
 }
 export interface createOrder{

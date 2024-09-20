@@ -10,33 +10,34 @@ const BiddingModal: React.FC = () => {
     createBiddingOrder,
     setOpenBiddingModal,
     isOpenBiddingModal,
+    selectedAddress,
+    addressData,
+    getAddress,
+    OpenAddressModal,
+    setIsOpenSelectAddressModal,
+    setAddressSuparator
   } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    mobileNumber: "",
-    fullAddress: "",
-    landmark: "",
-    pincode: "",
+    addressId: selectedAddress.id,
     biddingAmount: "",
     productId: singleProductData.id,
   });
-
+  useEffect(() => {
+    getAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [btnDisable, setDisable] = useState<boolean>(false);
 
   useEffect(() => {
     setFormData({
-      fullName: "",
-      mobileNumber: "",
-      fullAddress: "",
-      landmark: "",
-      pincode: "",
+      addressId: selectedAddress.id,
       biddingAmount: "",
       productId: singleProductData.id,
     });
     setErrors({});
-  }, [isOpenBiddingModal, singleProductData]);
+  }, [isOpenBiddingModal, singleProductData,selectedAddress]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -57,16 +58,16 @@ const BiddingModal: React.FC = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.fullName.trim())
-      newErrors.fullName = "Full name is required.";
-    if (!formData.mobileNumber.trim() || formData?.mobileNumber?.length <= 7)
-      newErrors.mobileNumber = "Valid mobile number is required.";
-    if (!formData.fullAddress.trim())
-      newErrors.fullAddress = "Full address is required.";
-    if (!formData.pincode.trim() || !/^\d{6}$/.test(formData.pincode))
-      newErrors.pincode = "Valid 6-digit pincode is required.";
-    if (!formData.biddingAmount.trim())
+    
+    if (!formData.addressId.trim())
+      newErrors.addressId = "Address is Required.";
+    const bidAmd=Number(formData.biddingAmount)
+    if (!formData.biddingAmount.trim()){
+
       newErrors.biddingAmount = "Bid Amount is required.";
+    }else if (bidAmd<singleProductData.minBidPrice||bidAmd>singleProductData.maxBidPrice) {
+      newErrors.biddingAmount = `Bid amount must in bitween ${singleProductData.minBidPrice}-${singleProductData.maxBidPrice}`;
+    }
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -80,9 +81,13 @@ const BiddingModal: React.FC = () => {
         const data = await createBiddingOrder(formData);
         if (data.error) {
           setDisable(false);
-          toast.error("Something wrong try again later");
+         return toast.error("Something wrong try again later");
         } else {
-          toast.success("order Created successfully");
+          if (data.data==="exceed") {
+            return toast.error("Item limit exceed");
+
+          }
+         toast.success("order Created successfully");
           setOpenBiddingModal();
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -92,7 +97,15 @@ const BiddingModal: React.FC = () => {
       }
     }
   };
-
+// ===================================
+const handlenewAddress = () => {
+  OpenAddressModal();
+  setOpenBiddingModal();
+};
+const handleSelectAddressModalOpen = () => {
+  setIsOpenSelectAddressModal();
+  setOpenBiddingModal();
+};
   return (
     <>
       <div
@@ -116,96 +129,65 @@ const BiddingModal: React.FC = () => {
 
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
-                {/* Full Name */}
-                <div className="form-group">
-                  <label htmlFor="fullName">Full Name</label>
-                  <input
-                    type="text"
-                    id="fullName"
-                    name="fullName"
-                    value={formData.fullName}
-                    onChange={handleChange}
-                    className={`form-control ${
-                      errors.fullName ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.fullName && (
-                    <div className="invalid-feedback">{errors.fullName}</div>
-                  )}
-                </div>
+               
+                {/* Address Section */}
 
-                {/* Mobile Number */}
-                <div className="form-group">
-                  <label htmlFor="mobileNumber">Mobile Number</label>
-                  <input
-                    type="number"
-                    id="mobileNumber"
-                    name="mobileNumber"
-                    value={formData.mobileNumber}
-                    onChange={handleChange}
-                    className={`form-control ${
-                      errors.mobileNumber ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.mobileNumber && (
-                    <div className="invalid-feedback">
-                      {errors.mobileNumber}
+                <div className="section address-section">
+                  <div className="section-header">Select Delivery Address</div>
+                  <div className="address-details">
+                    {selectedAddress.id && (
+                      <>
+                        <div>
+                          <p>
+                            <strong>{selectedAddress.fullName}</strong>
+                          </p>
+                          <p>{selectedAddress.fullAddress}</p>
+                          <p>
+                            {selectedAddress.landmark},{selectedAddress.pincode}
+                          </p>
+                          <p>{selectedAddress.mobileNumber}</p>
+                        </div>
+                        <button
+                          className="btn btn-primary"
+                          onClick={handleSelectAddressModalOpen}
+                        >
+                          Change
+                        </button>
+                      </>
+                    )}
+                    {!addressData?.length && !selectedAddress.id && (
+                      <button
+                        className="btn btn-primary"
+                        onClick={handlenewAddress}
+                      >
+                        Add new Address
+                      </button>
+                    )}
+                    {addressData?.length > 0 && !selectedAddress.id && (
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleSelectAddressModalOpen}
+                      >
+                        Select Address
+                      </button>
+                    )}
+                  </div>
+                  {errors.addressId && (
+                    <div style={{ color: "red" }} className="invalid-feedback">
+                      {errors.addressId}
                     </div>
                   )}
                 </div>
 
-                {/* Full Address */}
-                <div className="form-group">
-                  <label htmlFor="fullAddress">Full Address</label>
-                  <textarea
-                    id="fullAddress"
-                    name="fullAddress"
-                    value={formData.fullAddress}
-                    onChange={handleChange}
-                    className={`form-control ${
-                      errors.fullAddress ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.fullAddress && (
-                    <div className="invalid-feedback">{errors.fullAddress}</div>
-                  )}
-                </div>
+               
 
-                {/* Landmark */}
-                <div className="form-group">
-                  <label htmlFor="landmark">Landmark</label>
-                  <input
-                    type="text"
-                    id="landmark"
-                    name="landmark"
-                    value={formData.landmark}
-                    onChange={handleChange}
-                    className="form-control"
-                  />
-                </div>
-
-                {/* Pincode */}
-                <div className="form-group">
-                  <label htmlFor="pincode">Pincode</label>
-                  <input
-                    type="number"
-                    id="pincode"
-                    name="pincode"
-                    value={formData.pincode}
-                    onChange={handleChange}
-                    maxLength={6}
-                    className={`form-control ${
-                      errors.pincode ? "is-invalid" : ""
-                    }`}
-                  />
-                  {errors.pincode && (
-                    <div className="invalid-feedback">{errors.pincode}</div>
-                  )}
-                </div>
-
+               
                 {/* Product biddingAmount */}
                 <div className="form-group">
-                  <label htmlFor="biddingAmount">Bid Amount</label>
+                  <label htmlFor="biddingAmount">Bid Amount
+                  (Min:{singleProductData.minBidPrice}-Max:{singleProductData.maxBidPrice})
+
+                  </label>
                   <input
                     type="number"
                     id="biddingAmount"
@@ -230,7 +212,12 @@ const BiddingModal: React.FC = () => {
                 >
                   Submit
                 </button>
-                <button className="btn" onClick={setOpenBiddingModal}>
+                <button className="btn" 
+                onClick={() => {
+                  setOpenBiddingModal();
+                  setAddressSuparator(false);
+                }}
+                >
                   Close
                 </button>
               </form>

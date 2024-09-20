@@ -10,7 +10,7 @@ import AddressModal from "./BuyAddressModal";
 import AddressComponentModal from "./ShowAllAddressModal";
 
 const SingleProductView: React.FC = () => {
-  const {setAddressSuparator,isOpenselectAddressModal,OpenAddressModal,isOpenAddressModal,logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
+  const {addressSupparator,addressSupparatorBarter,setaddressSupparatorBarter,setAddressSuparator,isOpenselectAddressModal,OpenAddressModal,isOpenAddressModal,logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
     (s) => s
   );
   const [imageView, setImageView] = useState<string>(
@@ -35,6 +35,10 @@ const [disable,setDisable]=useState<boolean>(false)
   const handleBarterAddressModalClose=()=>{
     OpenAddressModal()
     setOpenBarterModal()
+  }
+  const handleBidAddressModalClose=()=>{
+    OpenAddressModal()
+    setOpenBiddingModal()
   }
   
   return (
@@ -161,7 +165,7 @@ const [disable,setDisable]=useState<boolean>(false)
                     <button 
                     onClick={()=>{
                       setOpenBarterModal()
-                      setAddressSuparator(true)
+                      setaddressSupparatorBarter(true)
                     }}>Exchange</button>
                   </>
                 )}
@@ -190,7 +194,10 @@ const [disable,setDisable]=useState<boolean>(false)
                 {singleProductData.priceOption === "bidding" && (
                   <>
                     <button 
-                    onClick={setOpenBiddingModal}
+                    onClick={()=>{
+                      setOpenBiddingModal()
+                      setAddressSuparator(true)
+                    }}
                     >Start Auction</button>
                   </>
                 )}
@@ -203,7 +210,7 @@ const [disable,setDisable]=useState<boolean>(false)
           <div>Related Products</div>
         </div>
       </div>
-      {isOpenAddressModal&&<AddressModal closeModal={handleBarterAddressModalClose} />}
+      {isOpenAddressModal&&<AddressModal closeModal={addressSupparatorBarter ?handleBarterAddressModalClose:addressSupparator? handleBidAddressModalClose:()=>{} } />}
       {isOpenselectAddressModal && (
         <AddressComponentModal
         

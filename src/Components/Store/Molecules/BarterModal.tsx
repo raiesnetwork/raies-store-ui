@@ -5,9 +5,9 @@ import { fileToBase64 } from "../../../Utils/Base64";
 
 const BarterModal: React.FC = () => {
   const {
-    setAddressSuparator,
-    selectedAddress
-    ,getAddress,
+    setaddressSupparatorBarter,
+    selectedAddress,
+    getAddress,
     addressData,
     OpenAddressModal,
     setIsOpenSelectAddressModal,
@@ -23,10 +23,10 @@ const BarterModal: React.FC = () => {
     productId: singleProductData.id,
     // quantity:"1"
   });
-useEffect(()=>{
-  getAddress()
-// eslint-disable-next-line react-hooks/exhaustive-deps
-},[])
+  useEffect(() => {
+    getAddress();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [btnDisable, setDisable] = useState<boolean>(false);
   const [imageErrors, setImageErrors] = useState<string | null>(null);
@@ -58,7 +58,6 @@ useEffect(()=>{
     // } else if (qnty > singleProductData.productCount) {
     //   newErrors.quantity = "Quantity limit exceeded.";
     // }
-    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -70,22 +69,18 @@ useEffect(()=>{
     if (validateForm()) {
       try {
         const data = await createBarterOrder(formData);
-        
+
         if (data.error) {
           setDisable(false);
           return toast.error("order can't creted");
         } else {
-          if (data.data==="exceed") {
+          if (data.data === "exceed") {
             return toast.error("Product limit exceed");
-            
-          }else{
-
+          } else {
             toast.success("order Created successfully");
             ProductImageRef.current.value = "";
             setOpenBarterModal();
-
           }
-
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
@@ -230,8 +225,7 @@ useEffect(()=>{
                   )}
                 </div>
 
-
-                  {/* Quantity */}
+                {/* Quantity */}
                 {/* <div className="form-group">
                   <label htmlFor="pincode">Quantity (Max:{singleProductData.productCount})</label>
                   <input
@@ -260,7 +254,7 @@ useEffect(()=>{
                   className="btn"
                   onClick={() => {
                     setOpenBarterModal();
-                    setAddressSuparator(false);
+                    setaddressSupparatorBarter(false);
                   }}
                 >
                   Close

@@ -19,12 +19,15 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
     addressData,
     setSelectedAddress,
     setIsOpenSelectAddressModal,
+    addressSupparatorBarter,setOpenBiddingModal
   } = useMystoreStore((s) => s);
 
   const handleSelectAddress = (address: respStoreAddress) => {
     setSelectedAddress(address);
     setIsOpenSelectAddressModal();
     if (addressSupparator) {
+      setOpenBiddingModal();
+    }if (addressSupparatorBarter) {
       setOpenBarterModal();
     }
   };
@@ -46,6 +49,8 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
   const handleBarterSelectAddressModalClose = () => {
     setIsOpenSelectAddressModal();
     if (addressSupparator) {
+      setOpenBiddingModal();
+    }if (addressSupparatorBarter) {
       setOpenBarterModal();
     }
   };

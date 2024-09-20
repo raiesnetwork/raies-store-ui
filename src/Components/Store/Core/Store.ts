@@ -192,10 +192,15 @@ isOpenAddressModal:false,
 OpenAddressModal:()=>{
   set((s)=>({isOpenAddressModal:!s.isOpenAddressModal}))
 },
+addressSupparatorBarter:false
+,
 addressSupparator:false,
 setAddressSuparator:(data)=>{
   set(()=>({addressSupparator:data}))
-}
+},
+setaddressSupparatorBarter:(data)=>{
+  set(()=>({addressSupparatorBarter:data}))
+},
 }));
 
 export default useMystoreStore;
