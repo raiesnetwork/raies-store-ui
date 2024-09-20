@@ -23,11 +23,7 @@ export interface respProduct {
   barterProductName: string;
 }
 export interface barterOrder{
-  fullName: string
-    mobileNumber: string
-    fullAddress: string
-    landmark: string
-    pincode: string
+  addressId:string
     productImage: string
     productId:string
 }export interface biddingOrder{
@@ -91,6 +87,8 @@ export interface MystoreStore {
   verifyRazorpayPayment: (data:onlinePayment) => Promise<any>;
   isOpenAddressModal:boolean,
 OpenAddressModal:()=>void
+addressSupparator:boolean,
+setAddressSuparator:(s:boolean)=>void
 
 }
 export interface createOrder{

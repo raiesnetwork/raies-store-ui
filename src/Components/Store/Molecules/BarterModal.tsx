@@ -1,63 +1,50 @@
 import React, { useState, useEffect, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
-// import { KTSVG } from "../../../../_metronic/helpers";
+import { fileToBase64 } from "../../../Utils/Base64";
 
 const BarterModal: React.FC = () => {
-  const { selectedAddress,getAddress,addressData,OpenAddressModal,setIsOpenSelectAddressModal,createBarterOrder,singleProductData,setOpenBarterModal, isOpenBarteModal } = useMystoreStore((state) => state);
+  const {
+    setAddressSuparator,
+    selectedAddress,
+    // ,getAddress
+    addressData,
+    OpenAddressModal,
+    setIsOpenSelectAddressModal,
+    createBarterOrder,
+    singleProductData,
+    setOpenBarterModal,
+    isOpenBarteModal,
+  } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
-    fullName: "",
-    mobileNumber: "",
-    fullAddress: "",
-    landmark: "",
-    pincode: "",
+    addressId: selectedAddress.id,
     productImage: "",
-    productId:singleProductData.id
+    productId: singleProductData.id,
   });
 
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [btnDisable, setDisable] = useState<boolean>(false);
   const [imageErrors, setImageErrors] = useState<string | null>(null);
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, prefer-const
-  let ProductImageRef:any = useRef(null);
+  let ProductImageRef: any = useRef(null);
 
   useEffect(() => {
     setFormData({
-      fullName: "",
-      mobileNumber: "",
-      fullAddress: "",
-      landmark: "",
-      pincode: "",
+      addressId: selectedAddress.id,
       productImage: "",
-      productId:singleProductData.id
+      productId: singleProductData.id,
     });
     setErrors({});
-  }, [isOpenBarteModal,singleProductData]);
-
-  const handleChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>) => {
-    setDisable(false);
-    const { name, value } = e.target;
-    setFormData({
-      ...formData,
-      [name]: value,
-    });
-
-    setErrors({
-      ...errors,
-      [name]: "",
-    });
-  };
+  }, [isOpenBarteModal, singleProductData, selectedAddress]);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    if (!formData.fullName.trim()) newErrors.fullName = "Full name is required.";
-    if (!formData.mobileNumber.trim() || formData.mobileNumber.length<=7)
-      newErrors.mobileNumber = "Valid mobile number is required.";
-    if (!formData.fullAddress.trim()) newErrors.fullAddress = "Full address is required.";
-    if (!formData.pincode.trim() || !/^\d{6}$/.test(formData.pincode)) newErrors.pincode = "Valid 6-digit pincode is required.";
-    if (!formData.productImage.trim()) newErrors.productImage = "Product image is required.";
+    if (!formData.addressId.trim())
+      newErrors.addressId = "Address is Required.";
+    if (!formData.productImage.trim())
+      newErrors.productImage = "Product image is required.";
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -69,32 +56,22 @@ const BarterModal: React.FC = () => {
     if (validateForm()) {
       try {
         const data = await createBarterOrder(formData);
-        
+
         if (data.error) {
           setDisable(false);
-         return toast.error("order can't creted");
+          return toast.error("order can't creted");
         } else {
           toast.success("order Created successfully");
           setOpenBarterModal();
-             
 
           ProductImageRef.current.value = "";
         }
-      // eslint-disable-next-line @typescript-eslint/no-unused-vars
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         setDisable(false);
         toast.error("Failed to submit form.");
       }
     }
-  };
-
-  const fileToBase64 = (file: File): Promise<string> => {
-    return new Promise((resolve, reject) => {
-      const reader = new FileReader();
-      reader.readAsDataURL(file);
-      reader.onload = () => resolve(reader.result as string);
-      reader.onerror = (error) => reject(error);
-    });
   };
 
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -118,89 +95,129 @@ const BarterModal: React.FC = () => {
       setImageErrors(null);
     }
   };
-// ===================================
-const handlenewAddress=()=>{
-  OpenAddressModal()
-  setOpenBarterModal()
-}
+  // ===================================
+  const handlenewAddress = () => {
+    OpenAddressModal();
+    setOpenBarterModal();
+  };
+  const handleSelectAddressModalOpen = () => {
+    setIsOpenSelectAddressModal();
+    setOpenBarterModal();
+  };
   return (
     <>
-    <div  className={`modal ${isOpenBarteModal ? "d-block show" : "d-none fade"}`}
-     id="kt_modal_barter_form" tabIndex={-1}>
-      <div className="modal-dialog modal-dialog-centered modal-lg">
-        <div className="modal-content">
-          <div className="modal-header d-flex justify-content-between">
-            <h5 className="modal-title">Address Form</h5>
-            <div className="btn btn-icon btn-sm btn-active-light-primary ms-2" onClick={() => setOpenBarterModal()}>
-              {/* <KTSVG path="media/icons/duotune/arrows/arr061.svg" className="svg-icon svg-icon-2x" /> */}
-            </div>
-          </div>
-
-          <div className="modal-body">
-            <form onSubmit={handleSubmit}>
-            <div className="section address-section">
-          <div className="section-header">1. Delivery Address</div>
-          <div className="address-details">
-            {selectedAddress.id && (
-              <>
-                <div>
-                  <p>
-                    <strong>{selectedAddress.fullName}</strong>
-                  </p>
-                  <p>{selectedAddress.fullAddress}</p>
-                  <p>
-                    {selectedAddress.landmark},{selectedAddress.pincode}
-                  </p>
-                  <p>{selectedAddress.mobileNumber}</p>
-                </div>
-                <button onClick={() => setIsOpenSelectAddressModal()}>
-                  Change
-                </button>
-              </>
-             )} 
-            {!addressData?.length && !selectedAddress.id && (
-              <button onClick={handlenewAddress}>Add new Address</button>
-             )} 
-            {(addressData?.length && !selectedAddress.id )&& (
-              <button 
-              onClick={setIsOpenSelectAddressModal}
+      <div
+        className={`modal ${isOpenBarteModal ? "d-block show" : "d-none fade"}`}
+        id="kt_modal_barter_form"
+        tabIndex={-1}
+      >
+        <div className="modal-dialog modal-dialog-centered modal-lg">
+          <div className="modal-content">
+            <div className="modal-header d-flex justify-content-between">
+              <h5 className="modal-title">Address Form</h5>
+              <div
+                className="btn btn-icon btn-sm btn-active-light-primary ms-2"
+                onClick={() => setOpenBarterModal()}
               >
-                Select Address
-              </button>
-            )}
-          </div>
-        </div>
-
-              {/* Product Image */}
-              <div className="form-group">
-                <label htmlFor="productImage">Product Image</label>
-                <input
-                  type="file"
-                  id="productImage"
-                  name="productImage"
-                  ref={ProductImageRef}
-                  onChange={handleImageUpload}
-                  className={`form-control ${errors.productImage ? "is-invalid" : ""}`}
-                />
-                {errors.productImage && <div className="invalid-feedback">{errors.productImage}</div>}
-                {imageErrors && <div style={{ color: "red" }}>{imageErrors}</div>}
+                {/* <KTSVG path="media/icons/duotune/arrows/arr061.svg" className="svg-icon svg-icon-2x" /> */}
               </div>
+            </div>
 
-              <button type="submit" className="btn btn-primary" disabled={btnDisable}>
-                Submit
-              </button>
-              <button className="btn"
-               onClick={setOpenBarterModal}
-              >
-                Close
-              </button>
-            </form>
+            <div className="modal-body">
+              <form onSubmit={handleSubmit}>
+                <div className="section address-section">
+                  <div className="section-header">Select Delivery Address</div>
+                  <div className="address-details">
+                    {selectedAddress.id && (
+                      <>
+                        <div>
+                          <p>
+                            <strong>{selectedAddress.fullName}</strong>
+                          </p>
+                          <p>{selectedAddress.fullAddress}</p>
+                          <p>
+                            {selectedAddress.landmark},{selectedAddress.pincode}
+                          </p>
+                          <p>{selectedAddress.mobileNumber}</p>
+                        </div>
+                        <button
+                          className="btn btn-primary"
+                          onClick={handleSelectAddressModalOpen}
+                        >
+                          Change
+                        </button>
+                      </>
+                    )}
+                    {!addressData?.length && !selectedAddress.id && (
+                      <button
+                        className="btn btn-primary"
+                        onClick={handlenewAddress}
+                      >
+                        Add new Address
+                      </button>
+                    )}
+                    {addressData?.length > 0 && !selectedAddress.id && (
+                      <button
+                        className="btn btn-primary"
+                        onClick={handleSelectAddressModalOpen}
+                      >
+                        Select Address
+                      </button>
+                    )}
+                  </div>
+                  {errors.addressId && (
+                    <div style={{ color: "red" }} className="invalid-feedback">
+                      {errors.addressId}
+                    </div>
+                  )}
+                </div>
+
+                {/* Product Image */}
+                <div className="form-group">
+                  <label htmlFor="productImage">Product Image</label>
+                  <input
+                    type="file"
+                    id="productImage"
+                    name="productImage"
+                    ref={ProductImageRef}
+                    onChange={handleImageUpload}
+                    className={`form-control ${
+                      errors.productImage ? "is-invalid" : ""
+                    }`}
+                  />
+                  {errors.productImage && (
+                    <div className="invalid-feedback">
+                      {errors.productImage}
+                    </div>
+                  )}
+                  {imageErrors && (
+                    <div style={{ color: "red" }}>{imageErrors}</div>
+                  )}
+                </div>
+
+                <button
+                  type="submit"
+                  className="btn btn-primary"
+                  disabled={btnDisable}
+                >
+                  Submit
+                </button>
+                <button
+                  className="btn"
+                  onClick={() => {
+                    setOpenBarterModal();
+                    setAddressSuparator(false);
+                  }}
+                >
+                  Close
+                </button>
+              </form>
+            </div>
           </div>
         </div>
       </div>
-    </div>
-  
-            <ToastContainer />
+
+      <ToastContainer />
     </>
   );
 };

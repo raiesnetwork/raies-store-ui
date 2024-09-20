@@ -191,6 +191,10 @@ verifyRazorpayPayment: async (data:onlinePayment) => {
 isOpenAddressModal:false,
 OpenAddressModal:()=>{
   set((s)=>({isOpenAddressModal:!s.isOpenAddressModal}))
+},
+addressSupparator:false,
+setAddressSuparator:(data)=>{
+  set(()=>({addressSupparator:data}))
 }
 }));
 

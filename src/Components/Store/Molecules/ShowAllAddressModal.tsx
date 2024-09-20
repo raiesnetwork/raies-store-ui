@@ -10,7 +10,7 @@ interface AddressModalProps {
     //   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
   }
 const AddressComponentModal: React.FC <AddressModalProps>= ({opencreateAddressModal}) => {
-  const {getAddress, deleteAddress,addressData, setSelectedAddress, setIsOpenSelectAddressModal } = useMystoreStore((s) => s);
+  const {addressSupparator,setOpenBarterModal,getAddress, deleteAddress,addressData, setSelectedAddress, setIsOpenSelectAddressModal } = useMystoreStore((s) => s);
 
   const handleSelectAddress = (address: respStoreAddress) => {
     setSelectedAddress(address);
@@ -32,6 +32,14 @@ const AddressComponentModal: React.FC <AddressModalProps>= ({opencreateAddressMo
 
     }
   }
+
+  const handleBarterSelectAddressModalClose=()=>{
+    setIsOpenSelectAddressModal()
+    if (addressSupparator) {
+      setOpenBarterModal()
+      
+    }
+  }
   return (
     <>
       {/* Modal */}
@@ -45,7 +53,8 @@ const AddressComponentModal: React.FC <AddressModalProps>= ({opencreateAddressMo
               >Add new Address</button>
             ) : (
               <div>
-                {addressData.map((address, index) => (
+                {addressData.length>0&&
+                addressData?.map((address, index) => (
                   <div key={index} className="select_address-item">
                     <p>
                       <strong>{address.fullName}</strong>
@@ -69,7 +78,7 @@ const AddressComponentModal: React.FC <AddressModalProps>= ({opencreateAddressMo
             )}
           </div>
           <div className="select_address-footer">
-            <button className="select_address-button" onClick={setIsOpenSelectAddressModal}>
+            <button className="select_address-button" onClick={handleBarterSelectAddressModalClose}>
               Close Modal
             </button>
           </div>

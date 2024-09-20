@@ -25,12 +25,12 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         {logedIn === true && (
           <>
             <Route path="/cart" element={<StoreCart />} />
-            <Route path="/buy" element={<ProductBuyingPage />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/orders" element={<UserOrdersPage />} />
             <Route path="/details" element={<SingleProductView />} />
           </>
         )}
+        <Route path="/buy" element={<ProductBuyingPage />} />
         <Route path="/details" element={<SingleProductView />} />
 
         <Route path="/*" element={<Navigate to="/" />} />

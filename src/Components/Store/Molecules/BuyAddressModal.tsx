@@ -104,7 +104,7 @@ const setMobileNumber=(n:string)=>{
     <>
     <div  className="modal-overlay">
       <div className="modal-content">
-        <h2>Select Delivery Address</h2>
+        <h2>Create Delivery Address</h2>
         <form onSubmit={handleAddressSubmit}>
           <div className="form-group">
             <label htmlFor="fullName">Full Name</label>

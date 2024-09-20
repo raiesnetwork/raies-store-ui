@@ -7,9 +7,10 @@ import Header from "./Header";
 import { toast,ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import AddressModal from "./BuyAddressModal";
+import AddressComponentModal from "./ShowAllAddressModal";
 
 const SingleProductView: React.FC = () => {
-  const {OpenAddressModal,isOpenAddressModal,logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
+  const {setAddressSuparator,isOpenselectAddressModal,OpenAddressModal,isOpenAddressModal,logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
     (s) => s
   );
   const [imageView, setImageView] = useState<string>(
@@ -35,6 +36,7 @@ const [disable,setDisable]=useState<boolean>(false)
     OpenAddressModal()
     setOpenBarterModal()
   }
+  
   return (
     <>
     <Header/>
@@ -157,7 +159,10 @@ const [disable,setDisable]=useState<boolean>(false)
                 {singleProductData.priceOption === "barter" && (
                   <>
                     <button 
-                    onClick={setOpenBarterModal}>Exchange</button>
+                    onClick={()=>{
+                      setOpenBarterModal()
+                      setAddressSuparator(true)
+                    }}>Exchange</button>
                   </>
                 )}
                 {singleProductData.priceOption === "free" && singleProductData.productCount>0&& (
@@ -199,6 +204,11 @@ const [disable,setDisable]=useState<boolean>(false)
         </div>
       </div>
       {isOpenAddressModal&&<AddressModal closeModal={handleBarterAddressModalClose} />}
+      {isOpenselectAddressModal && (
+        <AddressComponentModal
+        
+        opencreateAddressModal={OpenAddressModal} />
+      )}
                
       {isOpenBarteModal&&<BarterModal/>}
       {isOpenBiddingModal&&<BiddingModal/>}
