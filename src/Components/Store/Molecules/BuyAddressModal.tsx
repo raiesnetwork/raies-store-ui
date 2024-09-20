@@ -86,7 +86,7 @@ const setMobileNumber=(n:string)=>{
     e.preventDefault();
     if (validateAddress()) {
       const data=await createAddress(addressData)
-      alert(data.error)
+     
       if (data.error) {
         toast.error("Address can't created try again")
       }else{

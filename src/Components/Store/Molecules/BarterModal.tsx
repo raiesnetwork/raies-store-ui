@@ -6,8 +6,8 @@ import { fileToBase64 } from "../../../Utils/Base64";
 const BarterModal: React.FC = () => {
   const {
     setAddressSuparator,
-    selectedAddress,
-    // ,getAddress
+    selectedAddress
+    ,getAddress,
     addressData,
     OpenAddressModal,
     setIsOpenSelectAddressModal,
@@ -21,8 +21,12 @@ const BarterModal: React.FC = () => {
     addressId: selectedAddress.id,
     productImage: "",
     productId: singleProductData.id,
+    // quantity:"1"
   });
-
+useEffect(()=>{
+  getAddress()
+// eslint-disable-next-line react-hooks/exhaustive-deps
+},[])
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [btnDisable, setDisable] = useState<boolean>(false);
   const [imageErrors, setImageErrors] = useState<string | null>(null);
@@ -34,6 +38,7 @@ const BarterModal: React.FC = () => {
       addressId: selectedAddress.id,
       productImage: "",
       productId: singleProductData.id,
+      // quantity:"1"
     });
     setErrors({});
   }, [isOpenBarteModal, singleProductData, selectedAddress]);
@@ -45,6 +50,15 @@ const BarterModal: React.FC = () => {
       newErrors.addressId = "Address is Required.";
     if (!formData.productImage.trim())
       newErrors.productImage = "Product image is required.";
+    // const qnty=Number(formData.quantity)
+    // if (!formData.quantity.trim()) {
+    //   newErrors.quantity = "Quantity is required.";
+    // } else if (qnty < 1) {
+    //   newErrors.quantity = "Quantity must be at least 1.";
+    // } else if (qnty > singleProductData.productCount) {
+    //   newErrors.quantity = "Quantity limit exceeded.";
+    // }
+    
 
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
@@ -56,15 +70,22 @@ const BarterModal: React.FC = () => {
     if (validateForm()) {
       try {
         const data = await createBarterOrder(formData);
-
+        
         if (data.error) {
           setDisable(false);
           return toast.error("order can't creted");
         } else {
-          toast.success("order Created successfully");
-          setOpenBarterModal();
+          if (data.data==="exceed") {
+            return toast.error("Product limit exceed");
+            
+          }else{
 
-          ProductImageRef.current.value = "";
+            toast.success("order Created successfully");
+            ProductImageRef.current.value = "";
+            setOpenBarterModal();
+
+          }
+
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
@@ -73,7 +94,21 @@ const BarterModal: React.FC = () => {
       }
     }
   };
+  // const handleChange = (
+  //   e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  // ) => {
+  //   setDisable(false);
+  //   const { name, value } = e.target;
+  //   setFormData({
+  //     ...formData,
+  //     [name]: value,
+  //   });
 
+  //   setErrors({
+  //     ...errors,
+  //     [name]: "",
+  //   });
+  // };
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
     if (file) {
@@ -195,6 +230,25 @@ const BarterModal: React.FC = () => {
                   )}
                 </div>
 
+
+                  {/* Quantity */}
+                {/* <div className="form-group">
+                  <label htmlFor="pincode">Quantity (Max:{singleProductData.productCount})</label>
+                  <input
+                    type="number"
+                    id="pincode"
+                    name="quantity"
+                    value={formData.quantity}
+                    onChange={handleChange}
+                    
+                    className={`form-control ${
+                      errors.pincode ? "is-invalid" : ""
+                    }`}
+                  />
+                  {errors.quantity && (
+                    <div className="invalid-feedback">{errors.quantity}</div>
+                  )}
+                </div> */}
                 <button
                   type="submit"
                   className="btn btn-primary"

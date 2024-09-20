@@ -11,7 +11,6 @@ import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import { MdNotificationsActive } from "react-icons/md";
 const Header: React.FC = () => {
   const {
     //  userName, 
@@ -25,9 +24,9 @@ const Header: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // const openLoginModal = () => {
-  //   setIsLoginModalOpen(true);
-  // };
+  const openLoginModal = () => {
+    setIsLoginModalOpen(true);
+  };
 
   const closeLoginModal = () => {
     setIsLoginModalOpen(false);
@@ -55,8 +54,7 @@ const Header: React.FC = () => {
       <div className="header__right">
         {logedIn === true ? (
           <>
-          <IoIosNotificationsOutline size={28} color="black" />
-         < MdNotificationsActive size={28} color="red" />
+       
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
@@ -91,7 +89,7 @@ const Header: React.FC = () => {
           </>
         ) : (
           <>
-            {/* <button className="login-btn" onClick={openLoginModal}>Login</button> */}
+            <button className="login-btn" onClick={openLoginModal}>Login</button>
             <div className="header__guest_login">
             <FiUser className="header__profile_icon"/>
             </div>

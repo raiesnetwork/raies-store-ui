@@ -4,42 +4,51 @@ import useMystoreStore from "../Core/Store";
 import { respStoreAddress } from "../Core/Interfaces";
 import { toast } from "react-toastify";
 
-
 interface AddressModalProps {
-    opencreateAddressModal: () => void;
-    //   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
-  }
-const AddressComponentModal: React.FC <AddressModalProps>= ({opencreateAddressModal}) => {
-  const {addressSupparator,setOpenBarterModal,getAddress, deleteAddress,addressData, setSelectedAddress, setIsOpenSelectAddressModal } = useMystoreStore((s) => s);
+  opencreateAddressModal: () => void;
+  //   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
+}
+const AddressComponentModal: React.FC<AddressModalProps> = ({
+  opencreateAddressModal,
+}) => {
+  const {
+    addressSupparator,
+    setOpenBarterModal,
+    getAddress,
+    deleteAddress,
+    addressData,
+    setSelectedAddress,
+    setIsOpenSelectAddressModal,
+  } = useMystoreStore((s) => s);
 
   const handleSelectAddress = (address: respStoreAddress) => {
     setSelectedAddress(address);
-    setIsOpenSelectAddressModal()
+    setIsOpenSelectAddressModal();
+    if (addressSupparator) {
+      setOpenBarterModal();
+    }
   };
 
-  const handilOpenAddressmodal=()=>{
-    setIsOpenSelectAddressModal()
-    opencreateAddressModal()
-
-  }
-  const handleDeleteAddress=async(id:string)=>{
-    const data=await deleteAddress(id)
+  const handilOpenAddressmodal = () => {
+    setIsOpenSelectAddressModal();
+    opencreateAddressModal();
+  };
+  const handleDeleteAddress = async (id: string) => {
+    const data = await deleteAddress(id);
     if (data.error) {
-        toast.error("can't delete address")
-    }else{
-        await getAddress()
-        toast.error("address deleted successfully")
-
+      toast.error("can't delete address");
+    } else {
+      await getAddress();
+      toast.error("address deleted successfully");
     }
-  }
+  };
 
-  const handleBarterSelectAddressModalClose=()=>{
-    setIsOpenSelectAddressModal()
+  const handleBarterSelectAddressModalClose = () => {
+    setIsOpenSelectAddressModal();
     if (addressSupparator) {
-      setOpenBarterModal()
-      
+      setOpenBarterModal();
     }
-  }
+  };
   return (
     <>
       {/* Modal */}
@@ -48,37 +57,55 @@ const AddressComponentModal: React.FC <AddressModalProps>= ({opencreateAddressMo
           <div className="select_address-header">1. Delivery Address</div>
           <div className="select_address-details">
             {addressData.length === 0 ? (
-              <button className="select_address-button"
-              onClick={handilOpenAddressmodal}
-              >Add new Address</button>
+              <button
+                className="select_address-button"
+                onClick={handilOpenAddressmodal}
+              >
+                Add new Address
+              </button>
             ) : (
               <div>
-                {addressData.length>0&&
-                addressData?.map((address, index) => (
-                  <div key={index} className="select_address-item">
-                    <p>
-                      <strong>{address.fullName}</strong>
-                    </p>
-                    <p>{address.fullAddress},{address.pincode}</p>
-                    <p>{address.landmark}</p>
-                    <p>{address.mobileNumber}</p>
-                    <button className="select_address-button" onClick={() => handleSelectAddress(address)}>
-                      Select Address
-                    </button> <button className="select_address-button" onClick={() => handleDeleteAddress(address.id)}>
-                      Delete Address
-                    </button>
-                  </div>
-                ))}
+                {addressData.length > 0 &&
+                  addressData?.map((address, index) => (
+                    <div key={index} className="select_address-item">
+                      <p>
+                        <strong>{address.fullName}</strong>
+                      </p>
+                      <p>
+                        {address.fullAddress},{address.pincode}
+                      </p>
+                      <p>{address.landmark}</p>
+                      <p>{address.mobileNumber}</p>
+                      <button
+                        className="select_address-button"
+                        onClick={() => handleSelectAddress(address)}
+                      >
+                        Select Address
+                      </button>{" "}
+                      <button
+                        className="select_address-button"
+                        onClick={() => handleDeleteAddress(address.id)}
+                      >
+                        Delete Address
+                      </button>
+                    </div>
+                  ))}
                 <div>
-                  <button className="select_address-button"
-                  onClick={handilOpenAddressmodal}
-                  >Add new Address</button>
+                  <button
+                    className="select_address-button"
+                    onClick={handilOpenAddressmodal}
+                  >
+                    Add new Address
+                  </button>
                 </div>
               </div>
             )}
           </div>
           <div className="select_address-footer">
-            <button className="select_address-button" onClick={handleBarterSelectAddressModalClose}>
+            <button
+              className="select_address-button"
+              onClick={handleBarterSelectAddressModalClose}
+            >
               Close Modal
             </button>
           </div>

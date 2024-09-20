@@ -154,7 +154,7 @@ const [disable,setDisable]=useState<boolean>(false)
                   item left
                 </p>
               )}
-              {!logedIn&&
+              {logedIn&&
               <div className="purchase-btns">
                 {singleProductData.priceOption === "barter" && (
                   <>
@@ -213,11 +213,11 @@ const [disable,setDisable]=useState<boolean>(false)
       {isOpenBarteModal&&<BarterModal/>}
       {isOpenBiddingModal&&<BiddingModal/>}
       
-      <ToastContainer/>
     </>
   :<>
   <div style={{textAlign:"center"}}>Please select any product...</div>
   </>}
+  <ToastContainer/>
     </>
   );
 };
