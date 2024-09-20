@@ -10,6 +10,7 @@ function App() {
         <Routes>
           {/* Define different routes for your application */}
           <Route path="/" element={<MyStore />} />
+
         </Routes>
       </Auth>
     </Router>

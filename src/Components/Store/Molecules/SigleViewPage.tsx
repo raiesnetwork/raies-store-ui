@@ -8,7 +8,7 @@ import { toast,ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 
 const SingleProductView: React.FC = () => {
-  const {FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
+  const {logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
     (s) => s
   );
   const [imageView, setImageView] = useState<string>(
@@ -33,6 +33,8 @@ const [disable,setDisable]=useState<boolean>(false)
   return (
     <>
     <Header/>
+    {singleProductData.id?
+    <>
       <div style={{
         marginTop:"20px"
       }} className="single-product-container">
@@ -145,7 +147,7 @@ const [disable,setDisable]=useState<boolean>(false)
                   item left
                 </p>
               )}
-
+              {logedIn&&
               <div className="purchase-btns">
                 {singleProductData.priceOption === "barter" && (
                   <>
@@ -183,6 +185,7 @@ const [disable,setDisable]=useState<boolean>(false)
                   </>
                 )}
               </div>
+              }
             </div>
           </div>
         </div>
@@ -193,6 +196,10 @@ const [disable,setDisable]=useState<boolean>(false)
       {isOpenBarteModal&&<BarterModal/>}
       {isOpenBiddingModal&&<BiddingModal/>}
       <ToastContainer/>
+    </>
+  :<>
+  <div style={{textAlign:"center"}}>Please select any product...</div>
+  </>}
     </>
   );
 };

@@ -9,12 +9,13 @@ import ClipLoader from "react-spinners/ClipLoader"; // Spinner import
 import "./Helpers/scss/mystore.scss"; // Import your custom styles
 
 const { hostname } = window.location;
+// eslint-disable-next-line prefer-const
 let subdomain = getSubdomain(hostname);
 
 export const MyStore: React.FC = () => {
   const {
     FetchToCart,
-    getAllProduct,
+    // getAllProduct,
     AllProducts,
     setHomeLoader,
     homeLoader,
@@ -25,35 +26,39 @@ export const MyStore: React.FC = () => {
 
   const [data, setData] = useState<respProduct[]>(AllProducts);
   const [filter, setFilter] = useState<string>("All");
-
+const [loaded,setLoaded]=useState<boolean>(false)
   useEffect(() => {
     if (AllProducts.length > 0) {
       setData(AllProducts);
       setHomeLoader(false);
     }
+  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AllProducts]);
 
   useEffect(() => {
-    const name = localStorage.getItem("suname");
-    setUserName(name);
-  }, []);
+    if (logedIn) {
+      
+      const name = localStorage.getItem("suname");
+      setUserName(name);
+    }
+      // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [logedIn]);
 
   useEffect(() => {
     const fetchProducts = async () => {
+      setLoaded(true)
       setHomeLoader(true);
-      if (logedIn) {
         FetchToCart();
-        await getAllProduct(subdomain);
-      } else {
         await latestProduct(subdomain);
       }
       setHomeLoader(false);
-    };
+    
 
-    if (subdomain) {
+    if (subdomain&&loaded===false) {
       fetchProducts();
     }
-  }, [logedIn, subdomain]);
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [subdomain]);
 
   useEffect(() => {
     let filteredData = AllProducts;

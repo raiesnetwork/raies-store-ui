@@ -16,6 +16,7 @@ import {
   getUserOrderApi,
   latestProductApi,
   loginUserApi,
+  loginWithPasswordApi,
   updateCartApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
@@ -97,8 +98,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     return data
   },
 
-  loginUser:async(number,otp)=>{
-    const data=await loginUserApi(number,otp)
+  loginUser:async(number,otp,subdomain)=>{
+    const data=await loginUserApi(number,otp,subdomain)
     return data
   },
 logedIn:false,
@@ -164,11 +165,16 @@ createBiddingOrder:async(data)=> {
   const datas=await createBiddingOrderApi(data)
   return datas
 },
+loginWithPassword:async(number,password,subdomain)=>{
+  const data=await loginWithPasswordApi(number,password,subdomain)
+  return data
+},
 
 createRazorpayOrder: async (amount: number) => {
   try {
     const order = await createRazorpayOrderApi(amount);
     return order;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     set({ onlinePaymenterror: error.message });
   }
@@ -177,6 +183,7 @@ createRazorpayOrder: async (amount: number) => {
 verifyRazorpayPayment: async (data:onlinePayment) => {
   try {
     await verifyRazorpayPaymentApi(data);
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   } catch (error: any) {
     set({ onlinePaymenterror: error.message });
   }

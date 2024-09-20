@@ -1,8 +1,8 @@
 import React, { useState } from "react";
 import '../Helpers/scss/Headder.scss'
-import profile from "../../../assets/blank-profile-picture-973460_1280.png"
-import logo from '../../../assets/favicon.ico'
-import { BsCart } from "react-icons/bs";
+// import profile from "../../../assets/blank-profile-picture-973460_1280.png"
+// import logo from '../../../assets/favicon.ico'
+// import { BsCart } from "react-icons/bs";
 import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
 import SignupModal from "./SignupModal";
@@ -11,8 +11,13 @@ import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { MdNotificationsActive } from "react-icons/md";
 const Header: React.FC = () => {
-  const { userName, logedIn, isOpenSignupModal, cartData } = useMystoreStore((s) => s)
+  const {
+    //  userName, 
+    logedIn, isOpenSignupModal, 
+    // cartData 
+  } = useMystoreStore((s) => s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
 
@@ -20,9 +25,9 @@ const Header: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const openLoginModal = () => {
-    setIsLoginModalOpen(true);
-  };
+  // const openLoginModal = () => {
+  //   setIsLoginModalOpen(true);
+  // };
 
   const closeLoginModal = () => {
     setIsLoginModalOpen(false);
@@ -50,6 +55,8 @@ const Header: React.FC = () => {
       <div className="header__right">
         {logedIn === true ? (
           <>
+          <IoIosNotificationsOutline size={28} color="black" />
+         < MdNotificationsActive size={28} color="red" />
             <div className="header__icon header__cart">
 
               <Link to='/cart' >

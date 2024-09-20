@@ -3,10 +3,10 @@ import useAuth from "./Core/Store";
 import useMystoreStore from "../Store/Core/Store";
 import { Navigate, Route, Routes } from "react-router-dom";
 import StoreCart from "../Store/Molecules/Cart";
-import SingleProductView from "../Store/Molecules/SigleViewPage";
 import ProductBuyingPage from "../Store/Molecules/BuyingPage";
 import SuccessPage from "../Store/Molecules/CodSuccessPage";
 import UserOrdersPage from "../Store/Molecules/Orders";
+import SingleProductView from "../Store/Molecules/SigleViewPage";
 import { Login } from "./Login/Login";
 import { Register } from "./Register/Register";
 import { OtpPage } from "./Otp/Otp";
@@ -19,20 +19,22 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
       checkLoggedIn(Data.data);
     };
     apiHelper();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
   return (
     <>
-        <Routes>
-      {logedIn === true && (
-        <>
-          <Route path="/cart" element={<StoreCart />} />
-          <Route path="/details" element={<SingleProductView />} />
-          <Route path="/buy" element={<ProductBuyingPage />} />
-          <Route path="/success" element={<SuccessPage />} />
-          <Route path="/orders" element={<UserOrdersPage />} />
-        </>
+      <Routes>
+        {logedIn === true && (
+          <>
+            <Route path="/cart" element={<StoreCart />} />
+            <Route path="/buy" element={<ProductBuyingPage />} />
+            <Route path="/success" element={<SuccessPage />} />
+            <Route path="/orders" element={<UserOrdersPage />} />
+            <Route path="/details" element={<SingleProductView />} />
+          </>
         )}
+        <Route path="/details" element={<SingleProductView />} />
         <Route path="/order" element={<Navigate to='/login'/>} />
         <Route path="/cart" element={<Navigate to='/login'/>} />
         <Route path="/success" element={<Navigate to='/login'/>} />
@@ -41,7 +43,8 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Route path="/register" element={<Register></Register>}/>
         <Route path="/otp" element={<OtpPage></OtpPage>}/>
 
-        </Routes>
+        <Route path="/*" element={<Navigate to="/" />} />
+      </Routes>
 
       {children}
     </>

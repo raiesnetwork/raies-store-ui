@@ -1,35 +1,38 @@
 import { createAxiosInstance } from "../../../Utils/Axios";
 import { barterOrder, biddingOrder, createOrder, onlinePayment, StoreAddress, userStoreCreate } from "./Interfaces";
 
+
 const axiosInstance = createAxiosInstance();
 
-export const getAllProductApi = async (hostName?: string|null) => {
+export const getAllProductApi = async (hostName?: string | null) => {
   try {
-    const {data} = await axiosInstance.get(`/storuser/getall/${hostName}`);
+    const { data } = await axiosInstance.get(`/storuser/getall/${hostName}`);
     return data;
-  } catch (error) {    
+  } catch (error) {
     return {
-        error: true,
-        message: "api call faild",
-        data:error
-  
-      };
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
   }
 };
-export const AddToCartApi = async (productId?: string, quantity?: number,adminId?:string) => {
+export const AddToCartApi = async (
+  productId?: string,
+  quantity?: number,
+  adminId?: string
+) => {
   try {
     const { data } = await axiosInstance.post(`/storuser/cart`, {
       productId,
       quantity,
-      adminId
+      adminId,
     });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
@@ -41,7 +44,7 @@ export const FetchToCartApi = async () => {
     return {
       error: true,
       message: "api call faild",
-      data:error
+      data: error,
     };
   }
 };
@@ -53,73 +56,104 @@ export const DeleteCartApi = async (id: string) => {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
 export const updateCartApi = async (id: string, quantity: number) => {
   try {
-    const { data } = await axiosInstance.put(`/storuser/cart`, { id, quantity });
+    const { data } = await axiosInstance.put(`/storuser/cart`, {
+      id,
+      quantity,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
-export const verifyNumberApi = async (mobileNumber:string) => {
+export const verifyNumberApi = async (mobileNumber: string) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/auth/verify`, { mobileNumber});
+    const { data } = await axiosInstance.post(`/userstore/auth/verify`, {
+      mobileNumber,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
-export const createStoreUserApi = async (datas:userStoreCreate) => {
+export const createStoreUserApi = async (datas: userStoreCreate) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/auth/create`, { ...datas });
+    const { data } = await axiosInstance.post(`/userstore/auth/create`, {
+      ...datas,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
-export const loginUserApi = async (mobileNumber:string,otp:string) => {
+export const loginUserApi = async (
+  mobileNumber: string,
+  otp: string,
+  subdomain: string
+) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/auth/login`, { mobileNumber,otp });
+    const { data } = await axiosInstance.post(`/userstore/auth/login`, {
+      mobileNumber,
+      otp,
+      subdomain,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
-export const latestProductApi = async (hostName:string|null) => {
+export const loginWithPasswordApi = async (
+  mobileNumber: string,
+  password: string,
+  subdomain: string
+) => {
   try {
-    const { data } = await axiosInstance.get(`/userstore/auth/latest/${hostName}`);
+    const { data } = await axiosInstance.post(`/userstore/auth/passlogin`, {
+      mobileNumber,
+      password,
+      subdomain,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
+    };
+  }
+};
+export const latestProductApi = async (hostName: string | null) => {
+  try {
+    const { data } = await axiosInstance.get(
+      `/userstore/auth/latest/${hostName}`
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
     };
   }
 };
@@ -131,63 +165,73 @@ export const DeleteAddressApi = async (id: string) => {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
 export const createAddressApi = async (datas: StoreAddress) => {
   try {
-    const { data } = await axiosInstance.post(`/storuser/address`,{...datas});
+    const { data } = await axiosInstance.post(`/storuser/address`, {
+      ...datas,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
 export const getAddressApi = async () => {
   try {
-    const { data } = await axiosInstance.get(`/storuser/address`,);
+    const { data } = await axiosInstance.get(`/storuser/address`);
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
-export const createOrderApi = async (datas:createOrder) => {
+export const createOrderApi = async (datas: createOrder) => {
   try {
-    const { data } = await axiosInstance.post(`/storuser/order`,{...datas});
+    const { data } = await axiosInstance.post(`/storuser/order`, { ...datas });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const createRazorpayOrderApi= async (amount: number): Promise<any> => {
   try {
     const response = await axiosInstance.post(`/storuser/online-payment`, { amount });
     return response.data;
   } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
   }
 };
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any
 export const verifyRazorpayPaymentApi= async(datas:onlinePayment ): Promise<any> => {
   try {
    const {data}= await axiosInstance.post(`/storuser/verify-payment`, { datas  });
    return data;
   } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
   }
 };
 export const getUserOrderApi = async () => {
@@ -198,34 +242,35 @@ export const getUserOrderApi = async () => {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
-export const createBarterOrderApi = async (datas:barterOrder) => {
+export const createBarterOrderApi = async (datas: barterOrder) => {
   try {
-    const { data } = await axiosInstance.post(`/storuser/createbarterorder`, { ...datas });
+    const { data } = await axiosInstance.post(`/storuser/createbarterorder`, {
+      ...datas,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };
-export const createBiddingOrderApi = async (datas:biddingOrder) => {
+export const createBiddingOrderApi = async (datas: biddingOrder) => {
   try {
-    const { data } = await axiosInstance.post(`/storuser/createbiddingorder`, { ...datas });
+    const { data } = await axiosInstance.post(`/storuser/createbiddingorder`, {
+      ...datas,
+    });
     return data;
   } catch (error) {
     return {
       error: true,
       message: "api call faild",
-      data:error
-
+      data: error,
     };
   }
 };

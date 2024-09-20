@@ -14,15 +14,15 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
   };
   const [btnDisable,setDisable]=useState<boolean>(false)
   const handileCart=async(id:string,count:number,userId:string)=>{
-    setDisable(true)
     if (logedIn===true) {
+      setDisable(true)
       
       const data=await AddToCart(id,count,userId)
       setDisable(false)
       if (data.error) {
       return  toast.error("item coun't add to cart")
       }else{
-       await FetchToCart()
+       FetchToCart()
        return toast.success("Item added Successfully")
       }
     }else{
