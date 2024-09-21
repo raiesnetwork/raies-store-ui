@@ -90,10 +90,14 @@
     text-align: center;
   }
 
-  &__profile_icon {
+  &__profile_icon_guest {
     color: #928989;
     font-size: 28px;
     margin: 7px 0px 0px 0px;
+  }
+  &__profile_icon{
+    color: #928989;
+    font-size: 24px;
   }
 
   &__cart-icon {

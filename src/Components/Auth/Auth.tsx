@@ -7,6 +7,9 @@ import ProductBuyingPage from "../Store/Molecules/BuyingPage";
 import SuccessPage from "../Store/Molecules/CodSuccessPage";
 import UserOrdersPage from "../Store/Molecules/Orders";
 import SingleProductView from "../Store/Molecules/SigleViewPage";
+import { Login } from "./Login/Login";
+import { Register } from "./Register/Register";
+import { OtpPage } from "./Otp/Otp";
 const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { AuthApiCall } = useAuth((s) => s);
   const { checkLoggedIn, logedIn } = useMystoreStore((s) => s);
@@ -32,6 +35,13 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
           </>
         )}
         <Route path="/details" element={<SingleProductView />} />
+        <Route path="/order" element={<Navigate to='/login'/>} />
+        <Route path="/cart" element={<Navigate to='/login'/>} />
+        <Route path="/success" element={<Navigate to='/login'/>} />
+        <Route path="/orders" element={<Navigate to='/login'/>} />
+        <Route path="/login" element={<Login></Login>}/>
+        <Route path="/register" element={<Register></Register>}/>
+        <Route path="/otp" element={<OtpPage></OtpPage>}/>
 
         <Route path="/*" element={<Navigate to="/" />} />
       </Routes>

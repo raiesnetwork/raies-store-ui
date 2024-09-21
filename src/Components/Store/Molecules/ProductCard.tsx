@@ -32,9 +32,10 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
   }
   return (
     <>
+
     <div className="product-card">
       <div className="product-card__image">
-        <img src={data.mainImage} alt={data.productName} />
+        <img src={data.mainImage} alt={data.productName} className="product-card_img" />
       </div>
       <div  onClick={()=>handleDetaildView(data)} className="product-card__info">
         <Link style={{textDecoration:"none",color:"black"}} to='/details'>

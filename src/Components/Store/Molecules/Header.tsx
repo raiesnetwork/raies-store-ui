@@ -35,11 +35,11 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       {/* Left side: Logo and Store Name */}
-      <div className="header__left">
+      <Link to={"/"} className="header__left">
         <img src={"/media/Nike-logo-icon-on-transparent-background-PNG.png"} alt="Store Logo" className="header__logo" />
    
 
-      </div>
+      </Link>
 
       {/* Center: Search Box */}
       <div className="header__center">

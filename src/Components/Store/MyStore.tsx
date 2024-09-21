@@ -94,35 +94,41 @@ const [loaded,setLoaded]=useState<boolean>(false)
         </div>
       ) : (
         <>
-        <div className="mystore">
-        <div className="mystore__category_container"
-          >
-            <select
-              value={filter}
-              onChange={(e) => setFilter(e.target.value)}
-              className="mystore__select_category"
-          
+          <div className="mystore">
+          <div className="myStore__banner"
             >
-              <option value="All">All</option>
-              <option value="free">Free</option>
-              <option value="Price">Price</option>
-              <option value="Bidding">Bidding</option>
-              <option value="Barter">Barter</option>
-            </select>
+              <img src="/media/nike banner.png"className="mystore__banner_img" alt="" />
+            </div>
+            <div className="mystore__category_container"
+            >
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+                className="mystore__select_category"
+
+              >
+                <option value="All">All</option>
+                <option value="free">Free</option>
+                <option value="Price">Price</option>
+                <option value="Bidding">Bidding</option>
+                <option value="Barter">Barter</option>
+              </select>
+            </div>
+
+         
+            <div className="mystore__products_sec">
+              {data?.length > 0 ? (
+                data?.map((val) =>
+                  !val.flag ? <ProductViewCard key={val.id} data={val} /> : null
+                )
+              ) : (
+                <div className="mystore__empty_msg">Store is empty</div>
+              )}
+            </div>
+
+
           </div>
 
-          <div className="myStore__banner"
-          >
-            {data?.length > 0 ? (
-              data?.map((val) =>
-                !val.flag ? <ProductViewCard key={val.id} data={val} /> : null
-              )
-            ) : (
-              <div className="mystore__empty_msg">Store is empty</div>
-            )}
-          </div>
-        </div>
-     
         </>
       )}
     </>

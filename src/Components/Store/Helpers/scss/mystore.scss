@@ -15,6 +15,7 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
+        margin-top: 10px;
     }
 
     &__empty_msg {
@@ -40,4 +41,15 @@
         outline: none;
 
     }
+    &__products_sec {
+        display: flex;
+        margin: 24px 0px 20px 0px;
+        gap: 7px;
+        justify-content: center;
+
+    }
+    &__banner_img{
+        height: 80vh;
+
+width: 100%;    }
 }
