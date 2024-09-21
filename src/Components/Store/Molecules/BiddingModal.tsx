@@ -2,6 +2,7 @@ import React, { useState, useEffect } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import "../Helpers/scss/BiddingModal.scss";
+import { useNavigate } from "react-router-dom";
 // import { KTSVG } from "../../../../_metronic/helpers";
 
 const BiddingModal: React.FC = () => {
@@ -72,7 +73,7 @@ const BiddingModal: React.FC = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     setDisable(true);
     e.preventDefault();
@@ -87,8 +88,9 @@ const BiddingModal: React.FC = () => {
             return toast.error("Item limit exceed");
 
           }
-         toast.success("order Created successfully");
+         
           setOpenBiddingModal();
+        navigate("/success", { state: { orderDetails:[{id:"",quantity:1,productDetails:singleProductData}] } });
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {

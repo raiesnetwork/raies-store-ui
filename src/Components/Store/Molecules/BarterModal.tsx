@@ -2,6 +2,7 @@ import React, { useState, useEffect, useRef } from "react";
 import { ToastContainer, toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { fileToBase64 } from "../../../Utils/Base64";
+import { useNavigate } from "react-router-dom";
 
 const BarterModal: React.FC = () => {
   const {
@@ -62,7 +63,7 @@ const BarterModal: React.FC = () => {
     setErrors(newErrors);
     return Object.keys(newErrors).length === 0;
   };
-
+  const navigate = useNavigate();
   const handleSubmit = async (e: React.FormEvent) => {
     setDisable(true);
     e.preventDefault();
@@ -77,9 +78,11 @@ const BarterModal: React.FC = () => {
           if (data.data === "exceed") {
             return toast.error("Product limit exceed");
           } else {
-            toast.success("order Created successfully");
+           
+            
             ProductImageRef.current.value = "";
             setOpenBarterModal();
+            navigate("/success", { state: { orderDetails:[{id:"",quantity:1,productDetails:singleProductData}] } });
           }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
