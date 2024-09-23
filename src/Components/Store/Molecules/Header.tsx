@@ -15,7 +15,7 @@ import { MdNotificationsActive } from "react-icons/md";
 const Header: React.FC = () => {
   const {
     //  userName, 
-    logedIn, isOpenSignupModal, 
+    logedIn, isOpenSignupModal,
     // cartData 
   } = useMystoreStore((s) => s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
@@ -38,7 +38,7 @@ const Header: React.FC = () => {
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left">
         <img src={"/media/Nike-logo-icon-on-transparent-background-PNG.png"} alt="Store Logo" className="header__logo" />
-   
+
 
       </Link>
 
@@ -55,13 +55,13 @@ const Header: React.FC = () => {
       <div className="header__right">
         {logedIn === true ? (
           <>
-          <IoIosNotificationsOutline size={28} color="black" />
-         < MdNotificationsActive size={28} color="red" />
+            <IoIosNotificationsOutline size={28} color="black" />
+            < MdNotificationsActive size={28} color="red" />
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
                 <div style={{ position: "relative" }} >
-                <IoIosNotificationsOutline className="header__notification-icon"/>
+                  <IoIosNotificationsOutline className="header__notification-icon" />
                   {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
                 </div>
               </Link>
@@ -70,13 +70,14 @@ const Header: React.FC = () => {
 
               <Link to='/cart' >
                 <div style={{ position: "relative" }} >
-                <IoBagOutline className="header__cart-icon"/>
+                  <IoBagOutline className="header__cart-icon" />
                   {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
                 </div>
               </Link>
             </div>
             <div className="header__profile" onClick={toggleDropdown}>
-              <FiUser className="header__profile_icon"/>
+
+              <FiUser className="header__profile_icon" />
               {/* <div className="header__profile-name">{userName}</div> */}
               {isDropdownOpen && (
                 <div className="header__dropdown">
@@ -93,7 +94,9 @@ const Header: React.FC = () => {
           <>
             {/* <button className="login-btn" onClick={openLoginModal}>Login</button> */}
             <div className="header__guest_login">
-            <FiUser className="header__profile_icon"/>
+              <Link to={"/login"}>
+                <FiUser className="header__profile_icon" />
+              </Link>
             </div>
           </>
         )}
