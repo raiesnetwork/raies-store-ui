@@ -30,7 +30,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     if (hostName) {
       const resp = await getAllProductApi(hostName);
       set(() => ({ AllProducts: resp?.data }));
-      return resp
+      return resp;
     }
   },
   singleProductData: {
@@ -91,53 +91,53 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     set((s) => ({ isOpenBiddingModal: !s.isOpenBiddingModal }));
   },
   verifyNumber: async (number) => {
-    const data = await verifyNumberApi(number)
-    return data
+    const data = await verifyNumberApi(number);
+    return data;
   },
-  registrationVerify: async (number,hostname) => {
-    const data = await registrationVerify(number,hostname)
-    return data
+  registrationVerify: async (number, hostname) => {
+    const data = await registrationVerify(number, hostname);
+    return data;
   },
   createUser: async (datas) => {
-    const data = await createStoreUserApi(datas)
-    return data
+    const data = await createStoreUserApi(datas);
+    return data;
   },
 
   loginUser: async (number, otp, subdomain) => {
-    const data = await loginUserApi(number, otp, subdomain)
-    return data
+    const data = await loginUserApi(number, otp, subdomain);
+    return data;
   },
   logedIn: false,
   checkLoggedIn: (data) => {
-    set(() => ({ logedIn: data }))
+    set(() => ({ logedIn: data }));
   },
-  latestProduct: async (hostName,name) => {
-    const data = await latestProductApi(hostName,name)
+  latestProduct: async (hostName, name) => {
+    const data = await latestProductApi(hostName, name);
     set(() => ({ AllProducts: data?.data }));
 
-    return data
+    return data;
   },
   isOpenSignupModal: false,
   signupModal: () => {
-    set((s) => ({ isOpenSignupModal: !s.isOpenSignupModal }))
+    set((s) => ({ isOpenSignupModal: !s.isOpenSignupModal }));
   },
   userName: "",
   setUserName(name) {
-    set(() => ({ userName: name }))
+    set(() => ({ userName: name }));
   },
   createAddress: async (data) => {
-    const resp = await createAddressApi(data)
-    return resp
+    const resp = await createAddressApi(data);
+    return resp;
   },
   deleteAddress: async (id) => {
-    const resp = await DeleteAddressApi(id)
-    return resp
+    const resp = await DeleteAddressApi(id);
+    return resp;
   },
   addressData: [],
   getAddress: async () => {
-    const data = await getAddressApi()
-    set(() => ({ addressData: data.data }))
-    return data
+    const data = await getAddressApi();
+    set(() => ({ addressData: data.data }));
+    return data;
   },
   selectedAddress: {
     fullAddress: "",
@@ -145,34 +145,34 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     id: "",
     landmark: "",
     mobileNumber: "",
-    pincode: ""
+    pincode: "",
   },
   setSelectedAddress: (data) => {
-    set(() => ({ selectedAddress: data }))
+    set(() => ({ selectedAddress: data }));
   },
   isOpenselectAddressModal: false,
   setIsOpenSelectAddressModal: () => {
-    set((s) => ({ isOpenselectAddressModal: !s.isOpenselectAddressModal }))
+    set((s) => ({ isOpenselectAddressModal: !s.isOpenselectAddressModal }));
   },
   createOrdr: async (data) => {
-    const dataa = await createOrderApi(data)
-    return dataa
+    const dataa = await createOrderApi(data);
+    return dataa;
   },
   getUserOrder: async () => {
-    const data = await getUserOrderApi()
-    return data
+    const data = await getUserOrderApi();
+    return data;
   },
   createBarterOrder: async (data) => {
-    const datas = await createBarterOrderApi(data)
-    return datas
+    const datas = await createBarterOrderApi(data);
+    return datas;
   },
   createBiddingOrder: async (data) => {
-    const datas = await createBiddingOrderApi(data)
-    return datas
+    const datas = await createBiddingOrderApi(data);
+    return datas;
   },
   loginWithPassword: async (number, password, subdomain) => {
-    const data = await loginWithPasswordApi(number, password, subdomain)
-    return data
+    const data = await loginWithPasswordApi(number, password, subdomain);
+    return data;
   },
 
   createRazorpayOrder: async (amount: number) => {
@@ -195,16 +195,15 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   },
   isOpenAddressModal: false,
   OpenAddressModal: () => {
-    set((s) => ({ isOpenAddressModal: !s.isOpenAddressModal }))
+    set((s) => ({ isOpenAddressModal: !s.isOpenAddressModal }));
   },
-  addressSupparatorBarter: false
-  ,
+  addressSupparatorBarter: false,
   addressSupparator: false,
   setAddressSuparator: (data) => {
-    set(() => ({ addressSupparator: data }))
+    set(() => ({ addressSupparator: data }));
   },
   setaddressSupparatorBarter: (data) => {
-    set(() => ({ addressSupparatorBarter: data }))
+    set(() => ({ addressSupparatorBarter: data }));
   },
 
   logout: () => {
