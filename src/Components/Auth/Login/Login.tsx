@@ -4,9 +4,8 @@ import { PhoneInput } from "react-international-phone";
 import 'react-international-phone/style.css';
 import "./Login.scss";
 import Header from "../../Store/Molecules/Header";
-import { Link, Navigate, useNavigate } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import useMystoreStore from "../../Store/Core/Store";
-import { toast } from "react-toastify";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { MdErrorOutline } from "react-icons/md";
 
@@ -24,7 +23,6 @@ export const Login: React.FC = () => {
     const [checkBox, setCheckBox] = useState<boolean>(false);
     const {
         setUserName,
-        loginUser,
         verifyNumber,
         checkLoggedIn,
         loginWithPassword,

@@ -89,7 +89,7 @@ export const verifyNumberApi = async (mobileNumber: string) => {
     };
   }
 };
-export const registrationVerify = async (mobileNumber: string,hostname:string) => {
+export const registrationVerify = async (mobileNumber: string,hostname:string|null) => {
   try {
     const { data } = await axiosInstance.post(`/userstore/auth/verify-register`, {
       mobileNumber,
@@ -140,7 +140,7 @@ export const loginUserApi = async (
 export const loginWithPasswordApi = async (
   mobileNumber: string,
   password: string,
-  subdomain: string
+  subdomain: string|null
 ) => {
   try {
     
