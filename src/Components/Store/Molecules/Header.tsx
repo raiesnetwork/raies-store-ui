@@ -17,12 +17,11 @@ let subdomain = getSubdomain(hostname);
 const Header: React.FC = () => {
   const {
     //  userName, 
-    logedIn, isOpenSignupModal, logout,
+    logedIn, logout,
     latestProduct
     // cartData 
   } = useMystoreStore((s) => s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   let navigate = useNavigate();
   const [search,setSearch]=useState<string>('')
 
@@ -31,13 +30,7 @@ const Header: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // const openLoginModal = () => {
-  //   setIsLoginModalOpen(true);
-  // };
 
-  const closeLoginModal = () => {
-    setIsLoginModalOpen(false);
-  };
   const handleLogout = () => {
     logout(); // Call the logout action from the store
     navigate("/login"); // Redirect to login page after logout
