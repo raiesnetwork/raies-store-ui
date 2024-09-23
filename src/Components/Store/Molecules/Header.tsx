@@ -1,11 +1,9 @@
 import React, { useState } from "react";
-import '../Helpers/scss/Headder.scss'
+import "../Helpers/scss/Headder.scss";
 // import profile from "../../../assets/blank-profile-picture-973460_1280.png"
 // import logo from '../../../assets/favicon.ico'
 // import { BsCart } from "react-icons/bs";
-import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
-import SignupModal from "./SignupModal";
 import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
@@ -18,85 +16,83 @@ const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 const Header: React.FC = () => {
   const {
-    //  userName, 
-    logedIn, isOpenSignupModal, logout,
-    latestProduct
-    // cartData 
-  } = useMystoreStore((s) => s)
+    //  userName,
+    logedIn,
+    logout,
+    latestProduct,
+    // cartData
+  } = useMystoreStore((s) => s);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
-  const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
   let navigate = useNavigate();
-  const [search,setSearch]=useState<string>('')
-
+  const [search, setSearch] = useState<string>("");
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // const openLoginModal = () => {
-  //   setIsLoginModalOpen(true);
-  // };
-
-  const closeLoginModal = () => {
-    setIsLoginModalOpen(false);
-  };
   const handleLogout = () => {
     logout(); // Call the logout action from the store
     navigate("/login"); // Redirect to login page after logout
   };
-const handilSearch=async()=>{
-  await latestProduct(subdomain,search);
-}
+  const handilSearch = async () => {
+    await latestProduct(subdomain, search);
+  };
   return (
     <header className="header">
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left">
-        <img src={"/media/Nike-logo-icon-on-transparent-background-PNG.png"} alt="Store Logo" className="header__logo" />
-
-
+        <img
+          src={"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
+          alt="Store Logo"
+          className="header__logo"
+        />
       </Link>
 
       {/* Center: Search Box */}
       <div className="header__center">
         <div className="header__search">
-          <input onChange={(e)=>setSearch(e.target.value)} type="text" placeholder="Search" className="header__search-input" />
+          <input
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search"
+            className="header__search-input"
+          />
           <CiSearch onClick={handilSearch} className="header__serchIcon" />
         </div>
-
       </div>
 
       {/* Right side: Cart, Profile, Login */}
       <div className="header__right">
         {logedIn === true ? (
           <>
-
             <div className="header__icon header__cart">
-
-              <Link to='/cart' >
-                <div style={{ position: "relative" }} >
+              <Link to="/cart">
+                <div style={{ position: "relative" }}>
                   <IoIosNotificationsOutline className="header__notification-icon" />
                   {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
                 </div>
               </Link>
             </div>
             <div className="header__icon header__cart">
-
-              <Link to='/cart' >
-                <div style={{ position: "relative" }} >
+              <Link to="/cart">
+                <div style={{ position: "relative" }}>
                   <IoBagOutline className="header__cart-icon" />
                   {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
                 </div>
               </Link>
             </div>
             <div className="header__profile" onClick={toggleDropdown}>
-
               <FiUser className="header__profile_icon" />
               {/* <div className="header__profile-name">{userName}</div> */}
               {isDropdownOpen && (
                 <div className="header__dropdown">
                   <ul>
-                    <li><Link to='/orders'>My Orders</Link></li>
-                    <li><a href="/settings">Profile</a></li>
+                    <li>
+                      <Link to="/orders">My Orders</Link>
+                    </li>
+                    <li>
+                      <a href="/settings">Profile</a>
+                    </li>
                     <li onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>
@@ -113,10 +109,6 @@ const handilSearch=async()=>{
           </>
         )}
       </div>
-
-      {/* Login Modal */}
-      {isOpenSignupModal && <SignupModal />}
-      {isLoginModalOpen && <LoginModal closeModal={closeLoginModal} />}
     </header>
   );
 };

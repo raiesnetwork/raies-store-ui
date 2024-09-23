@@ -94,11 +94,11 @@ export const OtpPage: React.FC = () => {
                     Enter OTP
                 </div>
                 <div className="otp-page__input-container">
-                    {otp.map((data, index) => (
+                    {otp.map((data:any, index) => (
                         <input
                             type="text"
                             maxLength={1}
-                            key={index}
+                            key={index?index:data}
                             value={otp[index]}
                             onChange={(e) => handleChange(e, index)}
                             id={`otp-input-${index}`}

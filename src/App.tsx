@@ -1,7 +1,6 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Auth from "./Components/Auth/Auth";
 import { MyStore } from "./Components/Store/MyStore";
-import { Login } from "./Components/Auth/Login/Login";
 
 function App() {
   return (
