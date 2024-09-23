@@ -207,7 +207,7 @@ const BarterModal: React.FC = () => {
 
                 {/* Product Image */}
                 <div className="form-group">
-                  <label htmlFor="productImage">Product Image</label>
+                  <label htmlFor="productImage">Your Exchange Product Image</label>
                   <input
                     type="file"
                     id="productImage"

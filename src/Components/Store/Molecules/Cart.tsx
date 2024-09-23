@@ -1,45 +1,46 @@
 import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import "../Helpers/scss/Cart.scss";
-import { FaPlus ,FaMinus} from "react-icons/fa6";
+import { FaPlus, FaMinus } from "react-icons/fa6";
 import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { respStoreCart } from "../Core/Interfaces";
 import Header from "./Header";
 import { Link } from "react-router-dom";
+import { FaSpinner } from "react-icons/fa"; 
+
 const StoreCart: React.FC = () => {
   const {
     cartData,
     cartLoader,
     setCartLoader,
-    
     deleteCart,
     FetchToCart,
-    updateCart
+    updateCart,
   } = useMystoreStore((s) => s);
+
   const [cartItems, setCartItems] = useState<respStoreCart[]>(cartData);
+  const [loadingItems, setLoadingItems] = useState<string[]>([]); 
+
   useEffect(() => {
     if (cartData) {
       setCartLoader(false);
       setCartItems(cartData);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [cartData]);
 
-  // Update the total price when quantities change
   const getTotal = () => {
     return cartItems
       .reduce(
         (total, item) =>
           total +
-          Number(item.productDetails.price) *
-            Number(item.quantity),
+          Number(item.productDetails.price) * Number(item.quantity),
         0
       )
       .toFixed(2);
   };
 
-  // Handle change in quantity input
   const handleQuantityChange = async (
     id: string,
     newQuantity: number,
@@ -47,27 +48,28 @@ const StoreCart: React.FC = () => {
     ProductQ?: number
   ) => {
     if ((quantity ?? 0) < (ProductQ ?? 1)) {
+      setLoadingItems((prev) => [...prev, id]);
       await updateCart(id, newQuantity);
       FetchToCart();
+      setLoadingItems((prev) => prev.filter((item) => item !== id)); 
     } else {
-      toast.error(" item limit exceed");
+      toast.error("Item limit exceeded");
     }
   };
 
-  // Handle removing an item from the cart
   const handleDeleteItem = async (id: string) => {
     const data = await deleteCart(id);
     if (data.error) {
-      toast.error("Item can't deleted");
+      toast.error("Item can't be deleted");
     } else {
-      toast.success("Item deleted Successfully");
+      toast.success("Item deleted successfully");
       FetchToCart();
     }
   };
 
   return (
     <>
-    <Header/>
+      <Header />
       {cartLoader ? (
         <div style={{ textAlign: "center" }}>Loading...</div>
       ) : (
@@ -103,33 +105,30 @@ const StoreCart: React.FC = () => {
                             }}
                           >
                             {item.quantity > 1 && (
-                              <FaMinus
-                                size={12}
-                                style={{
-                                  cursor: "pointer",
-                                }}
+                              <button
+                                className="quantity-btn"
                                 onClick={() =>
-                                  handleQuantityChange(
-                                    item.id,
-                                    -1,
-                                    0,
-                                    2
-                                  )
+                                  handleQuantityChange(item.id, -1, 0, 2)
                                 }
-                              />
+                                disabled={loadingItems.includes(item.id)} 
+                              >
+                                {loadingItems.includes(item.id) ? ( 
+                                  <FaSpinner className="spinner" />
+                                ) : (
+                                  <FaMinus size={12} />
+                                )}
+                              </button>
                             )}
-                            <div style={{
-                              padding:"10px",
-                              fontSize:"15px"
-                            }}>
-
-                            {item.quantity}
-                            </div>
-                            <FaPlus
-                              size={12}
+                            <div
                               style={{
-                                cursor: "pointer",
+                                padding: "10px",
+                                fontSize: "15px",
                               }}
+                            >
+                              {item.quantity}
+                            </div>
+                            <button
+                              className="quantity-btn"
                               onClick={() =>
                                 handleQuantityChange(
                                   item.id,
@@ -138,7 +137,14 @@ const StoreCart: React.FC = () => {
                                   item.productDetails.productCount
                                 )
                               }
-                            />
+                              disabled={loadingItems.includes(item.id)} 
+                            >
+                              {loadingItems.includes(item.id) ? ( 
+                                <FaSpinner className="spinner" />
+                              ) : (
+                                <FaPlus size={12} />
+                              )}
+                            </button>
                           </div>
                         </div>
                         <button
@@ -157,17 +163,14 @@ const StoreCart: React.FC = () => {
                 </>
               )}
             </div>
-            {
-              cartItems.length > 0&&
+            {cartItems.length > 0 && (
               <div className="cart-summary">
-              <h3>Total:{getTotal()}</h3>
-             <Link to='/buy' state={{details:cartItems,type:"cart"}}>
-             <button 
-              
-              className="checkout-btn">Proceed to Checkout</button>
-             </Link>
-            </div>
-            }
+                <h3>Total: {getTotal()}</h3>
+                <Link to="/buy" state={{ details: cartItems, type: "cart" }}>
+                  <button className="checkout-btn">Proceed to Checkout</button>
+                </Link>
+              </div>
+            )}
           </div>
         </div>
       )}
