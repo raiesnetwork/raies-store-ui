@@ -20,7 +20,6 @@ const Header: React.FC = () => {
   const {
     //  userName, 
     logedIn, isOpenSignupModal, logout,
-    logedIn, isOpenSignupModal, 
     latestProduct
     // cartData 
   } = useMystoreStore((s) => s)
@@ -34,9 +33,9 @@ const Header: React.FC = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  const openLoginModal = () => {
-    setIsLoginModalOpen(true);
-  };
+  // const openLoginModal = () => {
+  //   setIsLoginModalOpen(true);
+  // };
 
   const closeLoginModal = () => {
     setIsLoginModalOpen(false);
