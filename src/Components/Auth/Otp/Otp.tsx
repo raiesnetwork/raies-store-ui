@@ -1,9 +1,74 @@
-import React, { useState } from "react";
-import './Otp.scss'; // SCSS file for styling
-import Header from "../../Store/Molecules/Header"; // Assuming you have a header component
+import { useNavigate, useLocation } from "react-router-dom";
+import useMystoreStore from "../../Store/Core/Store";
+import { toast } from "react-toastify";
+import { useState } from "react";
+import Header from "../../Store/Molecules/Header";
+import "./Otp.scss"
 
 export const OtpPage: React.FC = () => {
-    const [otp, setOtp] = useState(Array(6).fill("")); // Assuming OTP has 6 digits
+    const [otp, setOtp] = useState(Array(6).fill(""));
+    const { loginUser, createUser, setUserName, checkLoggedIn } = useMystoreStore((state) => state);
+    const navigate = useNavigate();
+    const location = useLocation();
+
+    // Extract necessary data from location state
+    const mobileNumber = location.state?.mobileNumber || ""; 
+    const subdomain = location.state?.subdomain || ""; 
+    const registration = location.state?.registration || false; 
+    const username = location.state?.username || ""; 
+    const password = location.state?.password || ""; 
+
+    const handleOtpSubmit = async () => {
+        const enteredOtp = otp.join(""); // Combine the array into a single string
+
+        if (enteredOtp.length === 6 && mobileNumber) {
+            let response;
+
+            if (registration) {
+                // Registration Flow: Create a new user
+                response = await createUser({
+                    fullName: username,
+                    mobileNumber,
+                    otp: enteredOtp,
+                    hostname: subdomain,
+                    password
+                });
+
+                if (response.error) {
+                    toast.error(response.message || "User registration failed");
+                } else {
+                    toast.success("User registered successfully!");
+                    checkLoggedIn(true);
+                    setUserName(response.data?.username);
+                    localStorage.setItem("user", response.data?.username);
+                    localStorage.setItem(
+                        "kt-auth-react-st",
+                        JSON.stringify({ api_token: response.data?.token })
+                    );
+                    navigate("/"); // Redirect to home page on successful registration
+                }
+            } else {
+                // Login Flow: Verify OTP for existing user
+                response = await loginUser(mobileNumber, enteredOtp, subdomain);
+
+                if (response.error) {
+                    toast.error(response.message || "OTP verification failed");
+                } else {
+                    checkLoggedIn(true);
+                    setUserName(response.data?.username);
+                    localStorage.setItem("user", response.data?.username);
+                    localStorage.setItem(
+                        "kt-auth-react-st",
+                        JSON.stringify({ api_token: response.data?.token })
+                    );
+                    toast.success("OTP verified successfully!");
+                    navigate("/"); // Redirect to home page on successful login
+                }
+            }
+        } else {
+            toast.error("Please enter a valid 6-digit OTP.");
+        }
+    };
 
     const handleChange = (element: React.ChangeEvent<HTMLInputElement>, index: number) => {
         const value = element.target.value;
@@ -12,7 +77,6 @@ export const OtpPage: React.FC = () => {
             newOtp[index] = value;
             setOtp(newOtp);
 
-            // Move to the next input field if the value is a number
             if (value && index < otp.length - 1) {
                 const nextSibling = document.getElementById(`otp-input-${index + 1}`);
                 if (nextSibling) {
@@ -43,7 +107,9 @@ export const OtpPage: React.FC = () => {
                     ))}
                 </div>
                 <div className="otp-page__btn-container">
-                    <button className="otp-page__btn">VERIFY</button>
+                    <button className="otp-page__btn" onClick={handleOtpSubmit}>
+                        VERIFY
+                    </button>
                 </div>
             </div>
         </>

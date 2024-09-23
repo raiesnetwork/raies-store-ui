@@ -89,6 +89,20 @@ export const verifyNumberApi = async (mobileNumber: string) => {
     };
   }
 };
+export const registrationVerify = async (mobileNumber: string,hostname:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/userstore/auth/verify-register`, {
+      mobileNumber,
+      hostname
+    });
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
 export const createStoreUserApi = async (datas: userStoreCreate) => {
   try {
     const { data } = await axiosInstance.post(`/userstore/auth/create`, {
@@ -129,16 +143,18 @@ export const loginWithPasswordApi = async (
   subdomain: string
 ) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/auth/passlogin`, {
+    
+    const response  = await axiosInstance.post(`/userstore/auth/passlogin`, {
       mobileNumber,
       password,
       subdomain,
     });
-    return data;
+    console.log("apires",response);
+    return response.data;
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Api call failed",
       data: error,
     };
   }

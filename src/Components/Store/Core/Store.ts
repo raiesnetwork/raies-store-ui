@@ -17,18 +17,19 @@ import {
   latestProductApi,
   loginUserApi,
   loginWithPasswordApi,
+  registrationVerify,
   updateCartApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set) => ({
-  onlinePaymenterror:"",
+  onlinePaymenterror: "",
   AllProducts: [],
   getAllProduct: async (hostName) => {
     if (hostName) {
       const resp = await getAllProductApi(hostName);
-      set(() => ({ AllProducts: resp?.data}));
+      set(() => ({ AllProducts: resp?.data }));
       return resp
     }
   },
@@ -56,8 +57,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     set(() => ({ singleProductData: data }));
   },
   cartData: [],
-  AddToCart: async (id, quantity,userId) => {
-    const data = await AddToCartApi(id, quantity,userId);
+  AddToCart: async (id, quantity, userId) => {
+    const data = await AddToCartApi(id, quantity, userId);
     return data;
   },
   FetchToCart: async () => {
@@ -89,19 +90,24 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   setOpenBiddingModal: () => {
     set((s) => ({ isOpenBiddingModal: !s.isOpenBiddingModal }));
   },
-  verifyNumber:async(number)=>{
-    const data=await verifyNumberApi(number)
+  verifyNumber: async (number) => {
+    const data = await verifyNumberApi(number)
     return data
   },
-  createUser:async(datas)=>{
-    const data=await createStoreUserApi(datas)
+  registrationVerify: async (number,hostname) => {
+    const data = await registrationVerify(number,hostname)
+    return data
+  },
+  createUser: async (datas) => {
+    const data = await createStoreUserApi(datas)
     return data
   },
 
-  loginUser:async(number,otp,subdomain)=>{
-    const data=await loginUserApi(number,otp,subdomain)
+  loginUser: async (number, otp, subdomain) => {
+    const data = await loginUserApi(number, otp, subdomain)
     return data
   },
+<<<<<<< HEAD
 logedIn:false,
 checkLoggedIn:(data)=>{
 set(()=>({logedIn:data}))
@@ -170,38 +176,116 @@ loginWithPassword:async(number,password,subdomain)=>{
   const data=await loginWithPasswordApi(number,password,subdomain)
   return data
 },
+=======
+  logedIn: false,
+  checkLoggedIn: (data) => {
+    set(() => ({ logedIn: data }))
+  },
+  latestProduct: async (hostName) => {
+    const data = await latestProductApi(hostName)
+    set(() => ({ AllProducts: data?.data }));
 
-createRazorpayOrder: async (amount: number) => {
-  try {
-    const order = await createRazorpayOrderApi(amount);
-    return order;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    set({ onlinePaymenterror: error.message });
-  }
-},
+    return data
+  },
+  isOpenSignupModal: false,
+  signupModal: () => {
+    set((s) => ({ isOpenSignupModal: !s.isOpenSignupModal }))
+  },
+  userName: "",
+  setUserName(name) {
+    set(() => ({ userName: name }))
+  },
+  createAddress: async (data) => {
+    const resp = await createAddressApi(data)
+    return resp
+  },
+  deleteAddress: async (id) => {
+    const resp = await DeleteAddressApi(id)
+    return resp
+  },
+  addressData: [],
+  getAddress: async () => {
+    const data = await getAddressApi()
+    set(() => ({ addressData: data.data }))
+    return data
+  },
+  selectedAddress: {
+    fullAddress: "",
+    fullName: "",
+    id: "",
+    landmark: "",
+    mobileNumber: "",
+    pincode: ""
+  },
+  setSelectedAddress: (data) => {
+    set(() => ({ selectedAddress: data }))
+  },
+  isOpenselectAddressModal: false,
+  setIsOpenSelectAddressModal: () => {
+    set((s) => ({ isOpenselectAddressModal: !s.isOpenselectAddressModal }))
+  },
+  createOrdr: async (data) => {
+    const dataa = await createOrderApi(data)
+    return dataa
+  },
+  getUserOrder: async () => {
+    const data = await getUserOrderApi()
+    return data
+  },
+  createBarterOrder: async (data) => {
+    const datas = await createBarterOrderApi(data)
+    return datas
+  },
+  createBiddingOrder: async (data) => {
+    const datas = await createBiddingOrderApi(data)
+    return datas
+  },
+  loginWithPassword: async (number, password, subdomain) => {
+    const data = await loginWithPasswordApi(number, password, subdomain)
+    return data
+  },
+>>>>>>> 43e2e9f823f758dad34a289cd81fe5a886461eda
 
-verifyRazorpayPayment: async (data:onlinePayment) => {
-  try {
-    await verifyRazorpayPaymentApi(data);
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  } catch (error: any) {
-    set({ onlinePaymenterror: error.message });
-  }
-},
-isOpenAddressModal:false,
-OpenAddressModal:()=>{
-  set((s)=>({isOpenAddressModal:!s.isOpenAddressModal}))
-},
-addressSupparatorBarter:false
-,
-addressSupparator:false,
-setAddressSuparator:(data)=>{
-  set(()=>({addressSupparator:data}))
-},
-setaddressSupparatorBarter:(data)=>{
-  set(()=>({addressSupparatorBarter:data}))
-},
+  createRazorpayOrder: async (amount: number) => {
+    try {
+      const order = await createRazorpayOrderApi(amount);
+      return order;
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      set({ onlinePaymenterror: error.message });
+    }
+  },
+
+  verifyRazorpayPayment: async (data: onlinePayment) => {
+    try {
+      await verifyRazorpayPaymentApi(data);
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
+    } catch (error: any) {
+      set({ onlinePaymenterror: error.message });
+    }
+  },
+  isOpenAddressModal: false,
+  OpenAddressModal: () => {
+    set((s) => ({ isOpenAddressModal: !s.isOpenAddressModal }))
+  },
+  addressSupparatorBarter: false
+  ,
+  addressSupparator: false,
+  setAddressSuparator: (data) => {
+    set(() => ({ addressSupparator: data }))
+  },
+  setaddressSupparatorBarter: (data) => {
+    set(() => ({ addressSupparatorBarter: data }))
+  },
+
+  logout: () => {
+    localStorage.removeItem("user");
+    localStorage.removeItem("kt-auth-react-st");
+    set(() => ({
+      logedIn: false,
+      userName: "",
+    }));
+  },
 }));
 
 export default useMystoreStore;

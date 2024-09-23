@@ -87,6 +87,9 @@ addressSupparator:boolean,
 addressSupparatorBarter:boolean,
 setAddressSuparator:(s:boolean)=>void
 setaddressSupparatorBarter:(s:boolean)=>void
+logout:()=>void;
+registrationVerify:(number:string,hostname:string)=>Promise<any>;
+
 }
 export interface createOrder{
   productDetails:[]          

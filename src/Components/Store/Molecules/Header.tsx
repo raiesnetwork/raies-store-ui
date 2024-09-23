@@ -6,7 +6,7 @@ import '../Helpers/scss/Headder.scss'
 import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
 import SignupModal from "./SignupModal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
@@ -19,12 +19,14 @@ let subdomain = getSubdomain(hostname);
 const Header: React.FC = () => {
   const {
     //  userName, 
+    logedIn, isOpenSignupModal, logout,
     logedIn, isOpenSignupModal, 
     latestProduct
     // cartData 
   } = useMystoreStore((s) => s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  let navigate = useNavigate();
   const [search,setSearch]=useState<string>('')
 
 
@@ -39,6 +41,10 @@ const Header: React.FC = () => {
   const closeLoginModal = () => {
     setIsLoginModalOpen(false);
   };
+  const handleLogout = () => {
+    logout(); // Call the logout action from the store
+    navigate("/login"); // Redirect to login page after logout
+  };
 const handilSearch=async()=>{
   await latestProduct(subdomain,search);
 }
@@ -47,7 +53,7 @@ const handilSearch=async()=>{
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left">
         <img src={"/media/Nike-logo-icon-on-transparent-background-PNG.png"} alt="Store Logo" className="header__logo" />
-   
+
 
       </Link>
 
@@ -64,12 +70,12 @@ const handilSearch=async()=>{
       <div className="header__right">
         {logedIn === true ? (
           <>
-       
+
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
                 <div style={{ position: "relative" }} >
-                <IoIosNotificationsOutline className="header__notification-icon"/>
+                  <IoIosNotificationsOutline className="header__notification-icon" />
                   {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
                 </div>
               </Link>
@@ -78,20 +84,21 @@ const handilSearch=async()=>{
 
               <Link to='/cart' >
                 <div style={{ position: "relative" }} >
-                <IoBagOutline className="header__cart-icon"/>
+                  <IoBagOutline className="header__cart-icon" />
                   {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
                 </div>
               </Link>
             </div>
             <div className="header__profile" onClick={toggleDropdown}>
-              <FiUser className="header__profile_icon"/>
+
+              <FiUser className="header__profile_icon" />
               {/* <div className="header__profile-name">{userName}</div> */}
               {isDropdownOpen && (
                 <div className="header__dropdown">
                   <ul>
                     <li><Link to='/orders'>My Orders</Link></li>
                     <li><a href="/settings">Profile</a></li>
-                    <li><a href="/logout">Logout</a></li>
+                    <li onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>
               )}
@@ -99,9 +106,10 @@ const handilSearch=async()=>{
           </>
         ) : (
           <>
-            <button className="login-btn" onClick={openLoginModal}>Login</button>
             <div className="header__guest_login">
-            <FiUser className="header__profile_icon"/>
+              <Link to={"/login"}>
+                <FiUser className="header__profile_icon" />
+              </Link>
             </div>
           </>
         )}
