@@ -3,9 +3,7 @@ import '../Helpers/scss/Headder.scss'
 // import profile from "../../../assets/blank-profile-picture-973460_1280.png"
 // import logo from '../../../assets/favicon.ico'
 // import { BsCart } from "react-icons/bs";
-import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
-import SignupModal from "./SignupModal";
 import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
@@ -114,9 +112,7 @@ const handilSearch=async()=>{
         )}
       </div>
 
-      {/* Login Modal */}
-      {isOpenSignupModal && <SignupModal />}
-      {isLoginModalOpen && <LoginModal closeModal={closeLoginModal} />}
+ 
     </header>
   );
 };

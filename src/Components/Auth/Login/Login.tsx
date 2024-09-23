@@ -58,8 +58,7 @@ export const Login: React.FC = () => {
                     "kt-auth-react-st",
                     JSON.stringify({ api_token: response.data?.token })
                 );
-                window.location.reload();
-                console.log("Login successful:", response.data); // Log the response
+            
             }
         } else {
             setLoading(false); // Stop spinner if the form validation fails
