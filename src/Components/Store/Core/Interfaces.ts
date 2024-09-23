@@ -52,7 +52,7 @@ export interface MystoreStore {
   loginUser: (data: string, otp: string,subdomain:string) => Promise<ApiResponce>;
   loginWithPassword: (data: string, pass: string,subdomain:string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
-  latestProduct: (hostName: string|null) => Promise<ApiResponce>;
+  latestProduct: (hostName: string|null,name:string) => Promise<ApiResponce>;
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;
   deleteAddress: (hostName: string) => Promise<ApiResponce>;
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
@@ -87,7 +87,6 @@ addressSupparator:boolean,
 addressSupparatorBarter:boolean,
 setAddressSuparator:(s:boolean)=>void
 setaddressSupparatorBarter:(s:boolean)=>void
-
 }
 export interface createOrder{
   productDetails:[]          

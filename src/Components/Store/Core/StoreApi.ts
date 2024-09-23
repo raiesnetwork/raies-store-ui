@@ -143,10 +143,12 @@ export const loginWithPasswordApi = async (
     };
   }
 };
-export const latestProductApi = async (hostName: string | null) => {
+export const latestProductApi = async (hostName: string | null,name:string) => {
   try {
     const { data } = await axiosInstance.get(
-      `/userstore/auth/latest/${hostName}`
+      `/userstore/auth/latest/${hostName}`,
+      {params:{name:name,
+      }}
     );
     return data;
   } catch (error) {

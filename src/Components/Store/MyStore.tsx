@@ -5,17 +5,15 @@ import ProductViewCard from "./Molecules/ProductCard";
 import Header from "./Molecules/Header";
 import "react-toastify/dist/ReactToastify.css";
 import { getSubdomain } from "../../Utils/Subdomain";
-import ClipLoader from "react-spinners/ClipLoader"; // Spinner import
-import "./Helpers/scss/mystore.scss"; // Import your custom styles
+import ClipLoader from "react-spinners/ClipLoader"; 
+import "./Helpers/scss/mystore.scss"; 
 
 const { hostname } = window.location;
-// eslint-disable-next-line prefer-const
 let subdomain = getSubdomain(hostname);
 
 export const MyStore: React.FC = () => {
   const {
     FetchToCart,
-    // getAllProduct,
     AllProducts,
     setHomeLoader,
     homeLoader,
@@ -24,66 +22,75 @@ export const MyStore: React.FC = () => {
     setUserName,
   } = useMystoreStore((state) => state);
 
-  const [data, setData] = useState<respProduct[]>(AllProducts);
+  const [data, setData] = useState<respProduct[]>([]);
+  const [filteredData, setFilteredData] = useState<respProduct[]>([]);
   const [filter, setFilter] = useState<string>("All");
-const [loaded,setLoaded]=useState<boolean>(false)
+  const [pageNo, setPageNo] = useState<number>(1); 
+  const [itemsPerPage] = useState<number>(2); 
+
   useEffect(() => {
     if (AllProducts.length > 0) {
       setData(AllProducts);
       setHomeLoader(false);
     }
-  // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [AllProducts]);
 
   useEffect(() => {
     if (logedIn) {
-      
       const name = localStorage.getItem("suname");
       setUserName(name);
     }
-      // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [logedIn]);
 
   useEffect(() => {
     const fetchProducts = async () => {
-      setLoaded(true)
       setHomeLoader(true);
-        FetchToCart();
-        await latestProduct(subdomain);
-      }
+      FetchToCart();
+      await latestProduct(subdomain, ''); 
       setHomeLoader(false);
-    
+    };
 
-    if (subdomain&&loaded===false) {
+    if (subdomain) {
       fetchProducts();
     }
-    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [subdomain]);
 
   useEffect(() => {
-    let filteredData = AllProducts;
+    let filtered = data;
 
-    if (filteredData?.length > 0) {
-      if (filter === "Price") {
-        filteredData = AllProducts.filter(
-          (product) => product.priceOption === "normal"
-        );
-      } else if (filter === "Bidding") {
-        filteredData = AllProducts.filter(
-          (product) => product.priceOption === "bidding"
-        );
-      } else if (filter === "Barter") {
-        filteredData = AllProducts.filter(
-          (product) => product.priceOption === "barter"
-        );
-      } else if (filter === "free") {
-        filteredData = AllProducts.filter(
-          (product) => product.priceOption === "free"
-        );
-      }
+    if (filter === "Price") {
+      filtered = data.filter((product) => product.priceOption === "normal");
+    } else if (filter === "Bidding") {
+      filtered = data.filter((product) => product.priceOption === "bidding");
+    } else if (filter === "Barter") {
+      filtered = data.filter((product) => product.priceOption === "barter");
+    } else if (filter === "free") {
+      filtered = data.filter((product) => product.priceOption === "free");
     }
-    setData(filteredData);
-  }, [filter, AllProducts]);
+
+    setFilteredData(filtered);
+    setPageNo(1); 
+  }, [filter, data]);
+
+  // Calculate the paginated data based on the current page and itemsPerPage
+  const paginatedData = filteredData.slice(
+    (pageNo - 1) * itemsPerPage,
+    pageNo * itemsPerPage
+  );
+
+  // Function to go to the next page
+  const handleNextPage = () => {
+    if (pageNo < Math.ceil(filteredData.length / itemsPerPage)) {
+      setPageNo((prevPage) => prevPage + 1);
+    }
+  };
+
+  // Function to go to the previous page
+  const handlePreviousPage = () => {
+    if (pageNo > 1) {
+      setPageNo((prevPage) => prevPage - 1);
+    }
+  };
 
   return (
     <>
@@ -95,17 +102,14 @@ const [loaded,setLoaded]=useState<boolean>(false)
       ) : (
         <>
           <div className="mystore">
-          <div className="myStore__banner"
-            >
-              <img src="/media/nike banner.png"className="mystore__banner_img" alt="" />
+            <div className="myStore__banner">
+              <img src="/media/nike banner.png" className="mystore__banner_img" alt="" />
             </div>
-            <div className="mystore__category_container"
-            >
+            <div className="mystore__category_container">
               <select
                 value={filter}
                 onChange={(e) => setFilter(e.target.value)}
                 className="mystore__select_category"
-
               >
                 <option value="All">All</option>
                 <option value="free">Free</option>
@@ -114,11 +118,9 @@ const [loaded,setLoaded]=useState<boolean>(false)
                 <option value="Barter">Barter</option>
               </select>
             </div>
-
-         
             <div className="mystore__products_sec">
-              {data?.length > 0 ? (
-                data?.map((val) =>
+              {paginatedData.length > 0 ? (
+                paginatedData.map((val) =>
                   !val.flag ? <ProductViewCard key={val.id} data={val} /> : null
                 )
               ) : (
@@ -126,9 +128,30 @@ const [loaded,setLoaded]=useState<boolean>(false)
               )}
             </div>
 
+            {/* Pagination Controls */}
+            <div className="mystore__pagination">
+              <button
+     style={{cursor:pageNo >= Math.ceil(filteredData.length / itemsPerPage)?"pointer":"not-allowed" }}
 
+                onClick={handlePreviousPage}
+                disabled={pageNo === 1}
+                className="mystore__pagination-btn"
+              >
+                Previous
+              </button>
+              <span>{`Page ${pageNo} of ${Math.ceil(
+                filteredData.length / itemsPerPage
+              )}`}</span>
+              <button
+              style={{cursor:pageNo >= Math.ceil(filteredData.length / itemsPerPage)?"not-allowed" : "pointer"}}
+                onClick={handleNextPage}
+                disabled={pageNo >= Math.ceil(filteredData.length / itemsPerPage)}
+                className="mystore__pagination-btn"
+              >
+                Next 
+              </button>
+            </div>
           </div>
-
         </>
       )}
     </>

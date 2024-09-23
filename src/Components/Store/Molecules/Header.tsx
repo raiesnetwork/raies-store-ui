@@ -11,14 +11,22 @@ import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
+import { getSubdomain } from "../../../Utils/Subdomain";
+
+const { hostname } = window.location;
+// eslint-disable-next-line prefer-const
+let subdomain = getSubdomain(hostname);
 const Header: React.FC = () => {
   const {
     //  userName, 
     logedIn, isOpenSignupModal, 
+    latestProduct
     // cartData 
   } = useMystoreStore((s) => s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
+  const [search,setSearch]=useState<string>('')
+
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
@@ -31,7 +39,9 @@ const Header: React.FC = () => {
   const closeLoginModal = () => {
     setIsLoginModalOpen(false);
   };
-
+const handilSearch=async()=>{
+  await latestProduct(subdomain,search);
+}
   return (
     <header className="header">
       {/* Left side: Logo and Store Name */}
@@ -44,8 +54,8 @@ const Header: React.FC = () => {
       {/* Center: Search Box */}
       <div className="header__center">
         <div className="header__search">
-          <input type="text" placeholder="Search" className="header__search-input" />
-          <CiSearch className="header__serchIcon" />
+          <input onChange={(e)=>setSearch(e.target.value)} type="text" placeholder="Search" className="header__search-input" />
+          <CiSearch onClick={handilSearch} className="header__serchIcon" />
         </div>
 
       </div>

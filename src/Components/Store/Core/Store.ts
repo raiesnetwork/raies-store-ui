@@ -106,10 +106,11 @@ logedIn:false,
 checkLoggedIn:(data)=>{
 set(()=>({logedIn:data}))
 },
-latestProduct:async(hostName)=>{
-  const data=await latestProductApi(hostName)
-  set(() => ({ AllProducts: data?.data}));
 
+latestProduct:async(hostName,name)=>{
+  const data=await latestProductApi(hostName,name)
+  set(() => ({ AllProducts: data?.data
+  }));
   return data
 },
 isOpenSignupModal:false,
