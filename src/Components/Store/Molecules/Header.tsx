@@ -6,33 +6,35 @@ import '../Helpers/scss/Headder.scss'
 import LoginModal from "./LoginModal"; // Import the modal
 import useMystoreStore from "../Core/Store";
 import SignupModal from "./SignupModal";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { IoIosNotificationsOutline } from "react-icons/io";
-import { MdNotificationsActive } from "react-icons/md";
 const Header: React.FC = () => {
   const {
     //  userName, 
-    logedIn, isOpenSignupModal,
+    logedIn, isOpenSignupModal, logout,
     // cartData 
   } = useMystoreStore((s) => s)
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   const [isLoginModalOpen, setIsLoginModalOpen] = useState<boolean>(false);
-
+  let navigate = useNavigate();
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
 
-  // const openLoginModal = () => {
-  //   setIsLoginModalOpen(true);
-  // };
+  const openLoginModal = () => {
+    setIsLoginModalOpen(true);
+  };
 
   const closeLoginModal = () => {
     setIsLoginModalOpen(false);
   };
-
+  const handleLogout = () => {
+    logout(); // Call the logout action from the store
+    navigate("/login"); // Redirect to login page after logout
+  };
   return (
     <header className="header">
       {/* Left side: Logo and Store Name */}
@@ -55,8 +57,7 @@ const Header: React.FC = () => {
       <div className="header__right">
         {logedIn === true ? (
           <>
-            <IoIosNotificationsOutline size={28} color="black" />
-            < MdNotificationsActive size={28} color="red" />
+
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
@@ -84,7 +85,7 @@ const Header: React.FC = () => {
                   <ul>
                     <li><Link to='/orders'>My Orders</Link></li>
                     <li><a href="/settings">Profile</a></li>
-                    <li><a href="/logout">Logout</a></li>
+                    <li onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>
               )}
@@ -92,7 +93,6 @@ const Header: React.FC = () => {
           </>
         ) : (
           <>
-            {/* <button className="login-btn" onClick={openLoginModal}>Login</button> */}
             <div className="header__guest_login">
               <Link to={"/login"}>
                 <FiUser className="header__profile_icon" />

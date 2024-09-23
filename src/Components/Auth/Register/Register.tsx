@@ -1,13 +1,46 @@
 import React, { useState } from "react";
-import { TextField } from '@mui/material';
+import { TextField, CircularProgress } from '@mui/material';
 import { PhoneInput } from "react-international-phone";
 import 'react-international-phone/style.css'; // Make sure to include the required styles
 import "../Login/Login.scss";
 import Header from "../../Store/Molecules/Header";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { MdErrorOutline } from "react-icons/md";
+import useMystoreStore from "../../Store/Core/Store";
+import { getSubdomain } from "../../../Utils/Subdomain";
+
+const { hostname } = window.location;
+let subdomain = getSubdomain(hostname);
 
 export const Register: React.FC = () => {
-    const [phone, setPhone] = useState<string>("");
+    const [username, setUsername] = useState<string>("");
+    const [password, setPassword] = useState<string>("");
+    const [mobileNumber, setMobileNumber] = useState<string>("");
+    const [loading, setLoading] = useState<boolean>(false); // Spinner state
+    const [error, setError] = useState<boolean>(false);
+    const [errorMessage, setErrorMsg] = useState<string>("");
+
+    const { registrationVerify } = useMystoreStore((state) => state);
+
+
+    const navigate = useNavigate();
+
+    const handleSubmit = async (e: React.FormEvent) => {
+        setLoading(true);
+        e.preventDefault();
+        const data = await registrationVerify(mobileNumber, subdomain);
+        if (data.error) {
+            setLoading(false);
+            setError(true)
+            setErrorMsg(data.message)
+        } else {
+            setLoading(false);
+            setError(false);
+            navigate("/otp", { state: { mobileNumber, subdomain, username, password, registration: true } });
+        }
+
+    };
+
 
     return (
         <>
@@ -27,14 +60,16 @@ export const Register: React.FC = () => {
                             type="text"
                             autoComplete="current-password"
                             className="login__input_field"
+                            value={username}
+                            onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
                     <div className="login__input_container">
                         <PhoneInput
-                            value={phone}
-                            onChange={setPhone}
+                            value={mobileNumber}
+                            onChange={setMobileNumber}
                             className="login__phone_input_field"
-                            defaultCountry="US" // You can set default country if required
+                            defaultCountry="in" // You can set default country if required
                             placeholder="Enter phone number"
                         />
                     </div>
@@ -45,10 +80,18 @@ export const Register: React.FC = () => {
                             type="password"
                             autoComplete="current-password"
                             className="login__input_field"
+                            value={password}
+                            onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
                     <div className="login__btn_container">
-                        <button className="login__btn">SIGN UP</button>
+                        <button className="login__btn" onClick={handleSubmit} disabled={loading}>
+                            {loading ? (
+                                <CircularProgress size={24} />
+                            ) : (
+                                "SIGN UP"
+                            )}
+                        </button>
                     </div>
                     <div className="login__redirect_text_sec">
                         <div className="login__redirect_text">
@@ -56,6 +99,14 @@ export const Register: React.FC = () => {
                             <Link to="/login" className="login__redirect_link">LOG IN</Link>
                         </div>
                     </div>
+                    {error && (
+                        <div className="login__error_sec">
+                            <MdErrorOutline />
+                            <div className="login__error_msg">
+                                {errorMessage || "Login Error"}
+                            </div>
+                        </div>
+                    )}
                 </div>
             </div>
         </>

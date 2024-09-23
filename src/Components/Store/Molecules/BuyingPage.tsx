@@ -19,7 +19,7 @@ const CheckoutPage: React.FC = () => {
     isOpenselectAddressModal,
     setIsOpenSelectAddressModal,
     createOrdr,
-    FetchToCart
+    FetchToCart,
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("");
@@ -179,7 +179,7 @@ const CheckoutPage: React.FC = () => {
               </>
             )}
             {!addressData?.length && !selectedAddress.id && (
-              <button onClick={OpenAddressModal}>Add new Address</button>
+              <button onClick={setIsOpenSelectAddressModal}>Add new Address</button>
             )}
             {addressData?.length && !selectedAddress.id && (
               <button onClick={setIsOpenSelectAddressModal}>

@@ -45,11 +45,21 @@
           &.delivered {
             background-color: #17a2b8;
             color: #fff;
+          }&.accepted {
+            background-color: #17a2b8;
+            color: #fff;
           }
   
           &.pending {
             background-color: #ffc107;
             color: #333;
+          }
+          &.cancelled {
+            background-color: #ffc107;
+            color: #dd1d1d;
+          }.rejected {
+            background-color: #ffc107;
+            color: #dd1d1d;
           }
         }
       }

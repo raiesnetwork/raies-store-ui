@@ -29,6 +29,14 @@
         flex-direction: column;
         gap: 15px;
     }
+    &__With_otp_sec{
+        font-family: system-ui;
+        font-size: 15px;
+        display: flex;
+        align-items: center;
+        gap: 6px;
+        font-weight: 300;
+    }
 
     &__header {
         font-size: 25px;

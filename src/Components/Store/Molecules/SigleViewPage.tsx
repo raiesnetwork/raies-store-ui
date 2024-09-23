@@ -6,9 +6,11 @@ import BiddingModal from "./BiddingModal";
 import Header from "./Header";
 import { toast,ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
+import AddressModal from "./BuyAddressModal";
+import AddressComponentModal from "./ShowAllAddressModal";
 
 const SingleProductView: React.FC = () => {
-  const {logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
+  const {addressSupparator,addressSupparatorBarter,setaddressSupparatorBarter,setAddressSuparator,isOpenselectAddressModal,OpenAddressModal,isOpenAddressModal,logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
     (s) => s
   );
   const [imageView, setImageView] = useState<string>(
@@ -30,6 +32,15 @@ const [disable,setDisable]=useState<boolean>(false)
     toast.success("Item added Successfully")
    }
   }
+  const handleBarterAddressModalClose=()=>{
+    OpenAddressModal()
+    setOpenBarterModal()
+  }
+  const handleBidAddressModalClose=()=>{
+    OpenAddressModal()
+    setOpenBiddingModal()
+  }
+  
   return (
     <>
     <Header/>
@@ -152,7 +163,10 @@ const [disable,setDisable]=useState<boolean>(false)
                 {singleProductData.priceOption === "barter" && (
                   <>
                     <button 
-                    onClick={setOpenBarterModal}>Exchange</button>
+                    onClick={()=>{
+                      setOpenBarterModal()
+                      setaddressSupparatorBarter(true)
+                    }}>Exchange</button>
                   </>
                 )}
                 {singleProductData.priceOption === "free" && singleProductData.productCount>0&& (
@@ -180,7 +194,10 @@ const [disable,setDisable]=useState<boolean>(false)
                 {singleProductData.priceOption === "bidding" && (
                   <>
                     <button 
-                    onClick={setOpenBiddingModal}
+                    onClick={()=>{
+                      setOpenBiddingModal()
+                      setAddressSuparator(true)
+                    }}
                     >Start Auction</button>
                   </>
                 )}
@@ -193,13 +210,21 @@ const [disable,setDisable]=useState<boolean>(false)
           <div>Related Products</div>
         </div>
       </div>
+      {isOpenAddressModal&&<AddressModal closeModal={addressSupparatorBarter ?handleBarterAddressModalClose:addressSupparator? handleBidAddressModalClose:()=>{} } />}
+      {isOpenselectAddressModal && (
+        <AddressComponentModal
+        
+        opencreateAddressModal={OpenAddressModal} />
+      )}
+               
       {isOpenBarteModal&&<BarterModal/>}
       {isOpenBiddingModal&&<BiddingModal/>}
-      <ToastContainer/>
+      
     </>
   :<>
   <div style={{textAlign:"center"}}>Please select any product...</div>
   </>}
+  <ToastContainer/>
     </>
   );
 };

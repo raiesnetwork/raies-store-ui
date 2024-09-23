@@ -23,19 +23,11 @@ export interface respProduct {
   barterProductName: string;
 }
 export interface barterOrder{
-  fullName: string
-    mobileNumber: string
-    fullAddress: string
-    landmark: string
-    pincode: string
+  addressId:string
     productImage: string
     productId:string
 }export interface biddingOrder{
-  fullName: string
-    mobileNumber: string
-    fullAddress: string
-    landmark: string
-    pincode: string
+  addressId:string
     biddingAmount: string
     productId:string
 }
@@ -85,8 +77,18 @@ export interface MystoreStore {
   setSelectedAddress:(data:respStoreAddress)=>void
   isOpenselectAddressModal:boolean
   setIsOpenSelectAddressModal:()=>void
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   createRazorpayOrder: (amount: number) => Promise<any>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   verifyRazorpayPayment: (data:onlinePayment) => Promise<any>;
+  isOpenAddressModal:boolean,
+OpenAddressModal:()=>void
+addressSupparator:boolean,
+addressSupparatorBarter:boolean,
+setAddressSuparator:(s:boolean)=>void
+setaddressSupparatorBarter:(s:boolean)=>void
+logout:()=>void;
+registrationVerify:(number:string,hostname:string)=>Promise<any>;
 
 }
 export interface createOrder{
@@ -101,6 +103,7 @@ export interface onlinePayment{
     totalAmount:string  
     paymentMethod :string
     addressId  :string,
+    // eslint-disable-next-line @typescript-eslint/no-explicit-any
     response:any
     
 }

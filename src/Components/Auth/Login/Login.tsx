@@ -4,7 +4,7 @@ import { PhoneInput } from "react-international-phone";
 import 'react-international-phone/style.css';
 import "./Login.scss";
 import Header from "../../Store/Molecules/Header";
-import { Link } from "react-router-dom";
+import { Link, Navigate, useNavigate } from "react-router-dom";
 import useMystoreStore from "../../Store/Core/Store";
 import { toast } from "react-toastify";
 import { getSubdomain } from "../../../Utils/Subdomain";
@@ -12,14 +12,16 @@ import { MdErrorOutline } from "react-icons/md";
 
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
+console.log("ss",subdomain);
 
 export const Login: React.FC = () => {
+
     const [mobileNumber, setMobileNumber] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false); // Spinner state
     const [error, setError] = useState<boolean>(false);
     const [errorMessage, setErrorMsg] = useState<string>("");
     const [password, setPassword] = useState<string>("");
-
+    const [checkBox, setCheckBox] = useState<boolean>(false);
     const {
         setUserName,
         loginUser,
@@ -27,16 +29,23 @@ export const Login: React.FC = () => {
         checkLoggedIn,
         loginWithPassword,
     } = useMystoreStore((state) => state);
-
-    const handleLogin = async (e: React.FormEvent) => {
+    let navigate = useNavigate();
+    const handleSubmit = async (e: React.FormEvent) => {
         e.preventDefault();
+        if (!checkBox) {
+            handleLogin()
+        } else {
+            LoginWithOtp()
+        }
+    }
+    const handleLogin = async () => {
         setLoading(true); // Start loading spinner
         setError(false);  // Reset error state
 
         if (mobileNumber.trim() && password.trim() && mobileNumber.length > 7) {
             const response = await loginWithPassword(mobileNumber, password, subdomain);
-            console.log("s",response);
-            
+            console.log("s", response);
+
             setLoading(false); // Stop spinner once response is received
             if (response.error) {
                 setError(true);
@@ -58,7 +67,24 @@ export const Login: React.FC = () => {
             setErrorMsg("Invalid mobile number or password");
         }
     };
+    const LoginWithOtp = async () => {
+        setLoading(true); // Start loading spinner
+        setError(false); 
+        let data = null;
+        data = await verifyNumber(mobileNumber);
+        console.log("otpres",data);
+        
+        if (data.error) {
+            setLoading(false); 
+            setError(true)
+            setErrorMsg("Enter a valid mobile number")
+        } else {
+            setLoading(false); 
+            setError(false); 
+            navigate("/otp", { state: { mobileNumber,subdomain,registration:false } }); 
+        }
 
+    };
     return (
         <>
             <Header />
@@ -75,25 +101,30 @@ export const Login: React.FC = () => {
                             value={mobileNumber}
                             onChange={setMobileNumber}
                             className="login__phone_input_field"
-                            defaultCountry="IN"
+                            defaultCountry="in"
                             placeholder="Enter phone number"
                         />
                     </div>
-                    <div className="login__input_container">
-                        <TextField
-                            id="outlined-password-input"
-                            label="Password"
-                            type="password"
-                            autoComplete="current-password"
-                            value={password}
-                            onChange={(e) => setPassword(e.target.value)}
-                            className="login__input_field"
-                        />
+                    {!checkBox ?
+                        <div className="login__input_container">
+                            <TextField
+                                id="outlined-password-input"
+                                label="Password"
+                                type="password"
+                                autoComplete="current-password"
+                                value={password}
+                                onChange={(e) => setPassword(e.target.value)}
+                                className="login__input_field"
+                            />
+                        </div>
+                        : <></>}
+                    <div className="login__With_otp_sec">
+                        <input type="checkbox" onChange={(e) => setCheckBox(e.target.checked)} /> Login With OTP
                     </div>
                     <div className="login__btn_container">
-                        <button className="login__btn" onClick={handleLogin} disabled={loading}>
+                        <button className="login__btn" onClick={handleSubmit} disabled={loading}>
                             {loading ? (
-                                <CircularProgress size={24}  />
+                                <CircularProgress size={24} />
                             ) : (
                                 "SIGN IN"
                             )}
