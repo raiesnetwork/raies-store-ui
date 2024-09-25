@@ -1,4 +1,4 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Helpers/scss/Headder.scss";
 // import profile from "../../../assets/blank-profile-picture-973460_1280.png"
 // import logo from '../../../assets/favicon.ico'
@@ -21,6 +21,7 @@ const Header: React.FC = () => {
     logout,
     latestProduct,
     // cartData
+    storeIconRefresh
   } = useMystoreStore((s) => s);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   let navigate = useNavigate();
@@ -37,15 +38,22 @@ const Header: React.FC = () => {
   const handilSearch = async () => {
     await latestProduct(subdomain, search);
   };
+  const[storeIcon,setStoreIcon]=useState<any>("")
+  useEffect(()=>{
+    const storedDataRaw = localStorage.getItem('store-data');
+    const storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
+        setStoreIcon(storedData)
+  },[storeIconRefresh])
   return (
     <header className="header">
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left">
         <img
-          src={"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
+          src={storeIcon.storeIcon? storeIcon.storeIcon:"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
           alt="Store Logo"
           className="header__logo"
         />
+        <p>{storeIcon.storeName?storeIcon.storeName:""}</p>
       </Link>
 
       {/* Center: Search Box */}

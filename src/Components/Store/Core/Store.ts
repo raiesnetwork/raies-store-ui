@@ -12,7 +12,8 @@ import {
   DeleteCartApi,
   FetchToCartApi,
   getAddressApi,
-  getAllProductApi,
+  getStoreIconApi,
+  // getAllProductApi,
   getUserOrderApi,
   latestProductApi,
   loginUserApi,
@@ -26,13 +27,13 @@ import {
 const useMystoreStore = create<MystoreStore>((set) => ({
   onlinePaymenterror: "",
   AllProducts: [],
-  getAllProduct: async (hostName) => {
-    if (hostName) {
-      const resp = await getAllProductApi(hostName);
-      set(() => ({ AllProducts: resp?.data }));
-      return resp;
-    }
-  },
+  // getAllProduct: async (hostName) => {
+  //   if (hostName) {
+  //     const resp = await getAllProductApi(hostName);
+  //     set(() => ({ AllProducts: resp?.data }));
+  //     return resp;
+  //   }
+  // },
   singleProductData: {
     brandName: "",
     description: "",
@@ -214,6 +215,15 @@ const useMystoreStore = create<MystoreStore>((set) => ({
       userName: "",
     }));
   },
+  getStoreIconAndName:async(hostName)=>{
+    const data=await getStoreIconApi(hostName)
+    return data
+  },
+  storeIconRefresh:false,
+  setStoreIconRefresh:()=>{
+    set((s) => ({ storeIconRefresh:!s.storeIconRefresh }));
+
+  }
 }));
 
 export default useMystoreStore;

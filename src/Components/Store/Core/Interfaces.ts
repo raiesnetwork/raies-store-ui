@@ -32,7 +32,7 @@ export interface barterOrder{
     productId:string
 }
 export interface MystoreStore {
-  getAllProduct: (id?: string|null) => Promise<ApiResponce>;
+  // getAllProduct: (id?: string|null) => Promise<ApiResponce>;
   AllProducts: respProduct[];
   singleProductData: respProduct;
   updateSingleProductData: (data: respProduct) => void;
@@ -58,6 +58,7 @@ export interface MystoreStore {
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
   createBarterOrder: (hostName: barterOrder) => Promise<ApiResponce>;
   createBiddingOrder: (hostName: biddingOrder) => Promise<ApiResponce>;
+  getStoreIconAndName: (hostName: string) => Promise<ApiResponce>;
   getUserOrder: () => Promise<ApiResponce>;
   getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
@@ -89,6 +90,8 @@ setAddressSuparator:(s:boolean)=>void
 setaddressSupparatorBarter:(s:boolean)=>void
 logout:()=>void;
 registrationVerify:(number:string,hostname:string|null)=>Promise<any>;
+storeIconRefresh:boolean
+  setStoreIconRefresh:()=>void
 
 }
 export interface createOrder{
