@@ -51,11 +51,11 @@ const Header: React.FC = () => {
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left">
         <img
-          src={storeIcon.storeIcon? storeIcon.storeIcon:"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
+          src={storeIcon?.storeIcon? storeIcon?.storeIcon:"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
           alt="Store Logo"
           className="header__logo"
         />
-        <p>{storeIcon.storeName?storeIcon.storeName:""}</p>
+        <p>{storeIcon?.storeName?storeIcon?.storeName:""}</p>
       </Link>
 
       {/* Center: Search Box */}

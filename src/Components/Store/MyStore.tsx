@@ -20,6 +20,7 @@ export const MyStore: React.FC = () => {
     logedIn,
     latestProduct,
     setUserName,
+    storeIconRefresh
   } = useMystoreStore((state) => state);
 
   const [data, setData] = useState<respProduct[]>([]);
@@ -27,7 +28,12 @@ export const MyStore: React.FC = () => {
   const [filter, setFilter] = useState<string>("All");
   const [pageNo, setPageNo] = useState<number>(1); 
   const [itemsPerPage] = useState<number>(2); 
-
+  const[storeBanner,setStoreIcon]=useState<any>("")
+  useEffect(()=>{
+    const storedDataRaw = localStorage.getItem('store-data');
+    const storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
+        setStoreIcon(storedData)
+  },[storeIconRefresh])
   useEffect(() => {
     if (AllProducts.length > 0) {
       setData(AllProducts);
@@ -103,7 +109,7 @@ export const MyStore: React.FC = () => {
         <>
           <div className="mystore">
             <div className="myStore__banner">
-              <img src="/media/nike banner.png" className="mystore__banner_img" alt="" />
+              <img src={storeBanner?.storeBanner?storeBanner?.storeBanner:"/media/nike banner.png"} className="mystore__banner_img" alt="" />
             </div>
             <div className="mystore__category_container">
               <select
