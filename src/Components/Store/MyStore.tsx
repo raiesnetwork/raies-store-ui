@@ -27,7 +27,7 @@ export const MyStore: React.FC = () => {
   const [filteredData, setFilteredData] = useState<respProduct[]>([]);
   const [filter, setFilter] = useState<string>("All");
   const [pageNo, setPageNo] = useState<number>(1); 
-  const [itemsPerPage] = useState<number>(2); 
+  const [itemsPerPage] = useState<number>(10); 
   const[storeBanner,setStoreIcon]=useState<any>("")
   useEffect(()=>{
     const storedDataRaw = localStorage.getItem('store-data');
