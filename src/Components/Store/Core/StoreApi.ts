@@ -294,7 +294,7 @@ export const createBiddingOrderApi = async (datas: biddingOrder) => {
 };
 
 
-export const getStoreIconApi = async (hostName: string) => {
+export const getStoreIconApi = async (hostName: string|null) => {
   try {
     const { data } = await axiosInstance.get(
       `/userstore/auth/nameandicon/${hostName}`

@@ -58,7 +58,7 @@ export interface MystoreStore {
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
   createBarterOrder: (hostName: barterOrder) => Promise<ApiResponce>;
   createBiddingOrder: (hostName: biddingOrder) => Promise<ApiResponce>;
-  getStoreIconAndName: (hostName: string) => Promise<ApiResponce>;
+  getStoreIconAndName: (hostName: string|null) => Promise<ApiResponce>;
   getUserOrder: () => Promise<ApiResponce>;
   getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
