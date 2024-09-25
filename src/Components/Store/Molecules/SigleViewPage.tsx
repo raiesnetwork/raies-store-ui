@@ -22,15 +22,20 @@ const SingleProductView: React.FC = () => {
 const [disable,setDisable]=useState<boolean>(false)
 
   const handileCart=async(id:string,count:number,userId:string)=>{
-    setDisable(true)
-   const data=await AddToCart(id,count,userId)
-   setDisable(false)
-   if (data.error) {
-    toast.error("item coun't add to cart")
-   }else{
-    FetchToCart()
-    toast.success("Item added Successfully")
-   }
+    if (logedIn) {
+      
+      setDisable(true)
+      const data=await AddToCart(id,count,userId)
+      setDisable(false)
+      if (data.error) {
+        toast.error("item coun't add to cart")
+      }else{
+        FetchToCart()
+        toast.success("Item added Successfully")
+      }
+    }else{
+      return toast("You need to login first")
+    }
   }
   const handleBarterAddressModalClose=()=>{
     OpenAddressModal()
@@ -158,7 +163,7 @@ const [disable,setDisable]=useState<boolean>(false)
                   item left
                 </p>
               )}
-              {logedIn&&
+             
               <div className="purchase-btns">
                 {singleProductData.priceOption === "barter" && (
                   <>
@@ -202,7 +207,7 @@ const [disable,setDisable]=useState<boolean>(false)
                   </>
                 )}
               </div>
-              }
+              
             </div>
           </div>
         </div>
