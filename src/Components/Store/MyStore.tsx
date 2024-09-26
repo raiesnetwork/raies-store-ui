@@ -20,7 +20,6 @@ export const MyStore: React.FC = () => {
     logedIn,
     latestProduct,
     setUserName,
-    storeIconRefresh,
     storeData
   } = useMystoreStore((state) => state);
 
@@ -29,7 +28,6 @@ export const MyStore: React.FC = () => {
   const [filter, setFilter] = useState<string>("All");
   const [pageNo, setPageNo] = useState<number>(1); 
   const [itemsPerPage] = useState<number>(10); 
-  const[storeBanner,setStoreIcon]=useState<any>("")
   // useEffect(()=>{
   //   const storedDataRaw = localStorage.getItem('store-data');
   //   const storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
