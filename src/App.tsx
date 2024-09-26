@@ -21,6 +21,9 @@ function App() {
         }))
 
       } else {
+        localStorage.setItem('store-data',JSON.stringify({storeName:"",storeIcon:"",storeBanner:""}))
+        
+      }else{
         localStorage.setItem('store-data', JSON.stringify(Data?.data));
         setStoreIconRefresh()
       }
