@@ -6,5 +6,5 @@ export function getSubdomain(hostname: string) {
     // }
   
     // return null; 
-    return "abc"
+    return "thubjurj"
   }

@@ -20,6 +20,7 @@ const Header: React.FC = () => {
     logedIn,
     logout,
     latestProduct,
+    storeData,
     // cartData
     storeIconRefresh
   } = useMystoreStore((s) => s);
@@ -51,11 +52,11 @@ const Header: React.FC = () => {
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left" style={{textDecoration:"none"}}>
         <img
-          src={storeIcon?.storeIcon? storeIcon?.storeIcon:"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
+          src={storeData? storeData?.storeIcon:"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
           alt="Store Logo"
           className="header__logo"
         />
-        <p>{storeIcon?.storeName?storeIcon?.storeName:""}</p>
+        <p>{storeData? storeData?.storeName:""}</p>
       </Link>
 
       {/* Center: Search Box */}

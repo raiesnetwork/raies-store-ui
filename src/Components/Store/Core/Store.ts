@@ -25,7 +25,13 @@ import {
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set) => ({
+  storeIconRefresh: false,
   onlinePaymenterror: "",
+  storeData: {
+    storeName: "",
+    storeIcon: "",
+    storeBanner: ""
+  },
   AllProducts: [],
   // getAllProduct: async (hostName) => {
   //   if (hostName) {
@@ -215,13 +221,15 @@ const useMystoreStore = create<MystoreStore>((set) => ({
       userName: "",
     }));
   },
-  getStoreIconAndName:async(hostName)=>{
-    const data=await getStoreIconApi(hostName)
-    return data
+  getStoreIconAndName: async (hostName) => {
+    const response = await getStoreIconApi(hostName);
+    set((state) => ({ storeData: response.data, storeIconRefresh: !state.storeIconRefresh }))
+
+    return response.data
   },
-  storeIconRefresh:false,
-  setStoreIconRefresh:()=>{
-    set((s) => ({ storeIconRefresh:!s.storeIconRefresh }));
+
+  setStoreIconRefresh: () => {
+    set((s) => ({ storeIconRefresh: !s.storeIconRefresh }));
 
   }
 }));

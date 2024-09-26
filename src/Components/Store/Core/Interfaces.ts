@@ -31,9 +31,15 @@ export interface barterOrder{
     biddingAmount: string
     productId:string
 }
+export interface storeData{
+  storeName:string
+    storeIcon: string
+    storeBanner:string
+}
 export interface MystoreStore {
   // getAllProduct: (id?: string|null) => Promise<ApiResponce>;
   AllProducts: respProduct[];
+  storeData:storeData;
   singleProductData: respProduct;
   updateSingleProductData: (data: respProduct) => void;
   onlinePaymenterror:string;

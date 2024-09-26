@@ -1,42 +1,48 @@
 import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
 import Auth from "./Components/Auth/Auth";
 import { MyStore } from "./Components/Store/MyStore";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import useMystoreStore from "./Components/Store/Core/Store";
 import { getSubdomain } from "./Utils/Subdomain";
-const { hostname } = window.location
-let hostName = getSubdomain(hostname)
+
+const { hostname } = window.location;
+let hostName = getSubdomain(hostname);
+
 function App() {
-  const { getStoreIconAndName, setStoreIconRefresh } = useMystoreStore((s) => s)
+  const { getStoreIconAndName, storeData } = useMystoreStore((s) => s);
+  const [loading, setLoading] = useState(true);  // Loading state
+
   useEffect(() => {
     const apiHelper = async () => {
-      const Data = await getStoreIconAndName(hostName)
-      console.log(Data.data);
-
-      if (Data.error) {
-        localStorage.setItem('store-data', JSON.stringify({
-          storeName: "",
-          storeIcon: "",
-          storeBanner: ""
-        }))
-
-      } else {
-        localStorage.setItem('store-data',JSON.stringify({storeName:"",storeIcon:"",storeBanner:""}))
-        
-      }else{
-        localStorage.setItem('store-data', JSON.stringify(Data?.data));
-        setStoreIconRefresh()
+      try {
+        const Data = await getStoreIconAndName(hostName);
+        console.log(Data.data);
+      } catch (error) {
+        console.error("Error fetching store data:", error);
+      } finally {
+        setLoading(false);  // Set loading to false once data is fetched
       }
-    }
-    apiHelper()
-  }, [])
+    };
+    apiHelper();
+  }, [getStoreIconAndName, hostName]);
+
+  console.log("storeData", storeData);
+
+  if (loading) {
+    // Show loader while data is being fetched
+    return (
+      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+        <div className="loader">Loading...</div>
+      </div>
+    );
+  }
+
   return (
     <Router>
       <Auth>
         <Routes>
           {/* Define different routes for your application */}
           <Route path="/" element={<MyStore />} />
-
         </Routes>
       </Auth>
     </Router>
