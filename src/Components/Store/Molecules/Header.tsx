@@ -49,7 +49,7 @@ const Header: React.FC = () => {
   return (
     <header className="header">
       {/* Left side: Logo and Store Name */}
-      <Link to={"/"} className="header__left">
+      <Link to={"/"} className="header__left" style={{textDecoration:"none"}}>
         <img
           src={storeIcon?.storeIcon? storeIcon?.storeIcon:"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
           alt="Store Logo"

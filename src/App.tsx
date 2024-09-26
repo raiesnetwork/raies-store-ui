@@ -4,25 +4,29 @@ import { MyStore } from "./Components/Store/MyStore";
 import { useEffect } from "react";
 import useMystoreStore from "./Components/Store/Core/Store";
 import { getSubdomain } from "./Utils/Subdomain";
-const {hostname}=window.location
-let hostName=getSubdomain(hostname)
+const { hostname } = window.location
+let hostName = getSubdomain(hostname)
 function App() {
-  const {getStoreIconAndName,setStoreIconRefresh}=useMystoreStore((s)=>s)
-  useEffect(()=>{
-    const apiHelper=async()=>{
-      const Data=await getStoreIconAndName(hostName)
+  const { getStoreIconAndName, setStoreIconRefresh } = useMystoreStore((s) => s)
+  useEffect(() => {
+    const apiHelper = async () => {
+      const Data = await getStoreIconAndName(hostName)
       console.log(Data.data);
-      
+
       if (Data.error) {
-        localStorage.setItem('store-data','Raies')
-        
-      }else{
+        localStorage.setItem('store-data', JSON.stringify({
+          storeName: "",
+          storeIcon: "",
+          storeBanner: ""
+        }))
+
+      } else {
         localStorage.setItem('store-data', JSON.stringify(Data?.data));
         setStoreIconRefresh()
       }
     }
     apiHelper()
-  },[])
+  }, [])
   return (
     <Router>
       <Auth>

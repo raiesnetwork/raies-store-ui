@@ -34,6 +34,8 @@ export const MyStore: React.FC = () => {
     const storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
         setStoreIcon(storedData)
   },[storeIconRefresh])
+  console.log("sttt",storeIconRefresh);
+  
   useEffect(() => {
     if (AllProducts.length > 0) {
       setData(AllProducts);
