@@ -14,7 +14,7 @@ function App() {
       console.log(Data.data);
       
       if (Data.error) {
-        localStorage.setItem('store-data','Raies')
+        localStorage.setItem('store-data',JSON.stringify({storeName:"",storeIcon:"",storeBanner:""}))
         
       }else{
         localStorage.setItem('store-data', JSON.stringify(Data?.data));
