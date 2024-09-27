@@ -93,7 +93,7 @@ const Header: React.FC = () => {
                 <div className="header__dropdown">
                   <ul>
                     <li><Link to='/orders'>My Orders</Link></li>
-                    <li><a href="/settings">Profile</a></li>
+                    <li><Link to='/profile'>Profile</Link></li>
                     <li onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>

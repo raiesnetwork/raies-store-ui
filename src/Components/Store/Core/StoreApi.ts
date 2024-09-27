@@ -252,9 +252,9 @@ export const verifyRazorpayPaymentApi= async(datas:onlinePayment ): Promise<any>
     };
   }
 };
-export const getUserOrderApi = async () => {
+export const getUserOrderApi = async (subdomain:string|null) => {
   try {
-    const { data } = await axiosInstance.get(`/storuser/order`);
+    const { data } = await axiosInstance.get(`/storuser/order/${subdomain}`);
     return data;
   } catch (error) {
     return {

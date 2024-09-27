@@ -4,6 +4,7 @@ import Header from "./Header";
 import useMystoreStore from "../Core/Store";
 import { toast, ToastContainer } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
+import { getSubdomain } from "../../../Utils/Subdomain";
 
 interface resp {
   id: string;
@@ -46,7 +47,8 @@ interface details {
   quantity: number;
   price: number;
 }
-
+const {hostname}=window.location
+let subdomain=getSubdomain(hostname)
 const UserOrdersPage: React.FC = () => {
   const { getUserOrder } = useMystoreStore((s) => s);
   const [orders, setOrders] = useState<resp[]>([]);
@@ -58,7 +60,7 @@ const UserOrdersPage: React.FC = () => {
   useEffect(() => {
     const apiHelper = async () => {
       setLoading(true); // Start loading
-      const data = await getUserOrder();
+      const data = await getUserOrder(subdomain);
       if (data.error) {
         toast.error("We can't fetch orders");
       } else {

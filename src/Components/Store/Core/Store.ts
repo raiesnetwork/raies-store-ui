@@ -165,8 +165,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     const dataa = await createOrderApi(data);
     return dataa;
   },
-  getUserOrder: async () => {
-    const data = await getUserOrderApi();
+  getUserOrder: async (subdomain) => {
+    const data = await getUserOrderApi(subdomain);
     return data;
   },
   createBarterOrder: async (data) => {

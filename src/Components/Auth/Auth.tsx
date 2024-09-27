@@ -10,6 +10,7 @@ import SingleProductView from "../Store/Molecules/SigleViewPage";
 import { Login } from "./Login/Login";
 import { Register } from "./Register/Register";
 import { OtpPage } from "./Otp/Otp";
+import ProfilePage from "../Store/Molecules/ProfilePage";
 const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { AuthApiCall } = useAuth((s) => s);
   const { checkLoggedIn, logedIn } = useMystoreStore((s) => s);
@@ -35,6 +36,7 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Route path="/login" element={<Navigate to='/'/>} />
             <Route path="/register" element={<Navigate to='/'/>} />
             <Route path="/otp" element={<Navigate to='/'/>} />
+            <Route path="/profile" element={<ProfilePage/>} />
           </>
         )}
         <Route path="/details" element={<SingleProductView />} />
