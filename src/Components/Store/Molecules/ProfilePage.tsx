@@ -39,7 +39,7 @@ const ProfilePage: React.FC = () => {
       if (data.error) {
         toast.error("cant fetch user data");
       } else {
-        setFormData(profileData);
+        // setFormData(profileData);
       }
     };
     apiHelper();
