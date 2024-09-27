@@ -60,6 +60,8 @@ export interface MystoreStore {
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   latestProduct: (hostName: string|null,name:string) => Promise<ApiResponce>;
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;
+  getProfileInfo: () => Promise<ApiResponce>;
+  updateProfileInfo: (data:updateProfileInfo) => Promise<ApiResponce>;
   deleteAddress: (hostName: string) => Promise<ApiResponce>;
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
   createBarterOrder: (hostName: barterOrder) => Promise<ApiResponce>;
@@ -98,13 +100,28 @@ logout:()=>void;
 registrationVerify:(number:string,hostname:string|null)=>Promise<any>;
 storeIconRefresh:boolean
   setStoreIconRefresh:()=>void
-
+  profileData:updateProfileInfo
 }
 export interface createOrder{
   productDetails:[]          
     totalAmount:string  
     paymentMethod :string
     addressId  :string
+    
+}
+export interface updateProfileInfo{
+  fullName:string
+  profileImage?:string
+  gender?:string
+  email:string
+  mobileNumber?:string
+  role?:string
+  storeName:string
+  wareHouseAddress?:string
+  wareHouseContactNumber?:string
+  wareHouseOwnerName?:string
+  storeIcon?:string
+  storeBanner?:string
     
 }
 export interface onlinePayment{

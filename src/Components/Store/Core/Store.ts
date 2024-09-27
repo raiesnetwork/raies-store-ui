@@ -12,6 +12,7 @@ import {
   DeleteCartApi,
   FetchToCartApi,
   getAddressApi,
+  getProfileInfoApi,
   getStoreIconApi,
   // getAllProductApi,
   getUserOrderApi,
@@ -20,6 +21,7 @@ import {
   loginWithPasswordApi,
   registrationVerify,
   updateCartApi,
+  updateProfileInfoApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
 } from "./StoreApi";
@@ -231,7 +233,30 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   setStoreIconRefresh: () => {
     set((s) => ({ storeIconRefresh: !s.storeIconRefresh }));
 
-  }
+  },
+  profileData:{
+ email:"",
+ fullName:"",
+ gender:"",
+ mobileNumber:"",
+ profileImage:"",
+ role:"",
+ storeName:"",storeBanner:"",
+ storeIcon:"",
+ wareHouseAddress:"",
+ wareHouseContactNumber:"",
+ wareHouseOwnerName:"",
+  },
+  getProfileInfo:async()=>{
+    const data=await getProfileInfoApi()
+    set(() => ({ profileData: data?.data }));
+
+    return data
+  },
+  updateProfileInfo:async(data)=> {
+    const response=await updateProfileInfoApi(data)
+    return response
+  },
 }));
 
 export default useMystoreStore;
