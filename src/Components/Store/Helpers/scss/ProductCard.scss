@@ -1,7 +1,7 @@
 .product-card {
-
-
   transition: box-shadow 0.3s ease;
+  border-radius: 5px;
+  border: 1px solid #f1f1f1;
 
   &:hover {
     box-shadow: 0 4px 20px rgba(0, 0, 0, 0.1);
@@ -56,23 +56,24 @@
 
     .product-card__name {
       color: #4a4a4a;
-    font-size: 14px;
-    font-weight: 400;
-    text-transform: uppercase;
-    font-family: system-ui;
-    margin: 0px;
+      font-size: 14px;
+      font-weight: 400;
+      text-transform: uppercase;
+      font-family: system-ui;
+      margin: 0px;
     }
-    .product-card_swap-icon{
+
+    .product-card_swap-icon {
       font-size: 21px;
       color: black;
     }
 
     .product-card__price {
-     font-family: "Heebo", sans-serif;
-    font-size: 20px;
-    font-weight: 500;
-    line-height: 16px;
-    color: #2a2a2a;
+      font-family: "Heebo", sans-serif;
+      font-size: 20px;
+      font-weight: 500;
+      line-height: 16px;
+      color: #2a2a2a;
     }
   }
 

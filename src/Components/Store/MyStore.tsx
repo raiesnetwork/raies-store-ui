@@ -7,7 +7,7 @@ import "react-toastify/dist/ReactToastify.css";
 import { getSubdomain } from "../../Utils/Subdomain";
 import ClipLoader from "react-spinners/ClipLoader";
 import "./Helpers/scss/mystore.scss";
-
+import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 
@@ -137,7 +137,7 @@ export const MyStore: React.FC = () => {
             </div>
 
             {/* Pagination Controls */}
-            {/* <div className="mystore__pagination">
+            <div className="mystore__pagination">
               <button
                 style={{ cursor: pageNo >= Math.ceil(filteredData.length / itemsPerPage) ? "pointer" : "not-allowed" }}
 
@@ -145,20 +145,18 @@ export const MyStore: React.FC = () => {
                 disabled={pageNo === 1}
                 className="mystore__pagination-btn"
               >
-                Previous
+                <GrFormPrevious className="mystore__pagination_icon" />
               </button>
-              <span>{`Page ${pageNo} of ${Math.ceil(
-                filteredData.length / itemsPerPage
-              )}`}</span>
+              <div>{pageNo}</div>
               <button
                 style={{ cursor: pageNo >= Math.ceil(filteredData.length / itemsPerPage) ? "not-allowed" : "pointer" }}
                 onClick={handleNextPage}
                 disabled={pageNo >= Math.ceil(filteredData.length / itemsPerPage)}
                 className="mystore__pagination-btn"
               >
-                Next
+                <GrFormNext  className="mystore__pagination_icon" />
               </button>
-            </div> */}
+            </div>
           </div>
         </>
       )}

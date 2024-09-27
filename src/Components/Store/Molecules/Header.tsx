@@ -1,4 +1,4 @@
-import React, {  useState } from "react";
+import React, { useState } from "react";
 import "../Helpers/scss/Headder.scss";
 // import profile from "../../../assets/blank-profile-picture-973460_1280.png"
 // import logo from '../../../assets/favicon.ico'
@@ -22,10 +22,10 @@ const Header: React.FC = () => {
     latestProduct,
     storeData,
     // cartData
-  } = useMystoreStore((s) => s);
+  } = useMystoreStore((state) => state);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   let navigate = useNavigate();
-  const [search,setSearch]=useState<string>('')
+  const [search, setSearch] = useState<string>('')
 
 
   const toggleDropdown = () => {
@@ -46,17 +46,17 @@ const Header: React.FC = () => {
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left">
         <img
-          src={storeData? storeData?.storeIcon:"/media/Nike-logo-icon-on-transparent-background-PNG.png"}
+          src={storeData ? storeData?.storeIcon : "/media/Nike-logo-icon-on-transparent-background-PNG.png"}
           alt="Store Logo"
           className="header__logo"
         />
-        <p>{storeData? storeData?.storeName:""}</p>
+        <p>{storeData ? storeData?.storeName : ""}</p>
       </Link>
 
       {/* Center: Search Box */}
       <div className="header__center">
         <div className="header__search">
-          <input onChange={(e)=>setSearch(e.target.value)} type="text" placeholder="Search" className="header__search-input" />
+          <input onChange={(e) => setSearch(e.target.value)} type="text" placeholder="Search" className="header__search-input" />
           <CiSearch onClick={handilSearch} className="header__serchIcon" />
         </div>
 
@@ -67,15 +67,16 @@ const Header: React.FC = () => {
         {logedIn === true ? (
           <>
 
-            <div className="header__icon header__cart">
+            {/* <div className="header__icon header__cart">
 
               <Link to='/cart' >
                 <div style={{ position: "relative" }} >
                   <IoIosNotificationsOutline className="header__notification-icon" />
-                  {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
+                  <p className="header__profile-name">{cartData?.length} Items</p>
                 </div>
               </Link>
-            </div>
+            </div> */}
+            
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
@@ -92,8 +93,10 @@ const Header: React.FC = () => {
               {isDropdownOpen && (
                 <div className="header__dropdown">
                   <ul>
-                    <li><Link to='/orders'>My Orders</Link></li>
-                    <li><a href="/settings">Profile</a></li>
+                    <Link to='/orders' style={{ textDecoration: "none" }}>
+                      <li>My Orders</li>
+                    </Link>
+                    {/* <li><a href="/settings">Profile</a></li> */}
                     <li onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>
@@ -111,7 +114,7 @@ const Header: React.FC = () => {
         )}
       </div>
 
- 
+
     </header>
   );
 };

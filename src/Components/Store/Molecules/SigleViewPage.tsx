@@ -4,13 +4,15 @@ import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
 import BiddingModal from "./BiddingModal";
 import Header from "./Header";
-import { toast,ToastContainer } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import { Link } from "react-router-dom";
 import AddressModal from "./BuyAddressModal";
 import AddressComponentModal from "./ShowAllAddressModal";
-
+import { FaShoppingCart } from "react-icons/fa";
+import { IoBag } from "react-icons/io5";
+import { LiaExchangeAltSolid } from "react-icons/lia";
 const SingleProductView: React.FC = () => {
-  const {addressSupparator,addressSupparatorBarter,setaddressSupparatorBarter,setAddressSuparator,isOpenselectAddressModal,OpenAddressModal,isOpenAddressModal,logedIn,FetchToCart,AddToCart,isOpenBarteModal,isOpenBiddingModal, setOpenBiddingModal,singleProductData,setOpenBarterModal } = useMystoreStore(
+  const { addressSupparator, addressSupparatorBarter, setaddressSupparatorBarter, setAddressSuparator, isOpenselectAddressModal, OpenAddressModal, isOpenAddressModal, logedIn, FetchToCart, AddToCart, isOpenBarteModal, isOpenBiddingModal, setOpenBiddingModal, singleProductData, setOpenBarterModal } = useMystoreStore(
     (s) => s
   );
   const [imageView, setImageView] = useState<string>(
@@ -19,217 +21,220 @@ const SingleProductView: React.FC = () => {
   // eslint-disable-next-line no-unsafe-optional-chaining
   const [year, month, day] = singleProductData?.endDate.split("-");
   const lastDate = `${day}-${month}-${year}`;
-const [disable,setDisable]=useState<boolean>(false)
+  const [disable, setDisable] = useState<boolean>(false)
 
-  const handileCart=async(id:string,count:number,userId:string)=>{
+  const handileCart = async (id: string, count: number, userId: string) => {
     if (logedIn) {
-      
+
       setDisable(true)
-      const data=await AddToCart(id,count,userId)
+      const data = await AddToCart(id, count, userId)
       setDisable(false)
       if (data.error) {
         toast.error("item coun't add to cart")
-      }else{
+      } else {
         FetchToCart()
         toast.success("Item added Successfully")
       }
-    }else{
+    } else {
       return toast("You need to login first")
     }
   }
-  const handleBarterAddressModalClose=()=>{
+  const handleBarterAddressModalClose = () => {
     OpenAddressModal()
     setOpenBarterModal()
   }
-  const handleBidAddressModalClose=()=>{
+  const handleBidAddressModalClose = () => {
     OpenAddressModal()
     setOpenBiddingModal()
   }
-  
+
   return (
     <>
-    <Header/>
-    {singleProductData.id?
-    <>
-      <div style={{
-        marginTop:"20px"
-      }} className="single-product-container">
-        <div className="single-product-details">
-          <div className="single-product-left">
-            <div className="big-image">
-              <img src={imageView} alt="fullsize" />
-            </div>
-            <div className="related-images">
-              <img
-                onClick={() => setImageView(singleProductData.mainImage)}
-                src={singleProductData.mainImage}
-                alt=""
-                className="related-1"
-              />
-              {singleProductData?.subImages[0] && (
-                <img
-                  onClick={() => setImageView(singleProductData?.subImages[0])}
-                  src={singleProductData?.subImages[0]}
-                  alt="sub1"
-                  className="related-1"
-                />
-              )}
-              {singleProductData?.subImages[1] && (
-                <img
-                  onClick={() => setImageView(singleProductData?.subImages[1])}
-                  src={singleProductData?.subImages[1]}
-                  alt="sub2"
-                  className="related-1"
-                />
-              )}
-              {singleProductData?.subImages[2] && (
-                <img
-                  onClick={() => setImageView(singleProductData?.subImages[2])}
-                  src={singleProductData?.subImages[2]}
-                  alt="sub3"
-                  className="related-1"
-                />
-              )}
-            </div>
-          </div>
-          <div className="single-product-right">
-            {/* Normal type */}
+      <Header />
+      {singleProductData.id ?
+        <>
+          <div className="single-product-container">
+            <div className="single-product-details">
+              <div className="single-product-left">
+                <div className="big-image">
+                  <img src={imageView} alt="fullsize" />
+                </div>
+                <div className="related-images">
+                  <img
+                    onClick={() => setImageView(singleProductData.mainImage)}
+                    src={singleProductData.mainImage}
+                    alt=""
+                    className="related-1"
+                  />
+                  {singleProductData?.subImages[0] && (
+                    <img
+                      onClick={() => setImageView(singleProductData?.subImages[0])}
+                      src={singleProductData?.subImages[0]}
+                      alt="sub1"
+                      className="related-1"
+                    />
+                  )}
+                  {singleProductData?.subImages[1] && (
+                    <img
+                      onClick={() => setImageView(singleProductData?.subImages[1])}
+                      src={singleProductData?.subImages[1]}
+                      alt="sub2"
+                      className="related-1"
+                    />
+                  )}
+                  {singleProductData?.subImages[2] && (
+                    <img
+                      onClick={() => setImageView(singleProductData?.subImages[2])}
+                      src={singleProductData?.subImages[2]}
+                      alt="sub3"
+                      className="related-1"
+                    />
+                  )}
+                </div>
+              </div>
+              <div className="single-product-right">
+                {/* Normal type */}
 
-            <div className="details-product-normal">
-              <div>{singleProductData.productName}</div>
-              <div>{singleProductData.brandName}</div>
-              {/* normal type */}
-              {singleProductData.priceOption === "normal" && (
-                <div>
-                  {singleProductData.currency + " " + singleProductData.price}
+                <div className="details-product-info-container">
+                  <div className="product-details-info-sec">
+                    <div className="product-name">{singleProductData.productName}</div>
+                    {singleProductData.priceOption === "free" && (
+                      <div
+                        className="product-type-info"
+                      >
+                        Free
+                      </div>
+                    )}
+
+                    {singleProductData.priceOption === "normal" && (
+                      <div className="product-details-page-price">
+                        {singleProductData.currency + " " + singleProductData.price}
+                      </div>
+                    )}
+
+                    {singleProductData.priceOption === "barter" && (
+                      <div className="product-type-info-barter">
+                        <LiaExchangeAltSolid /> Exchange With {singleProductData.barterProductName}
+                      </div>
+                    )}
+
+                  </div>
+                  <div className="single-product-brand">
+                    {singleProductData.brandName}
+                  </div>
+
+
+                  {/* normal type */}
+
+                  {/*free type */}
+
+                  {/*bidding type */}
+                  {singleProductData.priceOption === "bidding" && (
+                    <div>
+                      <p>Start Price: {singleProductData.minBidPrice}</p>
+                      <p>Max Price: {singleProductData.maxBidPrice}</p>
+                      <p>Ending Date: {lastDate}</p>
+                    </div>
+                  )}
+                  {/*barter type */}
+
+                  <div className="product-description">
+                    {singleProductData.description}
+                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
+                    Inventore provident, deleniti sunt, doloremque quo id assumenda
+                    unde numquam cupiditate voluptates, aut minus non quisquam eaque
+                    sequi debitis. Facilis eius debitis, quod, ducimus fuga aliquid
+                    veniam consectetur quia sit dolore recusandae molestias!
+                    Necessitatibus, at commodi! Quisquam rerum odit voluptatum.
+                    Labore, officia.
+                  </div>
+                  {singleProductData.productCount < 5 && (
+                    <p className="product-card__limited-stock">
+                      Only{" "}
+                      <span style={{ color: "red" }}>
+                        {singleProductData.productCount}{" "}
+                      </span>{" "}
+                      item left
+                    </p>
+                  )}
+
+
+
                 </div>
-              )}
-              {/*free type */}
-              {singleProductData.priceOption === "free" && (
-                <div
-                  style={{
-                    color: "green",
-                  }}
-                >
-                  Free
+                <div className="purchase-btns">
+                  {singleProductData.priceOption === "barter" && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setOpenBarterModal()
+                          setaddressSupparatorBarter(true)
+                        }}> <LiaExchangeAltSolid />Exchange</button>
+                    </>
+                  )}
+                  {singleProductData.priceOption === "free" && singleProductData.productCount > 0 && (
+
+                    <>
+                      <button disabled={disable} onClick={() => handileCart(singleProductData.id, singleProductData.productCount, singleProductData.userId)}>
+                        <FaShoppingCart className="product-details-page-cart-icon" />Add to cart
+                      </button>
+                      <Link style={{ textDecoration: "none" }} to='/buy' state={
+                        {
+                          details: [{ id: "", quantity: 1, productDetails: singleProductData }],
+                          type: "single"
+                        }} >
+                        <button>
+                          <IoBag className="product-details-page-cart-icon" />Buy Now
+                        </button>
+                      </Link>
+                    </>
+
+                  )}
+                  {singleProductData.priceOption === "normal" && singleProductData.productCount > 0 && (
+                    <>
+                      <button disabled={disable} onClick={() => handileCart(singleProductData.id, singleProductData.productCount, singleProductData.userId)}>
+                        <FaShoppingCart className="product-details-page-cart-icon" />Add to cart
+                      </button>
+                      <Link style={{ textDecoration: "none" }} to='/buy' state={
+                        {
+                          details: [{ id: "", quantity: 1, productDetails: singleProductData }],
+                          type: "single"
+                        }} >
+                        <button>
+                          <IoBag className="product-details-page-cart-icon" />Buy Now
+                        </button>
+                      </Link>
+                    </>
+                  )}
+                  {singleProductData.priceOption === "bidding" && (
+                    <>
+                      <button
+                        onClick={() => {
+                          setOpenBiddingModal()
+                          setAddressSuparator(true)
+                        }}
+                      >Start Auction</button>
+                    </>
+                  )}
                 </div>
-              )}
-              {/*bidding type */}
-              {singleProductData.priceOption === "bidding" && (
-                <div>
-                  <p>Start Price: {singleProductData.minBidPrice}</p>
-                  <p>Max Price: {singleProductData.maxBidPrice}</p>
-                  <p>Ending Date: {lastDate}</p>
-                </div>
-              )}
-              {/*barter type */}
-              {singleProductData.priceOption === "barter" && (
-                <div
-                  style={{
-                    color: "green",
-                    fontWeight: "bold",
-                  }}
-                >
-                  Ready for exchange with{" "}
-                  <samp
-                    style={{
-                      backgroundColor: "gray",
-                      padding: "5px",
-                      borderRadius: "60%",
-                      color: "white",
-                    }}
-                  >
-                    {" "}
-                    {singleProductData.barterProductName}
-                  </samp>
-                </div>
-              )}
-              <div>
-                {singleProductData.description}
-                Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                Inventore provident, deleniti sunt, doloremque quo id assumenda
-                unde numquam cupiditate voluptates, aut minus non quisquam eaque
-                sequi debitis. Facilis eius debitis, quod, ducimus fuga aliquid
-                veniam consectetur quia sit dolore recusandae molestias!
-                Necessitatibus, at commodi! Quisquam rerum odit voluptatum.
-                Labore, officia.
               </div>
-              {singleProductData.productCount < 5 && (
-                <p className="product-card__limited-stock">
-                  Only{" "}
-                  <span style={{ color: "red" }}>
-                    {singleProductData.productCount}{" "}
-                  </span>{" "}
-                  item left
-                </p>
-              )}
-             
-              <div className="purchase-btns">
-                {singleProductData.priceOption === "barter" && (
-                  <>
-                    <button 
-                    onClick={()=>{
-                      setOpenBarterModal()
-                      setaddressSupparatorBarter(true)
-                    }}>Exchange</button>
-                  </>
-                )}
-                {singleProductData.priceOption === "free" && singleProductData.productCount>0&& (
-                    
-                  <>
-                    <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
-                    <button><Link style={{textDecoration:"none",color:"black"}} to='/buy' state={
-                      {details:[{id:"",quantity:1,productDetails:singleProductData}],
-                        type:"single"}
-                      } >Buy Now</Link></button>
-                  </>
-                    
-                )}
-                {singleProductData.priceOption === "normal" && singleProductData.productCount>0&&  (
-                  <>
-                    <button disabled={disable} onClick={()=>handileCart(singleProductData.id,singleProductData.productCount,singleProductData.userId)}>Add to cart</button>
-                    <button><Link style={{textDecoration:"none",color:"black"}} 
-                    to='/buy' 
-                    state={
-                      {details:[{id:"",quantity:1,productDetails:singleProductData}],
-                        type:"single"}
-                      }>Buy Now</Link></button>
-                  </>
-                )}
-                {singleProductData.priceOption === "bidding" && (
-                  <>
-                    <button 
-                    onClick={()=>{
-                      setOpenBiddingModal()
-                      setAddressSuparator(true)
-                    }}
-                    >Start Auction</button>
-                  </>
-                )}
-              </div>
-              
             </div>
+
           </div>
-        </div>
-        <div className="related-products">
-          <div>Related Products</div>
-        </div>
-      </div>
-      {isOpenAddressModal&&<AddressModal closeModal={addressSupparatorBarter ?handleBarterAddressModalClose:addressSupparator? handleBidAddressModalClose:()=>{} } />}
-      {isOpenselectAddressModal && (
-        <AddressComponentModal
-        
-        opencreateAddressModal={OpenAddressModal} />
-      )}
-               
-      {isOpenBarteModal&&<BarterModal/>}
-      {isOpenBiddingModal&&<BiddingModal/>}
-      
-    </>
-  :<>
-  <div style={{textAlign:"center"}}>Please select any product...</div>
-  </>}
-  <ToastContainer/>
+          {isOpenAddressModal && <AddressModal closeModal={addressSupparatorBarter ? handleBarterAddressModalClose : addressSupparator ? handleBidAddressModalClose : () => { }} />}
+          {isOpenselectAddressModal && (
+            <AddressComponentModal
+
+              opencreateAddressModal={OpenAddressModal} />
+          )}
+
+          {isOpenBarteModal && <BarterModal />}
+          {isOpenBiddingModal && <BiddingModal />}
+
+        </>
+        : <>
+          <div style={{ textAlign: "center" }}>Please select any product...</div>
+        </>}
+      <ToastContainer />
     </>
   );
 };
