@@ -246,6 +246,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
  wareHouseAddress:"",
  wareHouseContactNumber:"",
  wareHouseOwnerName:"",
+ subscriptionId:""
   },
   getProfileInfo:async()=>{
     const data=await getProfileInfoApi()

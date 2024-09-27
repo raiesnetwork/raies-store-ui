@@ -4,7 +4,7 @@ import Header from "./Header";
 import { Link } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
-import { toast } from "react-toastify";
+import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { updateProfileInfo } from "../Core/Interfaces";
 
@@ -25,6 +25,7 @@ const ProfilePage: React.FC = () => {
     wareHouseAddress: profileData.wareHouseAddress,
     wareHouseContactNumber: profileData.wareHouseContactNumber,
     wareHouseOwnerName: profileData.wareHouseOwnerName,
+    subscriptionId:profileData.subscriptionId
   });
   useEffect(() => {
     if (profileData) {
@@ -596,6 +597,7 @@ const ProfilePage: React.FC = () => {
 :<>
 <div style={{height:"100vh",alignItems:"center",justifyContent:"center"}}>Loading...</div>
 </>}
+<ToastContainer/>
     </>
   );
 };

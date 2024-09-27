@@ -122,6 +122,7 @@ export interface updateProfileInfo{
   wareHouseOwnerName?:string
   storeIcon?:string
   storeBanner?:string
+  subscriptionId?:string
     
 }
 export interface onlinePayment{
