@@ -11,6 +11,7 @@ import AddressComponentModal from "./ShowAllAddressModal";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
+import { RiAuctionFill } from "react-icons/ri";
 const SingleProductView: React.FC = () => {
   const { addressSupparator, addressSupparatorBarter, setaddressSupparatorBarter, setAddressSuparator, isOpenselectAddressModal, OpenAddressModal, isOpenAddressModal, logedIn, FetchToCart, AddToCart, isOpenBarteModal, isOpenBiddingModal, setOpenBiddingModal, singleProductData, setOpenBarterModal } = useMystoreStore(
     (s) => s
@@ -117,6 +118,11 @@ const SingleProductView: React.FC = () => {
                         <LiaExchangeAltSolid /> Exchange With {singleProductData.barterProductName}
                       </div>
                     )}
+                    {singleProductData.priceOption === "bidding" && (
+                      <div className="product-type-info-auction">
+                         Auction
+                      </div>
+                    )}
 
                   </div>
                   <div className="single-product-brand">
@@ -130,10 +136,9 @@ const SingleProductView: React.FC = () => {
 
                   {/*bidding type */}
                   {singleProductData.priceOption === "bidding" && (
-                    <div>
-                      <p>Start Price: {singleProductData.minBidPrice}</p>
-                      <p>Max Price: {singleProductData.maxBidPrice}</p>
-                      <p>Ending Date: {lastDate}</p>
+                    <div className="single-product-page-auction-details">
+                      <div className="single-product-page-auction-bid">Bid start @ {singleProductData.minBidPrice}</div>
+                      <div className="single-product-page-auction-clse">Closing Date {lastDate}</div>
                     </div>
                   )}
                   {/*barter type */}
