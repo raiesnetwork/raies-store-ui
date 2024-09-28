@@ -364,7 +364,7 @@ export const updateMailApi = async (email:string,otp:string) => {
     };
   }
 };
-export const updateMobileNumberApi = async (mobileNumber:string,otp:string,hostName:string) => {
+export const updateMobileNumberApi = async (mobileNumber:string,otp:string,hostName:string|null) => {
   try {
     const { data } = await axiosInstance.post(
       `/storuser/updatenumber`,{mobileNumber,otp,hostName}
