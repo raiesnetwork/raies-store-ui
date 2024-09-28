@@ -11,7 +11,6 @@ import AddressComponentModal from "./ShowAllAddressModal";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
-import { RiAuctionFill } from "react-icons/ri";
 const SingleProductView: React.FC = () => {
   const { addressSupparator, addressSupparatorBarter, setaddressSupparatorBarter, setAddressSuparator, isOpenselectAddressModal, OpenAddressModal, isOpenAddressModal, logedIn, FetchToCart, AddToCart, isOpenBarteModal, isOpenBiddingModal, setOpenBiddingModal, singleProductData, setOpenBarterModal } = useMystoreStore(
     (s) => s
