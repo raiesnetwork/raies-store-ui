@@ -7,9 +7,10 @@ import { CiEdit } from "react-icons/ci";
 import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { updateProfileInfo } from "../Core/Interfaces";
+import OtpVerify from "./OTPmodal";
 
 const ProfilePage: React.FC = () => {
-  const { getProfileInfo, updateProfileInfo, profileData } = useMystoreStore(
+  const { isOTPmodalVisible,setIsOtpModalVisible, getProfileInfo, updateProfileInfo, profileData } = useMystoreStore(
     (s) => s
   );
   const [formData, setFormData] = useState<updateProfileInfo>({
@@ -499,7 +500,7 @@ const ProfilePage: React.FC = () => {
                   />
 
                   <button
-                    onClick={handilNameSave}
+                    onClick={()=>setIsOtpModalVisible(formData.email)}
                     disabled={!emailSaveBtnVisible}
                     style={{
                       height: "100%",
@@ -574,7 +575,7 @@ const ProfilePage: React.FC = () => {
                   />
 
                   <button
-                    onClick={handilNameSave}
+                    onClick={()=>setIsOtpModalVisible(formData.mobileNumber)}
                     disabled={!mobileSaveBtnVisible}
                     style={{
                       height: "100%",
@@ -597,6 +598,7 @@ const ProfilePage: React.FC = () => {
 :<>
 <div style={{height:"100vh",alignItems:"center",justifyContent:"center"}}>Loading...</div>
 </>}
+{isOTPmodalVisible&&<OtpVerify/>}
 <ToastContainer/>
     </>
   );

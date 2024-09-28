@@ -22,6 +22,7 @@ import {
   registrationVerify,
   updateCartApi,
   updateProfileInfoApi,
+  verifyMailApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
 } from "./StoreApi";
@@ -258,6 +259,15 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     const response=await updateProfileInfoApi(data)
     return response
   },
+  modalOpener:"",
+  isOTPmodalVisible:false,
+  setIsOtpModalVisible:(data)=>{
+    set((s) => ({ isOTPmodalVisible: !s.isOTPmodalVisible,modalOpener:data }));
+
+  },
+  verifyEmail:async(mail)=>{
+    await verifyMailApi(mail)
+  }
 }));
 
 export default useMystoreStore;

@@ -101,6 +101,10 @@ registrationVerify:(number:string,hostname:string|null)=>Promise<any>;
 storeIconRefresh:boolean
   setStoreIconRefresh:()=>void
   profileData:updateProfileInfo
+  isOTPmodalVisible:boolean,
+  setIsOtpModalVisible:(data:string)=>void
+  modalOpener:string
+  verifyEmail:(mail:string)=>void
 }
 export interface createOrder{
   productDetails:[]          
@@ -114,7 +118,7 @@ export interface updateProfileInfo{
   profileImage?:string
   gender?:string
   email:string
-  mobileNumber?:string
+  mobileNumber:string
   role?:string
   storeName:string
   wareHouseAddress?:string

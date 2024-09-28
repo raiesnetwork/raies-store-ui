@@ -336,3 +336,45 @@ export const updateProfileInfoApi = async (datas:updateProfileInfo) => {
     };
   }
 };
+export const verifyMailApi = async (email:string) => {
+  try {
+    const { data } = await axiosInstance.post(
+      `/storuser/verifymail`,{email}
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+export const updateMailApi = async (email:string,otp:string) => {
+  try {
+    const { data } = await axiosInstance.post(
+      `/storuser/updatemail`,{email,otp}
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+export const updateMobileNumberApi = async (mobileNumber:string,otp:string,hostName:string) => {
+  try {
+    const { data } = await axiosInstance.post(
+      `/storuser/updatenumber`,{mobileNumber,otp,hostName}
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
