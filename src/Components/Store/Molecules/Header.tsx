@@ -8,7 +8,6 @@ import { Link, useNavigate } from "react-router-dom";
 import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
-import { IoIosNotificationsOutline } from "react-icons/io";
 import { getSubdomain } from "../../../Utils/Subdomain";
 
 const { hostname } = window.location;
@@ -97,6 +96,8 @@ const Header: React.FC = () => {
                       <li>My Orders</li>
                     </Link>
                     {/* <li><a href="/settings">Profile</a></li> */}
+                    {/* <li><Link to='/orders'>My Orders</Link></li> */}
+                    <Link style={{textDecoration:"none"}} to='/profile'> <li>Profile</li></Link>
                     <li onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>

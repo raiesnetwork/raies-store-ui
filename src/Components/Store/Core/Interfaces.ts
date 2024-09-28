@@ -60,12 +60,14 @@ export interface MystoreStore {
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   latestProduct: (hostName: string|null,name:string) => Promise<ApiResponce>;
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;
+  getProfileInfo: () => Promise<ApiResponce>;
+  updateProfileInfo: (data:updateProfileInfo) => Promise<ApiResponce>;
   deleteAddress: (hostName: string) => Promise<ApiResponce>;
   createOrdr: (hostName: createOrder) => Promise<ApiResponce>;
   createBarterOrder: (hostName: barterOrder) => Promise<ApiResponce>;
   createBiddingOrder: (hostName: biddingOrder) => Promise<ApiResponce>;
   getStoreIconAndName: (hostName: string|null) => Promise<ApiResponce>;
-  getUserOrder: () => Promise<ApiResponce>;
+  getUserOrder: (subDomain:string|null) => Promise<ApiResponce>;
   getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
   homeLoader: boolean;
@@ -98,13 +100,33 @@ logout:()=>void;
 registrationVerify:(number:string,hostname:string|null)=>Promise<any>;
 storeIconRefresh:boolean
   setStoreIconRefresh:()=>void
-
+  profileData:updateProfileInfo
+  isOTPmodalVisible:boolean,
+  setIsOtpModalVisible:(data:string)=>void
+  modalOpener:string
+  verifyEmail:(mail:string)=>void
 }
 export interface createOrder{
   productDetails:[]          
     totalAmount:string  
     paymentMethod :string
     addressId  :string
+    
+}
+export interface updateProfileInfo{
+  fullName:string
+  profileImage?:string
+  gender?:string
+  email:string
+  mobileNumber:string
+  role?:string
+  storeName:string
+  wareHouseAddress?:string
+  wareHouseContactNumber?:string
+  wareHouseOwnerName?:string
+  storeIcon?:string
+  storeBanner?:string
+  subscriptionId?:string
     
 }
 export interface onlinePayment{

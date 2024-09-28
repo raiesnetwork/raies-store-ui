@@ -12,6 +12,7 @@ import {
   DeleteCartApi,
   FetchToCartApi,
   getAddressApi,
+  getProfileInfoApi,
   getStoreIconApi,
   // getAllProductApi,
   getUserOrderApi,
@@ -20,6 +21,8 @@ import {
   loginWithPasswordApi,
   registrationVerify,
   updateCartApi,
+  updateProfileInfoApi,
+  verifyMailApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
 } from "./StoreApi";
@@ -165,8 +168,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     const dataa = await createOrderApi(data);
     return dataa;
   },
-  getUserOrder: async () => {
-    const data = await getUserOrderApi();
+  getUserOrder: async (subdomain) => {
+    const data = await getUserOrderApi(subdomain);
     return data;
   },
   createBarterOrder: async (data) => {
@@ -231,6 +234,39 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   setStoreIconRefresh: () => {
     set((s) => ({ storeIconRefresh: !s.storeIconRefresh }));
 
+  },
+  profileData:{
+ email:"",
+ fullName:"",
+ gender:"",
+ mobileNumber:"",
+ profileImage:"",
+ role:"",
+ storeName:"",storeBanner:"",
+ storeIcon:"",
+ wareHouseAddress:"",
+ wareHouseContactNumber:"",
+ wareHouseOwnerName:"",
+ subscriptionId:""
+  },
+  getProfileInfo:async()=>{
+    const data=await getProfileInfoApi()
+    set(() => ({ profileData: data?.data }));
+
+    return data
+  },
+  updateProfileInfo:async(data)=> {
+    const response=await updateProfileInfoApi(data)
+    return response
+  },
+  modalOpener:"",
+  isOTPmodalVisible:false,
+  setIsOtpModalVisible:(data)=>{
+    set((s) => ({ isOTPmodalVisible: !s.isOTPmodalVisible,modalOpener:data }));
+
+  },
+  verifyEmail:async(mail)=>{
+    await verifyMailApi(mail)
   }
 }));
 

@@ -1,5 +1,5 @@
 import { createAxiosInstance } from "../../../Utils/Axios";
-import { barterOrder, biddingOrder, createOrder, onlinePayment, StoreAddress, userStoreCreate } from "./Interfaces";
+import { barterOrder, biddingOrder, createOrder, onlinePayment, StoreAddress, updateProfileInfo, userStoreCreate } from "./Interfaces";
 
 
 const axiosInstance = createAxiosInstance();
@@ -252,9 +252,9 @@ export const verifyRazorpayPaymentApi= async(datas:onlinePayment ): Promise<any>
     };
   }
 };
-export const getUserOrderApi = async () => {
+export const getUserOrderApi = async (subdomain:string|null) => {
   try {
-    const { data } = await axiosInstance.get(`/storuser/order`);
+    const { data } = await axiosInstance.get(`/storuser/order/${subdomain}`);
     return data;
   } catch (error) {
     return {
@@ -298,6 +298,76 @@ export const getStoreIconApi = async (hostName: string|null) => {
   try {
     const { data } = await axiosInstance.get(
       `/userstore/auth/nameandicon/${hostName}`
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+export const getProfileInfoApi = async () => {
+  try {
+    const { data } = await axiosInstance.get(
+      `/storuser/profileinfo`
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+export const updateProfileInfoApi = async (datas:updateProfileInfo) => {
+  try {
+    const { data } = await axiosInstance.put(
+      `/storuser/profileinfo`,{...datas}
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+export const verifyMailApi = async (email:string) => {
+  try {
+    const { data } = await axiosInstance.post(
+      `/storuser/verifymail`,{email}
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+export const updateMailApi = async (email:string,otp:string) => {
+  try {
+    const { data } = await axiosInstance.post(
+      `/storuser/updatemail`,{email,otp}
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};
+export const updateMobileNumberApi = async (mobileNumber:string,otp:string,hostName:string|null) => {
+  try {
+    const { data } = await axiosInstance.post(
+      `/storuser/updatenumber`,{mobileNumber,otp,hostName}
     );
     return data;
   } catch (error) {
