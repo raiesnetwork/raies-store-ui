@@ -1,6 +1,6 @@
-import React, { useState } from "react";
+import React from "react";
 import "../Helpers/scss/ProductCard.scss";
-import { ToastContainer, toast } from "react-toastify";
+import { ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { ProductViewCardProps, respProduct } from "../Core/Interfaces";
 import { Link } from "react-router-dom";
@@ -10,7 +10,7 @@ import { LiaExchangeAltSolid } from "react-icons/lia"
 import { GiReceiveMoney } from "react-icons/gi";
 
 const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
-  const { logedIn, updateSingleProductData, AddToCart, FetchToCart } = useMystoreStore((state) => state);
+  const {  updateSingleProductData,  } = useMystoreStore((state) => state);
   const handleDetaildView = (data: respProduct) => {
 
     updateSingleProductData(data);
