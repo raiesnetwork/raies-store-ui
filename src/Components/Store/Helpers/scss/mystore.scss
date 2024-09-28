@@ -15,7 +15,7 @@
         display: flex;
         justify-content: flex-end;
         align-items: center;
-        margin-top: 10px;
+        margin: 20px 4px 20px 2px;
     }
 
     &__empty_msg {
@@ -41,15 +41,36 @@
         outline: none;
 
     }
+
     &__products_sec {
         display: flex;
-        margin: 24px 0px 20px 0px;
-        gap: 7px;
+        margin: 24px 0px 30px 0px;
+        gap: 12px;
         justify-content: center;
+        flex-wrap: wrap;
 
     }
-    &__banner_img{
-        height: 80vh;
 
-width: 100%;    }
+
+    &__banner_img {
+        height: 41vh;
+        width: 100%;
+        border-radius: 4px;
+        object-fit: cover;
+    }
+
+    &__pagination {
+        margin: 15px 5px 5px 5px;
+        display: flex;
+        justify-content: center;
+        gap: 5px;
+    }
+    &__pagination_icon {
+     font-size: 15px;
+     color: black;
+    }
+    &__pagination-btn {
+     border: none;
+    }
+
 }

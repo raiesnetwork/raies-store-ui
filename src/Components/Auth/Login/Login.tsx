@@ -26,6 +26,7 @@ export const Login: React.FC = () => {
         verifyNumber,
         checkLoggedIn,
         loginWithPassword,
+        storeData
     } = useMystoreStore((state) => state);
     let navigate = useNavigate();
     const handleSubmit = async (e: React.FormEvent) => {
@@ -87,7 +88,7 @@ export const Login: React.FC = () => {
             <Header />
             <div className="login">
                 <div className="login__header">
-                    WELCOME TO RAIES NETWORK
+                 {`WELCOME TO ${storeData.storeName.toUpperCase()}`}
                 </div>
                 <div className="login__header_login">
                     SIGN IN
