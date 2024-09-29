@@ -8,6 +8,7 @@ import { toast, ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { updateProfileInfo } from "../Core/Interfaces";
 import OtpVerify from "./OTPmodal";
+import { passwordChangeApi } from "../Core/StoreApi";
  type pages='info'|'password'
 const ProfilePage: React.FC = () => {
   const {
@@ -155,12 +156,32 @@ const passwordHandilChange=(e: React.ChangeEvent<HTMLInputElement | HTMLSelectEl
 })
 setError(null)
 }
-const handilePasswordSubmit=()=>{
+const handilePasswordSubmit=async()=>{
 const erroes=validateForm()
 if (erroes) {
     setError(erroes)
 }else{
-    alert(passwordForm.newPassword)
+   const data=await passwordChangeApi(passwordForm.currentPassword,passwordForm.newPassword)
+   if (data?.error) {
+    toast.error("We cant update now try after some time");
+
+   }else{
+    if (!data?.data) {
+        setError('The current password you entered is incorrect. Please try again.')
+    }else if (data?.data==="NotFound") {
+        setError('User Not Found.')
+
+    }{
+        setPasswordForm({
+            confirmPassword:"",
+            currentPassword:"",
+            newPassword:""
+        })
+        setError(null)
+        toast.success("Password changed successfully");
+
+    }
+   }
 }
 }
   return (
