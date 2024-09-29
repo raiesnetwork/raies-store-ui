@@ -117,6 +117,11 @@ const SingleProductView: React.FC = () => {
                         <LiaExchangeAltSolid /> Exchange With {singleProductData.barterProductName}
                       </div>
                     )}
+                    {singleProductData.priceOption === "bidding" && (
+                      <div className="product-type-info-auction">
+                         Auction
+                      </div>
+                    )}
 
                   </div>
                   <div className="single-product-brand">
@@ -130,10 +135,9 @@ const SingleProductView: React.FC = () => {
 
                   {/*bidding type */}
                   {singleProductData.priceOption === "bidding" && (
-                    <div>
-                      <p>Start Price: {singleProductData.minBidPrice}</p>
-                      <p>Max Price: {singleProductData.maxBidPrice}</p>
-                      <p>Ending Date: {lastDate}</p>
+                    <div className="single-product-page-auction-details">
+                      <div className="single-product-page-auction-bid">Bid start @ {singleProductData.minBidPrice}</div>
+                      <div className="single-product-page-auction-clse">Closing Date {lastDate}</div>
                     </div>
                   )}
                   {/*barter type */}
