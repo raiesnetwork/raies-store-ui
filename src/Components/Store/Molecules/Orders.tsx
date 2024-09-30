@@ -5,6 +5,7 @@ import useMystoreStore from "../Core/Store";
 import { toast, ToastContainer } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
 import { getSubdomain } from "../../../Utils/Subdomain";
+import { Link } from "react-router-dom";
 
 interface resp {
   id: string;
@@ -142,7 +143,7 @@ const UserOrdersPage: React.FC = () => {
                   justifyContent: "space-evenly",
                   marginBottom: "20px",
                   padding: "70px",
-                  boxShadow: `1px 1px 3px 5px 
+                  boxShadow: `1px 1px 4px 1px  
                       ${
                         order.status === "pending"
                           ? "orange"
@@ -156,8 +157,9 @@ const UserOrdersPage: React.FC = () => {
                 }}
               >
                 {order?.productDetails?.map((item: details, index: number) => (
+                  <Link style={{textDecoration:"none",color:"auto"}} key={index} to='/orderdetails' state={{orderData:order}}>
                   <div
-                    key={index}
+                    
                     style={{
                       display: "flex",
                       alignItems: "center",
@@ -200,6 +202,7 @@ const UserOrdersPage: React.FC = () => {
                       Price: {item?.price ? item?.price : "Free"}
                     </p>
                   </div>
+                  </Link>
                 ))}
 
                 <div
@@ -258,6 +261,8 @@ const UserOrdersPage: React.FC = () => {
 
             {filteredBidOrders.length > 0 &&
               filteredBidOrders.map((order: respBid) => (
+                <Link style={{textDecoration:"none",color:"auto"}} key={order.id} to='/orderdetails' state={{orderData:order}}>
+
                 <div
                   key={order.id}
                   style={{
@@ -267,7 +272,7 @@ const UserOrdersPage: React.FC = () => {
                     padding: "10px 70px",
                     borderBottom: "1px solid #ddd",
                     backgroundColor: "white",
-                    boxShadow: `1px 1px 3px 5px ${
+                    boxShadow: `1px 1px 4px 1px ${
                       order.status === "Accepted" ? "green" : "red"
                     }`,
                     cursor: "pointer",
@@ -322,10 +327,13 @@ const UserOrdersPage: React.FC = () => {
                     </p>
                   </div>
                 </div>
+                </Link>
               ))}
 
             {filteredBarterOrders.length > 0 &&
               filteredBarterOrders.map((order: respBarter) => (
+                <Link style={{textDecoration:"none",color:"auto"}} key={order.id} to='/orderdetails' state={{orderData:order}}>
+
                 <div
                   key={order.id}
                   style={{
@@ -335,7 +343,7 @@ const UserOrdersPage: React.FC = () => {
                     padding: "10px 70px",
                     borderBottom: "1px solid #ddd",
                     backgroundColor: "white",
-                    boxShadow: `1px 1px 3px 5px ${
+                    boxShadow: `1px 1px 4px 1px ${
                       order.status === "Accepted" ? "green" : "red"
                     }`,
                     cursor: "pointer",
@@ -405,6 +413,7 @@ const UserOrdersPage: React.FC = () => {
                     </p>
                   </div>
                 </div>
+                </Link>
               ))}
           </div>
         )}

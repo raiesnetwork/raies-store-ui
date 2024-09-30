@@ -1,0 +1,134 @@
+/* src/components/order_details.scss */
+
+.order_details {
+  padding: 20px;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .order_details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    .download-invoice-btn {
+      background-color: #ff9f00;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #ffa500;
+      }
+    }
+  }
+
+  .delivery-address {
+    margin: 20px 0;
+    p {
+      margin: 5px 0;
+    }
+  }
+
+  .order-details-status {
+    display: flex;
+    gap: 20px;
+
+    .order-item {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+
+      .order-item-image {
+        width: 100px;
+        height: 100px;
+        object-fit: cover;
+      }
+
+      .order-info {
+        h3 {
+          font-size: 1.2rem;
+          margin-bottom: 10px;
+        }
+        p {
+          margin: 0;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .order-tracker {
+      flex: 2;
+
+      .order-status {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        padding-left: 20px;
+
+        &::before {
+          content: '';
+          position: absolute;
+          top: 20px;
+          left: 10px;
+          // width: 100%;
+          height: 2px;
+          background: #ddd;
+          z-index: 0;
+        }
+
+        li {
+          position: relative;
+          z-index: 1;
+          text-align: center;
+          flex: 1;
+
+          span {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+          }
+
+          p {
+            font-size: 0.9rem;
+          }
+
+          &.completed span {
+            color: green;
+          }
+
+          &.completed::before {
+            content: '';
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 20px;
+            height: 20px;
+            background-color: green;
+            border-radius: 50%;
+            z-index: 2;
+          }
+        }
+      }
+    }
+  }
+}
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.order-status li {
+  animation: fadeIn 1s ease-in;
+}
