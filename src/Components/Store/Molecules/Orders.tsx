@@ -11,6 +11,7 @@ interface resp {
   status: string;
   totalAmount: number;
   productDetails: details;
+  paymentMethod: string;
 }
 interface respBid {
   id: string;
@@ -22,6 +23,7 @@ interface respBid {
   quantity: number;
   productDetails: {
     productName: string;
+    mainImage: string;
   };
 }
 interface respBarter {
@@ -34,6 +36,7 @@ interface respBarter {
   quantity: number;
   productDetails: {
     productName: string;
+    mainImage: string;
   };
 }
 interface details {
@@ -46,9 +49,10 @@ interface details {
   productName: string;
   quantity: number;
   price: number;
+  mainImage?: string;
 }
-const {hostname}=window.location
-let subdomain=getSubdomain(hostname)
+const { hostname } = window.location;
+let subdomain = getSubdomain(hostname);
 const UserOrdersPage: React.FC = () => {
   const { getUserOrder } = useMystoreStore((s) => s);
   const [orders, setOrders] = useState<resp[]>([]);
@@ -64,6 +68,8 @@ const UserOrdersPage: React.FC = () => {
       if (data.error) {
         toast.error("We can't fetch orders");
       } else {
+        console.log(data?.data?.storeOrders);
+
         setOrders(data?.data?.storeOrders);
         setbiDOrders(data?.data?.biddingOrders);
         setBarterOrders(data.data?.barterOrders);
@@ -87,10 +93,14 @@ const UserOrdersPage: React.FC = () => {
     if (filter === "normal") {
       return { orders, bidOrders: [], barterOrders: [] };
     }
-    return { orders: [], bidOrders: [], barterOrders: [] }; 
+    return { orders: [], bidOrders: [], barterOrders: [] };
   };
 
-  const { orders: filteredOrderList, bidOrders: filteredBidOrders, barterOrders: filteredBarterOrders } = filteredOrders();
+  const {
+    orders: filteredOrderList,
+    bidOrders: filteredBidOrders,
+    barterOrders: filteredBarterOrders,
+  } = filteredOrders();
 
   return (
     <>
@@ -99,13 +109,15 @@ const UserOrdersPage: React.FC = () => {
         <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
           Your Orders
         </h1>
-        <div className="filter-container" style={{ textAlign: "right", marginBottom: "20px" }}>
+        <div
+          className="filter-container"
+          style={{ textAlign: "right", marginBottom: "20px" }}
+        >
           <select value={filter} onChange={(e) => setFilter(e.target.value)}>
             <option value="all">All</option>
             <option value="normal">Normal Orders</option>
             <option value="bid">Bid Orders</option>
             <option value="barter">Barter Orders</option>
-          
           </select>
         </div>
         {loading ? (
@@ -122,77 +134,282 @@ const UserOrdersPage: React.FC = () => {
         ) : (
           <div className="orders-list">
             {filteredOrderList.map((order: resp) => (
-              <div key={order.id} className="order-card">
-                <div className="order-header">
-                  <span className={`status ${order.status.toLowerCase()}`}>
-                    {order.status}
-                  </span>
-                </div>
-                <p>
-                  <strong>Total Amount:</strong> {order.totalAmount}
-                </p>
-                <div className="order-items">
-                  <h3>Items:</h3>
-                  {order?.productDetails?.map((item: details, index: number) => (
-                    <div key={index} className="order-item">
+              <div
+                key={order.id}
+                style={{
+                  display: "flex",
+                  flexDirection: "column",
+                  justifyContent: "space-evenly",
+                  marginBottom: "20px",
+                  padding: "70px",
+                  boxShadow: `1px 1px 3px 5px 
+                      ${
+                        order.status === "pending"
+                          ? "orange"
+                          : order.status === "Delivered"
+                          ? "lightgreen"
+                          : order.status === "Shipped"
+                          ? "yellow"
+                          : "red"
+                      }`,
+                  cursor: "pointer",
+                }}
+              >
+                {order?.productDetails?.map((item: details, index: number) => (
+                  <div
+                    key={index}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "10px 0",
+                      borderBottom: "1px solid #ddd",
+                    }}
+                  >
+                    {/* Product Image */}
+                    <img
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        objectFit: "cover",
+                      }}
+                      src={item.mainImage}
+                      alt={item.productName}
+                    />
+
+                    {/* Product Info */}
+                    <div
+                      style={{
+                        flex: "1",
+                        marginLeft: "10px",
+                      }}
+                    >
                       <p>
                         <strong>{item.productName}</strong>
                       </p>
                       <p>Quantity: {item.quantity}</p>
-                      <p>Price: {item.price}</p>
                     </div>
-                  ))}
+
+                    <p
+                      style={{
+                        margin: "0 auto",
+                        textAlign: "center",
+                        flex: "1",
+                      }}
+                    >
+                      Price: {item?.price ? item?.price : "Free"}
+                    </p>
+                  </div>
+                ))}
+
+                <div
+                  style={{
+                    textAlign: "right",
+                    marginTop: "10px",
+                  }}
+                >
+                  <div
+                    style={{ marginBottom: "10px" }}
+                    className="order-header"
+                  >
+                    <span
+                      style={{
+                        backgroundColor:
+                          order.status === "pending"
+                            ? "orange"
+                            : order.status === "Delivered"
+                            ? "lightgreen"
+                            : order.status === "Shipped"
+                            ? "yellow"
+                            : "red",
+                      }}
+                    >
+                      Delivery Status: {order.status}
+                    </span>
+                  </div>
+                  <div className="order-header">
+                    <span
+                      style={{
+                        backgroundColor:
+                          order.totalAmount === 0
+                            ? "lightgreen"
+                            : order.paymentMethod === "offline"
+                            ? "lightgoldenrodyellow"
+                            : "lightgreen",
+                      }}
+                    >
+                      Payment Status:{" "}
+                      {order.totalAmount === 0
+                        ? "Free"
+                        : order.paymentMethod === "offline"
+                        ? "Pending"
+                        : "Paid"}
+                    </span>
+                  </div>
+                  <p>
+                    <strong>Payment Method:</strong> {order.paymentMethod}
+                  </p>
+                  <p>
+                    <strong>Total Amount:</strong> {order.totalAmount}
+                  </p>
                 </div>
               </div>
             ))}
 
             {filteredBidOrders.length > 0 &&
               filteredBidOrders.map((order: respBid) => (
-                <div key={order.id} className="order-card">
+                <div
+                  key={order.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 70px",
+                    borderBottom: "1px solid #ddd",
+                    backgroundColor: "white",
+                    boxShadow: `1px 1px 3px 5px ${
+                      order.status === "Accepted" ? "green" : "red"
+                    }`,
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "5px",
+                    }}
+                  >
+                    <img
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        objectFit: "cover",
+                      }}
+                      src={order.productDetails.mainImage}
+                      alt={order.productDetails.productName}
+                    />
+                    <div>
+                      <p>
+                        <strong>{order.productDetails.productName}</strong>
+                      </p>
+                      <p>Quantity: {order.quantity}</p>
+                    </div>
+                  </div>
                   <div className="order-header">
                     <span className={`status ${order.status.toLowerCase()}`}>
-                      {order.status}
+                      {/* Order Status :{order.status} */}
                     </span>
                   </div>
-                  <p>
-                    <strong>Bid Amount:</strong> {order.biddingAmount}
-                  </p>
-                  <div className="order-items">
-                    <p>
-                      <strong>{order.productDetails.productName}</strong>
+                  <div
+                    style={{
+                      textAlign: "right",
+                    }}
+                  >
+                    <p style={{ backgroundColor: "orange" }}>
+                      <strong>Delivery Status:</strong> Pending{" "}
                     </p>
-                    <p>Quantity: {order.quantity}</p>
+                    <span
+                      style={{
+                        backgroundColor:
+                          order.status === "Accepted" ? "lightgreen" : "red",
+                      }}
+                      className={`status ${order.status.toLowerCase()}`}
+                    >
+                      Order Status :{order.status}
+                    </span>
+                    <p>
+                      <strong>Bid Amount:</strong> {order.biddingAmount}
+                    </p>
                   </div>
                 </div>
               ))}
 
             {filteredBarterOrders.length > 0 &&
               filteredBarterOrders.map((order: respBarter) => (
-                <div key={order.id} className="order-card">
-                  <div className="order-header">
-                    <span className={`status ${order.status.toLowerCase()}`}>
-                      {order.status}
-                    </span>
-                  </div>
-                  <p>
-                    <strong>Barter Image:</strong>{" "}
+                <div
+                  key={order.id}
+                  style={{
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "space-between",
+                    padding: "10px 70px",
+                    borderBottom: "1px solid #ddd",
+                    backgroundColor: "white",
+                    boxShadow: `1px 1px 3px 5px ${
+                      order.status === "Accepted" ? "green" : "red"
+                    }`,
+                    cursor: "pointer",
+                  }}
+                >
+                  <div
+                    style={{
+                      display: "flex",
+                      gap: "5px",
+                    }}
+                  >
                     <img
-                      style={{ width: "10%" }}
-                      src={order.productImage}
+                      style={{
+                        width: "70px",
+                        height: "70px",
+                        objectFit: "cover",
+                      }}
+                      src={order.productDetails.mainImage}
                       alt={order.productDetails.productName}
                     />
-                  </p>
-                  <div className="order-items">
-                    <p>
-                      <strong>{order.productDetails.productName}</strong>
+                    <div>
+                      <p>
+                        <strong>{order.productDetails.productName}</strong>
+                      </p>
+                      <p>Quantity: {order.quantity}</p>
+                    </div>
+                  </div>
+
+                  <div>
+                    <p
+                      style={{
+                        backgroundColor:
+                          order.status === "Accepted" ? "lightgreen" : "red",
+                        textAlign: "right",
+                      }}
+                    >
+                      <span
+                        style={{ textAlign: "right" }}
+                        className={`status ${order.status.toLowerCase()}`}
+                      >
+                        Delivery Status: {order.status}
+                      </span>
                     </p>
-                    <p>Quantity: {order.quantity}</p>
+                    <p style={{ textAlign: "right" }}>
+                      <span
+                        style={{
+                          textAlign: "right",
+                          backgroundColor:
+                            order.status === "Accepted" ? "lightgreen" : "red",
+                        }}
+                        className={`status ${order.status.toLowerCase()}`}
+                      >
+                        Order Status: {order.status}
+                      </span>
+                    </p>
+                    <p>
+                      <strong>Barter Image:</strong>{" "}
+                      <img
+                        style={{
+                          width: "70px",
+                          height: "70px",
+                          objectFit: "cover",
+                        }}
+                        src={order.productImage}
+                        alt={order.productDetails.productName}
+                      />
+                    </p>
                   </div>
                 </div>
               ))}
           </div>
         )}
       </div>
+
       <ToastContainer />
     </>
   );
