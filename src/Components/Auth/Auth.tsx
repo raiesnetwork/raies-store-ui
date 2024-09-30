@@ -12,7 +12,7 @@ import { Register } from "./Register/Register";
 import { OtpPage } from "./Otp/Otp";
 import ProfilePage from "../Store/Molecules/ProfilePage";
 const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
-  const { AuthApiCall } = useAuth((s) => s);
+  const { AuthApiCall } = useAuth((state) => state);
   const { checkLoggedIn, logedIn } = useMystoreStore((s) => s);
   useEffect(() => {
     const apiHelper = async () => {

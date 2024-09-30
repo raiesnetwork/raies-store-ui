@@ -30,7 +30,7 @@ const SingleProductView: React.FC = () => {
       const data = await AddToCart(id, count, userId)
       setDisable(false)
       if (data.error) {
-        toast.error("item coun't add to cart")
+        toast.error("item could't add to cart")
       } else {
         FetchToCart()
         toast.success("Item added Successfully")
