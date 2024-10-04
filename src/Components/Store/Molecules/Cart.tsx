@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import "../Helpers/scss/Cart.scss";
 import { FaPlus, FaMinus } from "react-icons/fa6";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { respStoreCart } from "../Core/Interfaces";
 import Header from "./Header";
@@ -174,7 +174,6 @@ const StoreCart: React.FC = () => {
           </div>
         </div>
       )}
-      <ToastContainer />
     </>
   );
 };

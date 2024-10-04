@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import { ToastContainer, toast } from "react-toastify";
+import {  toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { fileToBase64 } from "../../../Utils/Base64";
 import { useNavigate } from "react-router-dom";
@@ -268,7 +268,7 @@ const BarterModal: React.FC = () => {
         </div>
       </div>
 
-      <ToastContainer />
+      {/* <ToastContainer /> */}
     </>
   );
 };

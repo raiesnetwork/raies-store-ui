@@ -4,7 +4,7 @@ import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
 import BiddingModal from "./BiddingModal";
 import Header from "./Header";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import AddressModal from "./BuyAddressModal";
 import AddressComponentModal from "./ShowAllAddressModal";
@@ -238,7 +238,6 @@ const SingleProductView: React.FC = () => {
         : <>
           <div style={{ textAlign: "center" }}>Please select any product...</div>
         </>}
-      <ToastContainer />
     </>
   );
 };

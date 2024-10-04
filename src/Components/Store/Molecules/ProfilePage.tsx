@@ -4,7 +4,7 @@ import Header from "./Header";
 import { Link } from "react-router-dom";
 import { FiUser } from "react-icons/fi";
 import { CiEdit } from "react-icons/ci";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { updateProfileInfo } from "../Core/Interfaces";
 import OtpVerify from "./OTPmodal";
@@ -834,7 +834,6 @@ if (erroes) {
         </>
       )}
       {isOTPmodalVisible && <OtpVerify />}
-      <ToastContainer />
     </>
   );
 };

@@ -4,6 +4,10 @@ import { MyStore } from "./Components/Store/MyStore";
 import { useEffect, useState } from "react";
 import useMystoreStore from "./Components/Store/Core/Store";
 import { getSubdomain } from "./Utils/Subdomain";
+import { ToastContainer } from "react-toastify";
+import "react-toastify/dist/ReactToastify.css";
+
+
 
 const { hostname } = window.location;
 let hostName = getSubdomain(hostname);
@@ -38,6 +42,7 @@ function App() {
   }
 
   return (
+    <>
     <Router>
       <Auth>
         <Routes>
@@ -46,6 +51,8 @@ function App() {
         </Routes>
       </Auth>
     </Router>
+    <ToastContainer/>
+    </>
   );
 }
 

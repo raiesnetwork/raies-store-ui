@@ -1,6 +1,5 @@
 import React from "react";
 import "../Helpers/scss/ProductCard.scss";
-import { ToastContainer } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { ProductViewCardProps, respProduct } from "../Core/Interfaces";
 import { Link } from "react-router-dom";
@@ -93,7 +92,6 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
         </Link>
       </div>
 
-      <ToastContainer />
     </>
   );
 };

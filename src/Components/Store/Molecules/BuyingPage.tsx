@@ -5,7 +5,7 @@ import Header from "./Header";
 import { useLocation, useNavigate } from "react-router-dom";
 import { respStoreCart } from "../Core/Interfaces";
 import AddressModal from "./BuyAddressModal";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
 
@@ -299,7 +299,6 @@ const CheckoutPage: React.FC = () => {
       {isOpenselectAddressModal && (
         <AddressComponent opencreateAddressModal={OpenAddressModal} />
       )}
-      <ToastContainer />
     </>
   );
 };

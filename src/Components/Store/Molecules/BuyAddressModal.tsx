@@ -1,9 +1,9 @@
 import React, { useState, ChangeEvent, FormEvent } from "react";
 import "../Helpers/scss/BuyAddress.scss";
-import PhoneInput from "react-phone-input-2";
-import "react-phone-input-2/lib/style.css";
+import { PhoneInput } from "react-international-phone";
+import "react-international-phone/style.css";
 import useMystoreStore from "../Core/Store";
-import { toast,ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 
 interface AddressData {
   fullName: string;
@@ -69,7 +69,7 @@ const setMobileNumber=(n:string)=>{
       newErrors.fullName = "Full name is required.";
     if (
       !addressData.mobileNumber.trim() ||
-      !/^\d{7,}$/.test(addressData.mobileNumber)
+      !/^\+\d{7,}$/.test(addressData.mobileNumber)
     ) {
       newErrors.mobileNumber = "Valid mobile number is required.";
     }
@@ -90,6 +90,10 @@ const setMobileNumber=(n:string)=>{
       if (data.error) {
         toast.error("Address can't created try again")
       }else{
+        if (data.data==="exceed") {
+          
+        return  toast.success("You cannot add more than 5 delivery addresses.")
+        }
         toast.success("Address created successfully")
          await getAddress()
         closeModal();
@@ -121,27 +125,50 @@ const setMobileNumber=(n:string)=>{
             )}
           </div>
 
-          <div style={{
+          <div
+           style={{
             marginBottom:"15px",
-            width:"100%",
+            minWidth:"100%",
             display:"block"
-          }}>
+          }}
+          className="form-group"
+          >
             <label
             style={{
-              marginBottom:"5px"
+              marginBottom:"5px",
+              
             }}
             htmlFor="mobileNumber">Mobile Number</label>
+            <div style={{
+              border:"1px solid #d7d7d7",
+              width:"98%",
+              borderRadius:"3px"
+            }}>
+
             <PhoneInput
-              country={"in"}
-              value={addressData.mobileNumber}
-              onChange={(phone) => {
-                setMobileNumber(phone) 
-               }}
-              inputProps={{
-                name: "mobileNumber",
-                required: true,
-              }}
-            />
+                onChange={(phone) => {
+                  setMobileNumber(phone) 
+                }}
+                name="mobileNumber"
+                defaultCountry="in"
+                disableDialCodeAndPrefix={true}
+                value={addressData.mobileNumber}
+                
+                inputStyle={{
+                  backgroundColor:"transparent",
+                  border:"0",
+                  width:"100%",
+                  padding:" 28px 8px"
+                
+                }}
+                countrySelectorStyleProps={{
+                  buttonStyle:{
+                    backgroundColor:"transparent",
+                  border:"0",
+                  }
+                }}
+                />
+                </div>
 
             {addressErrors.mobileNumber && (
               <div style={{color:"red",fontSize: "0.875rem"}}>
@@ -207,7 +234,6 @@ const setMobileNumber=(n:string)=>{
         </form>
       </div>
     </div>
-    <ToastContainer/>
     </>
   );
 };

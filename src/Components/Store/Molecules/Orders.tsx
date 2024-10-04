@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../Helpers/scss/Orders.scss";
 import Header from "./Header";
 import useMystoreStore from "../Core/Store";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { Link } from "react-router-dom";
@@ -419,7 +419,6 @@ const UserOrdersPage: React.FC = () => {
         )}
       </div>
 
-      <ToastContainer />
     </>
   );
 };
