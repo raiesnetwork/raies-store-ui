@@ -11,13 +11,14 @@ import { Login } from "./Login/Login";
 import { Register } from "./Register/Register";
 import { OtpPage } from "./Otp/Otp";
 import ProfilePage from "../Store/Molecules/ProfilePage";
+import OrderDetails from "../Store/Molecules/OrderDetails";
 const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { AuthApiCall } = useAuth((state) => state);
   const { checkLoggedIn, logedIn } = useMystoreStore((s) => s);
   useEffect(() => {
     const apiHelper = async () => {
-      const Data = await AuthApiCall();
-      checkLoggedIn(Data.data);
+      const {data} = await AuthApiCall();
+      checkLoggedIn(data);
     };
     apiHelper();
     // eslint-disable-next-line react-hooks/exhaustive-deps
@@ -37,6 +38,7 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Route path="/register" element={<Navigate to='/'/>} />
             <Route path="/otp" element={<Navigate to='/'/>} />
             <Route path="/profile" element={<ProfilePage/>} />
+            <Route path="/orderdetails" element={<OrderDetails/>} />
           </>
         )}
         <Route path="/details" element={<SingleProductView />} />

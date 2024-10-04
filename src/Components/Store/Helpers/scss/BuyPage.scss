@@ -11,11 +11,15 @@
       background-color: #fff;
       border: 1px solid #ddd;
       border-radius: 8px;
+      font-family: system-ui;
     }
-  
+  .address-details{
+    font-size: 15px;
+    color: #000;
+  }
     .section-header {
-      font-size: 1.2rem;
-      font-weight: bold;
+      font-size: 18px;
+      font-weight: 400;
       margin-bottom: 10px;
     }
   
@@ -91,21 +95,27 @@
       }
   
       .total-price {
-        font-size: 1.5rem;
-        color: #ff9900;
-      }
+        font-size: 24px;
+        color: #FF5722;
+        font-weight: 700;
+    }
+      
   
       button {
         width: 100%;
         padding: 10px;
-        background-color: #ff9900;
+        background-color: #007ee2;
         color: white;
         border: none;
-        border-radius: 4px;
+        border-radius: 3px;
         cursor: pointer;
+        font-size: 17px;
+        font-family: system-ui;
+        font-weight: 500;
+        transition: background-color 0.5s ease;
   
         &:hover {
-          background-color: #cc7a00;
+          background-color: #00c50a;
         }
       }
     }

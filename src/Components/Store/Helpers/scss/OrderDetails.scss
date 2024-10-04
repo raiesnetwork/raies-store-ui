@@ -1,0 +1,171 @@
+.order_details__page {
+  margin-top: 25px;
+}
+
+.order_details {
+  padding: 20px;
+  font-family: sans-serif;
+  background-color: #f5f5f5;
+  border-radius: 8px;
+  max-width: 800px;
+  margin: 0 auto;
+
+  .order-name-price{
+    display: flex;
+    justify-content: space-between;
+  }
+  .order_details-header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+
+    h2 {
+      font-size: 1.5rem;
+    }
+
+    .download-invoice-btn {
+      background-color: #ff9f00;
+      color: white;
+      padding: 8px 16px;
+      border: none;
+      border-radius: 4px;
+      cursor: pointer;
+      transition: background-color 0.3s ease;
+
+      &:hover {
+        background-color: #ffa500;
+      }
+    }
+  }
+
+  .delivery-address {
+    margin: 20px 0;
+
+    p {
+      margin: 5px 0;
+    }
+
+    strong {
+      font-size: 1.1rem;
+    }
+  }
+
+  .order-details-status {
+    display: flex;
+    gap: 20px;
+
+    .order-item {
+      flex: 1;
+      display: flex;
+      gap: 20px;
+
+      .order-item-image {
+        width: 141px;
+        height: 140px;
+        object-fit: contain;
+        border-radius: 8px;
+        border: 1px solid #ddd;
+    
+      }
+
+      .order-info {
+        h3 {
+          font-size: 1.2rem;
+          margin-bottom: 10px;
+        }
+
+        p {
+          margin: 0;
+          font-size: 1rem;
+        }
+      }
+    }
+
+    .order-tracker {
+      flex: 2;
+      position: relative;
+
+      .order-status {
+        list-style: none;
+        padding: 0;
+        display: flex;
+        justify-content: space-between;
+        position: relative;
+        z-index: 1;
+
+        li {
+          position: relative;
+          text-align: center;
+          flex: 1;
+          padding-top: 40px;
+
+          span {
+            display: block;
+            margin-bottom: 5px;
+            font-weight: bold;
+            color: #ff9f00;
+          }
+
+          p {
+            font-size: 0.9rem;
+         color: #ff9f00;
+          }
+
+          &::before {
+            content: "";
+            position: absolute;
+            top: 10px;
+            left: 50%;
+            transform: translateX(-50%);
+            width: 10px;
+            height: 10px;
+            background-color: #ff9f00;
+            border-radius: 50%;
+            z-index: 2;
+          }
+
+          &.completed::before {
+            background-color:    #4CAF50;
+          }
+
+          &.completed span {
+            color:  #4CAF50;
+          }
+
+          &.completed P {
+            color:  #4CAF50;
+          }
+        }
+      }
+
+      .progress-line {
+          position: absolute;
+          top: 30px;
+          left: 12%;
+          width: 76%;
+          height: 2px;
+          background-color: #ff9f00;
+          z-index: 0;
+      }
+
+      .progress {
+        height: 2px;
+        background-color: #4CAF50;
+        position: absolute;
+        top: 0;
+        left: 0;
+        z-index: 1;
+        transition: width 0.3s ease;
+      }
+    }
+  }
+}
+
+@keyframes fadeIn {
+  0% { opacity: 0; }
+  100% { opacity: 1; }
+}
+
+.order-status li {
+  animation: fadeIn 1s ease-in;
+}

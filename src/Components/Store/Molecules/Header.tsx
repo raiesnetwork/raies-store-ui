@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import "../Helpers/scss/Headder.scss";
+import "../Helpers/scss/header.scss";
 // import profile from "../../../assets/blank-profile-picture-973460_1280.png"
 // import logo from '../../../assets/favicon.ico'
 // import { BsCart } from "react-icons/bs";
@@ -9,7 +9,11 @@ import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { getSubdomain } from "../../../Utils/Subdomain";
-
+import { IoBagCheck } from "react-icons/io5";
+import { FaUserLarge } from "react-icons/fa6";
+import { IoLogOut } from "react-icons/io5";
+import { IoLogOutOutline } from "react-icons/io5";
+import { IoBagCheckOutline } from "react-icons/io5";
 const { hostname } = window.location;
 // eslint-disable-next-line prefer-const
 let subdomain = getSubdomain(hostname);
@@ -75,7 +79,7 @@ const Header: React.FC = () => {
                 </div>
               </Link>
             </div> */}
-            
+
             <div className="header__icon header__cart">
 
               <Link to='/cart' >
@@ -90,17 +94,25 @@ const Header: React.FC = () => {
               <FiUser className="header__profile_icon" />
               {/* <div className="header__profile-name">{userName}</div> */}
               {isDropdownOpen && (
-                <div className="header__dropdown">
-                  <ul>
-                    <Link to='/orders' style={{ textDecoration: "none" }}>
-                      <li>My Orders</li>
-                    </Link>
-                    {/* <li><a href="/settings">Profile</a></li> */}
-                    {/* <li><Link to='/orders'>My Orders</Link></li> */}
-                    <Link style={{textDecoration:"none"}} to='/profile'> <li>Profile</li></Link>
-                    <li onClick={handleLogout}>Logout</li>
-                  </ul>
-                </div>
+          <div className="header__dropdown">
+          <ul>
+            <Link to='/orders' style={{ textDecoration: "none" }}>
+              <li><IoBagCheckOutline className="header__dropdown-icon" /> 
+                <div className="header__dropdown-text">My Orders</div>
+              </li>
+            </Link>
+            <Link to='/profile' style={{ textDecoration: "none" }}>
+              <li><FiUser className="header__dropdown-icon" /> 
+                <div className="header__dropdown-text">My Profile</div>
+              </li>
+            </Link>
+            <li>
+              <IoLogOutOutline className="header__dropdown-icon" /> 
+              <div className="header__dropdown-text">Logout</div>
+            </li>
+          </ul>
+        </div>
+        
               )}
             </div>
           </>

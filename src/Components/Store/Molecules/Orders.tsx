@@ -5,12 +5,23 @@ import useMystoreStore from "../Core/Store";
 import { toast, ToastContainer } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
 import { getSubdomain } from "../../../Utils/Subdomain";
-
+import { Link } from "react-router-dom";
+import { MdVerified } from "react-icons/md";
+import { CgDanger } from "react-icons/cg";
+import { FcSearch } from "react-icons/fc";
+import { GiSandsOfTime } from "react-icons/gi";
+import { IoTimerSharp } from "react-icons/io5";
+import { PiTimerFill } from "react-icons/pi";
+import { RxLapTimer } from "react-icons/rx";
+import { FaRegTimesCircle } from "react-icons/fa";
+import { BiSolidError } from "react-icons/bi";
+import { FaTimesCircle } from "react-icons/fa";
 interface resp {
   id: string;
   status: string;
   totalAmount: number;
   productDetails: details;
+  paymentMethod: string;
 }
 interface respBid {
   id: string;
@@ -22,7 +33,9 @@ interface respBid {
   quantity: number;
   productDetails: {
     productName: string;
+    mainImage: string;
   };
+  deliveryStatus: string;
 }
 interface respBarter {
   id: string;
@@ -34,7 +47,9 @@ interface respBarter {
   quantity: number;
   productDetails: {
     productName: string;
+    mainImage: string;
   };
+  deliveryStatus: string;
 }
 interface details {
   map(
@@ -46,9 +61,10 @@ interface details {
   productName: string;
   quantity: number;
   price: number;
+  mainImage?: string;
 }
-const {hostname}=window.location
-let subdomain=getSubdomain(hostname)
+const { hostname } = window.location;
+let subdomain = getSubdomain(hostname);
 const UserOrdersPage: React.FC = () => {
   const { getUserOrder } = useMystoreStore((s) => s);
   const [orders, setOrders] = useState<resp[]>([]);
@@ -61,9 +77,12 @@ const UserOrdersPage: React.FC = () => {
     const apiHelper = async () => {
       setLoading(true); // Start loading
       const data = await getUserOrder(subdomain);
+      console.log('data', data)
       if (data.error) {
         toast.error("We can't fetch orders");
       } else {
+        console.log(data?.data?.storeOrders);
+
         setOrders(data?.data?.storeOrders);
         setbiDOrders(data?.data?.biddingOrders);
         setBarterOrders(data.data?.barterOrders);
@@ -87,25 +106,34 @@ const UserOrdersPage: React.FC = () => {
     if (filter === "normal") {
       return { orders, bidOrders: [], barterOrders: [] };
     }
-    return { orders: [], bidOrders: [], barterOrders: [] }; 
+    return { orders: [], bidOrders: [], barterOrders: [] };
   };
 
-  const { orders: filteredOrderList, bidOrders: filteredBidOrders, barterOrders: filteredBarterOrders } = filteredOrders();
+  const {
+    orders: filteredOrderList,
+    bidOrders: filteredBidOrders,
+    barterOrders: filteredBarterOrders,
+  } = filteredOrders();
 
   return (
     <>
       <Header />
-      <div className="user-orders-page">
-        <h1 style={{ textAlign: "center", marginBottom: "20px" }}>
-          Your Orders
-        </h1>
-        <div className="filter-container" style={{ textAlign: "right", marginBottom: "20px" }}>
+      <div className="myorder-page">
+        <div className="myorder-page__header">
+          <div className="myorder-page__heading" >
+            My Orders
+          </div>
+        </div>
+
+        <div
+          className="myorder-page__filter-container"
+
+        >
           <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="all">All</option>
-            <option value="normal">Normal Orders</option>
-            <option value="bid">Bid Orders</option>
-            <option value="barter">Barter Orders</option>
-          
+            <option value="all">ALL</option>
+            <option value="normal">ORDER</option>
+            <option value="bid">BID</option>
+            <option value="barter">EXCHANGE</option>
           </select>
         </div>
         {loading ? (
@@ -122,77 +150,280 @@ const UserOrdersPage: React.FC = () => {
         ) : (
           <div className="orders-list">
             {filteredOrderList.map((order: resp) => (
-              <div key={order.id} className="order-card">
-                <div className="order-header">
-                  <span className={`status ${order.status.toLowerCase()}`}>
-                    {order.status}
-                  </span>
-                </div>
-                <p>
-                  <strong>Total Amount:</strong> {order.totalAmount}
-                </p>
-                <div className="order-items">
-                  <h3>Items:</h3>
-                  {order?.productDetails?.map((item: details, index: number) => (
-                    <div key={index} className="order-item">
-                      <p>
-                        <strong>{item.productName}</strong>
-                      </p>
-                      <p>Quantity: {item.quantity}</p>
-                      <p>Price: {item.price}</p>
+              <div key={order.id} className="myorder-page__card-container">
+                {order?.productDetails?.map((item: details, index: number) => (
+                  <Link
+                    style={{ textDecoration: "none", color: "auto" }}
+                    key={index}
+                    to="/orderdetails"
+                    state={{ orderData: order,type:"normal" }}
+                  >
+                    <div className="myorder-page__card-name-sec">
+                      {/* Product Image */}
+                      <img
+                        className="myorder-page__card-img"
+                        src={item.mainImage}
+                        alt={item.productName}
+                      />
+                      <hr className="myorder-page__line" />
+                      {/* Product Info */}
+                      <div className="myorder-page__card-name-details">
+                        <div className="myorder-page__card-name">
+                          {item.productName}
+                        </div>
+                        <div className="myorder-page__order-methode"> {order.paymentMethod === "offline" ? "Cash on devilvery" : "Online"}</div>
+                      </div>
                     </div>
-                  ))}
+                  </Link>
+                ))}
+
+                <div className="myorder-page__order-details-sec">
+
+                  <div className="myorder-page__order-amount-sec">
+                    {order.paymentMethod === "offline" ? (
+                      <>
+                        {order.totalAmount === 0 ? (
+                          <div className="myorder-page__order-amount">₹80</div>
+                        ) : (
+                          <div className="myorder-page__order-amount">{`₹${order.totalAmount}`}</div>
+                        )}
+
+                        <div className="myorder-page__payment-status">
+                          Payment Due <CgDanger className="myorder-page__order-amount-warning" />
+                        </div>
+                      </>
+                    ) : (
+                      <>
+
+                        <><div className="myorder-page__order-amount">
+
+                          {`₹${order.totalAmount}`}
+                        </div>
+                          <div className="myorder-page__payment-status">
+
+                            Paid <MdVerified className="myorder-page__order-amount-tick" />
+                          </div>
+                        </>
+                      </>
+                    )}
+                  </div>
+                  <div className="myorder-page__delivery-status">
+                    <div className="myorder-page__delivery-head">
+                      Delivery
+                    </div>
+                    <div
+                      className={
+                        order?.status === "Order Processed"
+                          ? "myorder-page__status-processed"
+                          : order?.status === "Preparing for Shipment"
+                            ? "myorder-page__status-preparing"
+                            : order?.status === "Shipped"
+                              ? "myorder-page__status-shipped"
+                              : order?.status === "Out for Delivery"
+                                ? "myorder-page__status-outfordelivery"
+                                : order?.status === "Delivered"
+                                  ? "myorder-page__status-delivered"
+                                  : order?.status === "Order Canceled"
+                                    ? "myorder-page__status-canceled"
+                                    : "myorder-page__status-other"
+                      }
+                    >
+                      {order?.status}
+                    </div>
+
+                  </div>
+
                 </div>
               </div>
             ))}
 
             {filteredBidOrders.length > 0 &&
               filteredBidOrders.map((order: respBid) => (
-                <div key={order.id} className="order-card">
-                  <div className="order-header">
-                    <span className={`status ${order.status.toLowerCase()}`}>
-                      {order.status}
-                    </span>
-                  </div>
-                  <p>
-                    <strong>Bid Amount:</strong> {order.biddingAmount}
-                  </p>
-                  <div className="order-items">
-                    <p>
-                      <strong>{order.productDetails.productName}</strong>
-                    </p>
-                    <p>Quantity: {order.quantity}</p>
+                <div key={order.id} className="myorder-page__card-container">
+                  <Link
+                    style={{ textDecoration: "none", color: "auto" }}
+                    to="/orderdetails"
+                    state={{ orderData: order,type:"bid"  }}
+                  >
+                    <div className="myorder-page__card-name-sec">
+                      {/* Product Image */}
+                      <img
+                        className="myorder-page__card-img"
+                        src={order.productDetails.mainImage}
+                        alt={order.productDetails.productName}
+                      />
+
+                      {/* Product Info */}
+                      <hr className="myorder-page__line" />
+                      {/* Product Info */}
+                      <div className="myorder-page__card-name-details">
+                        <div className="myorder-page__card-name">
+                          {order.productDetails.productName}
+                        </div>
+                        <div className="myorder-page__order-methode">AUCTION</div>
+                      </div>
+                    </div>
+                  </Link>
+
+                  <div className="myorder-page__order-details-sec">
+                    {/* Conditionally render the bid amount */}
+
+                    <div className="myorder-page__order-amount-sec">
+                      <div className="myorder-page__bid-amount">
+
+                        ₹{order.biddingAmount}{" "}
+                      </div>
+                      <div className="myorder-page__bid-verified">
+                        {order.status === 'Accepted' ? (
+                          <>
+                            {order.status}
+                            <MdVerified className="myorder-page__order-amount-tick" />
+                          </>
+                        ) : order.status === "Rejected" ? (
+                          <>
+                            {order.status}
+                            <FaTimesCircle className="myorder-page__order-amount-rejected" />
+                          </>
+                        ) : order.status === "Bid under review" ? (
+                          <>
+                            {order.status}
+                            <RxLapTimer className="myorder-page__bid-review-icon" />
+                          </>
+                        ) : (
+                          <>
+                            {order.status}
+                            <BiSolidError className="myorder-page__bid-review-icon" />
+                          </>
+                        )}
+                      </div>
+
+                    </div>
+                    <div className="myorder-page__delivery-status">
+                      <div className="myorder-page__delivery-head">
+                        Delivery
+                      </div>
+                      <div
+                        className={
+                          order?.deliveryStatus === "Order Processed"
+                            ? "myorder-page__status-processed"
+                            : order?.deliveryStatus === "Preparing for Shipment"
+                              ? "myorder-page__status-preparing"
+                              : order?.deliveryStatus === "Shipped"
+                                ? "myorder-page__status-shipped"
+                                : order?.deliveryStatus === "Out for Delivery"
+                                  ? "myorder-page__status-outfordelivery"
+                                  : order?.deliveryStatus === "Delivered"
+                                    ? "myorder-page__status-delivered"
+                                    : order?.deliveryStatus === "Order Canceled"
+                                      ? "myorder-page__status-canceled"
+                                      : "myorder-page__status-other"
+                        }
+                      >
+                        {order?.deliveryStatus}
+                      </div>
+
+
+                    </div>
+
                   </div>
                 </div>
               ))}
 
+
+
+
             {filteredBarterOrders.length > 0 &&
               filteredBarterOrders.map((order: respBarter) => (
-                <div key={order.id} className="order-card">
-                  <div className="order-header">
-                    <span className={`status ${order.status.toLowerCase()}`}>
-                      {order.status}
-                    </span>
+                <Link style={{ textDecoration: "none", color: "auto" }} key={order.id} to='/orderdetails' state={{ orderData: order }}>
+
+                  <div key={order.id} className="myorder-page__card-container">
+                    <Link
+                      style={{ textDecoration: "none", color: "auto" }}
+                      to="/orderdetails"
+                      state={{ orderData: order ,type:"barter" }}
+                    >
+                      <div className="myorder-page__card-name-sec">
+                        {/* Product Image */}
+                        <img
+                          className="myorder-page__card-img"
+                          src={order.productDetails.mainImage}
+                          alt={order.productDetails.productName}
+                        />
+
+                        {/* Product Info */}
+                        <hr className="myorder-page__line" />
+                        {/* Product Info */}
+                        <div className="myorder-page__card-name-details">
+                          <div className="myorder-page__card-name">
+                            {order.productDetails.productName}
+                          </div>
+                          <div className="myorder-page__order-methode">EXCHANGE</div>
+                        </div>
+                      </div>
+                    </Link>
+
+                    <div className="myorder-page__order-details-sec">
+                      {/* Conditionally render the bid amount */}
+
+                      <div className="myorder-page__order-amount-sec">
+                        <div className="myorder-page__bid-amount">
+
+                          SHOE
+                        </div>
+                        <div className="myorder-page__bid-verified">
+                          {order.status === 'Accepted' ? (
+                            <>
+                              {order.status}
+                              <MdVerified className="myorder-page__order-amount-tick" />
+                            </>
+                          ) : order.status === "Rejected" ? (
+                            <>
+                              {order.status}
+                              <FaTimesCircle className="myorder-page__order-amount-rejected" />
+                            </>
+                          ) : (
+                            <>
+                              {order.status}<RxLapTimer className="myorder-page__bid-review-icon" />
+                            </>
+                          )}
+                        </div>
+
+                      </div>
+                      <div className="myorder-page__delivery-status">
+                        <div className="myorder-page__delivery-head">
+                          Delivery
+                        </div>
+                        <div
+                          className={
+                            order?.deliveryStatus === "Order Processed"
+                              ? "myorder-page__status-processed"
+                              : order?.deliveryStatus === "Preparing for Shipment"
+                                ? "myorder-page__status-preparing"
+                                : order?.deliveryStatus === "Shipped"
+                                  ? "myorder-page__status-shipped"
+                                  : order?.deliveryStatus === "Out for Delivery"
+                                    ? "myorder-page__status-outfordelivery"
+                                    : order?.deliveryStatus === "Delivered"
+                                      ? "myorder-page__status-delivered"
+                                      : order?.deliveryStatus === "Order Canceled"
+                                        ? "myorder-page__status-canceled"
+                                        : "myorder-page__status-other"
+                          }
+                        >
+                          {order?.deliveryStatus}
+                        </div>
+
+
+                      </div>
+
+                    </div>
                   </div>
-                  <p>
-                    <strong>Barter Image:</strong>{" "}
-                    <img
-                      style={{ width: "10%" }}
-                      src={order.productImage}
-                      alt={order.productDetails.productName}
-                    />
-                  </p>
-                  <div className="order-items">
-                    <p>
-                      <strong>{order.productDetails.productName}</strong>
-                    </p>
-                    <p>Quantity: {order.quantity}</p>
-                  </div>
-                </div>
+                </Link>
               ))}
           </div>
         )}
       </div>
+
       <ToastContainer />
     </>
   );

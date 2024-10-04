@@ -378,3 +378,18 @@ export const updateMobileNumberApi = async (mobileNumber:string,otp:string,hostN
     };
   }
 };
+
+export const passwordChangeApi = async (currentPassword:string,newPassword:string) => {
+  try {
+    const { data } = await axiosInstance.post(
+      `/storuser/updatepassword`,{currentPassword,newPassword}
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};

@@ -55,11 +55,12 @@ const CheckoutPage: React.FC = () => {
       setBtndesable(true);
       const productDetais = details.map((val: respStoreCart) => {
         return {
-          id: val.productDetails.id,
-          quantity: val.quantity,
-          productName: val.productDetails.productName,
-          mainImage: val.productDetails.mainImage,
-          cartId: val.id,
+          id: val?.productDetails?.id,
+          quantity: val?.quantity,
+          productName: val?.productDetails?.productName,
+          mainImage: val?.productDetails?.mainImage,
+          cartId: val?.id,
+          price:val?.productDetails?.price
         };
       });
 
@@ -153,6 +154,8 @@ const CheckoutPage: React.FC = () => {
       );
     }
   };
+  console.log('addree',addressData);
+  
   return (
     <>
       <Header />
@@ -163,9 +166,9 @@ const CheckoutPage: React.FC = () => {
           <div className="address-details">
             {selectedAddress.id && (
               <>
-                <div>
+                <div className="checkout-page-address-details">
                   <p>
-                    <strong>{selectedAddress.fullName}</strong>
+                    <span>{selectedAddress.fullName}</span>
                   </p>
                   <p>{selectedAddress.fullAddress}</p>
                   <p>

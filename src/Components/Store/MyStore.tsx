@@ -118,11 +118,11 @@ export const MyStore: React.FC = () => {
                 onChange={(e) => setFilter(e.target.value)}
                 className="mystore__select_category"
               >
-                <option value="All">All</option>
-                <option value="free">Free</option>
-                <option value="Price">Price</option>
-                <option value="Bidding">Bidding</option>
-                <option value="Barter">Barter</option>
+                <option value="All">ALL</option>
+                <option value="free">FREE</option>
+                <option value="Price">NORMAL</option>
+                <option value="Bidding">AUCTIONS</option>
+                <option value="Barter">EXCHANGE</option>
               </select>
             </div>
             <div className="mystore__products_sec">
