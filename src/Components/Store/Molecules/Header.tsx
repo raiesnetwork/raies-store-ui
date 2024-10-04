@@ -24,13 +24,11 @@ const Header: React.FC = () => {
   } = useMystoreStore((state) => state);
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   let navigate = useNavigate();
-  const [search, setSearch] = useState<string>('')
-
+  const [search, setSearch] = useState<string>("");
 
   const toggleDropdown = () => {
     setIsDropdownOpen(!isDropdownOpen);
   };
-
 
   const handleLogout = () => {
     logout(); // Call the logout action from the store
@@ -45,7 +43,11 @@ const Header: React.FC = () => {
       {/* Left side: Logo and Store Name */}
       <Link to={"/"} className="header__left">
         <img
-          src={storeData ? storeData?.storeIcon : "/media/Nike-logo-icon-on-transparent-background-PNG.png"}
+          src={
+            storeData
+              ? storeData?.storeIcon
+              : "/media/Nike-logo-icon-on-transparent-background-PNG.png"
+          }
           alt="Store Logo"
           className="header__logo"
         />
@@ -55,17 +57,20 @@ const Header: React.FC = () => {
       {/* Center: Search Box */}
       <div className="header__center">
         <div className="header__search">
-          <input onChange={(e) => setSearch(e.target.value)} type="text" placeholder="Search" className="header__search-input" />
+          <input
+            onChange={(e) => setSearch(e.target.value)}
+            type="text"
+            placeholder="Search"
+            className="header__search-input"
+          />
           <CiSearch onClick={handilSearch} className="header__serchIcon" />
         </div>
-
       </div>
 
       {/* Right side: Cart, Profile, Login */}
       <div className="header__right">
         {logedIn === true ? (
           <>
-
             {/* <div className="header__icon header__cart">
 
               <Link to='/cart' >
@@ -75,29 +80,30 @@ const Header: React.FC = () => {
                 </div>
               </Link>
             </div> */}
-            
-            <div className="header__icon header__cart">
 
-              <Link to='/cart' >
-                <div style={{ position: "relative" }} >
+            <div className="header__icon header__cart">
+              <Link to="/cart">
+                <div style={{ position: "relative" }}>
                   <IoBagOutline className="header__cart-icon" />
                   {/* <p className="header__profile-name">{cartData?.length} Items</p> */}
                 </div>
               </Link>
             </div>
             <div className="header__profile" onClick={toggleDropdown}>
-
               <FiUser className="header__profile_icon" />
               {/* <div className="header__profile-name">{userName}</div> */}
               {isDropdownOpen && (
                 <div className="header__dropdown">
                   <ul>
-                    <Link to='/orders' style={{ textDecoration: "none" }}>
+                    <Link to="/orders" style={{ textDecoration: "none" }}>
                       <li>My Orders</li>
                     </Link>
                     {/* <li><a href="/settings">Profile</a></li> */}
                     {/* <li><Link to='/orders'>My Orders</Link></li> */}
-                    <Link style={{textDecoration:"none"}} to='/profile'> <li>Profile</li></Link>
+                    <Link style={{ textDecoration: "none" }} to="/profile">
+                      {" "}
+                      <li>Profile</li>
+                    </Link>
                     <li onClick={handleLogout}>Logout</li>
                   </ul>
                 </div>
@@ -114,8 +120,6 @@ const Header: React.FC = () => {
           </>
         )}
       </div>
-
-
     </header>
   );
 };

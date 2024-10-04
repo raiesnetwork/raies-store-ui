@@ -3,7 +3,6 @@ import useMystoreStore from "./Core/Store";
 import { respProduct } from "./Core/Interfaces";
 import ProductViewCard from "./Molecules/ProductCard";
 import Header from "./Molecules/Header";
-import "react-toastify/dist/ReactToastify.css";
 import { getSubdomain } from "../../Utils/Subdomain";
 import ClipLoader from "react-spinners/ClipLoader";
 import "./Helpers/scss/mystore.scss";
@@ -20,7 +19,7 @@ export const MyStore: React.FC = () => {
     logedIn,
     latestProduct,
     setUserName,
-    storeData
+    storeData,
   } = useMystoreStore((state) => state);
 
   const [data, setData] = useState<respProduct[]>([]);
@@ -53,7 +52,7 @@ export const MyStore: React.FC = () => {
     const fetchProducts = async () => {
       setHomeLoader(true);
       FetchToCart();
-      await latestProduct(subdomain, '');
+      await latestProduct(subdomain, "");
       setHomeLoader(false);
     };
 
@@ -110,7 +109,13 @@ export const MyStore: React.FC = () => {
         <>
           <div className="mystore">
             <div className="myStore__banner">
-              <img src={storeData ? storeData?.storeBanner : "/media/nike banner.png"} className="mystore__banner_img" alt="" />
+              <img
+                src={
+                  storeData ? storeData?.storeBanner : "/media/nike banner.png"
+                }
+                className="mystore__banner_img"
+                alt=""
+              />
             </div>
             <div className="mystore__category_container">
               <select
@@ -126,7 +131,6 @@ export const MyStore: React.FC = () => {
               </select>
             </div>
             <div className="mystore__products_sec">
-
               {paginatedData.length > 0 ? (
                 paginatedData.map((val) =>
                   !val.flag ? <ProductViewCard key={val.id} data={val} /> : null
@@ -139,8 +143,12 @@ export const MyStore: React.FC = () => {
             {/* Pagination Controls */}
             <div className="mystore__pagination">
               <button
-                style={{ cursor: pageNo >= Math.ceil(filteredData.length / itemsPerPage) ? "pointer" : "not-allowed" }}
-
+                style={{
+                  cursor:
+                    pageNo >= Math.ceil(filteredData.length / itemsPerPage)
+                      ? "pointer"
+                      : "not-allowed",
+                }}
                 onClick={handlePreviousPage}
                 disabled={pageNo === 1}
                 className="mystore__pagination-btn"
@@ -149,12 +157,19 @@ export const MyStore: React.FC = () => {
               </button>
               <div>{pageNo}</div>
               <button
-                style={{ cursor: pageNo >= Math.ceil(filteredData.length / itemsPerPage) ? "not-allowed" : "pointer" }}
+                style={{
+                  cursor:
+                    pageNo >= Math.ceil(filteredData.length / itemsPerPage)
+                      ? "not-allowed"
+                      : "pointer",
+                }}
                 onClick={handleNextPage}
-                disabled={pageNo >= Math.ceil(filteredData.length / itemsPerPage)}
+                disabled={
+                  pageNo >= Math.ceil(filteredData.length / itemsPerPage)
+                }
                 className="mystore__pagination-btn"
               >
-                <GrFormNext  className="mystore__pagination_icon" />
+                <GrFormNext className="mystore__pagination_icon" />
               </button>
             </div>
           </div>

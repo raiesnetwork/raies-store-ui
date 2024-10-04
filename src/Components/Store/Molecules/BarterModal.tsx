@@ -1,5 +1,5 @@
 import React, { useState, useEffect, useRef } from "react";
-import {  toast } from "react-toastify";
+import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { fileToBase64 } from "../../../Utils/Base64";
 import { useNavigate } from "react-router-dom";
@@ -73,22 +73,32 @@ const BarterModal: React.FC = () => {
 
         if (data.error) {
           setDisable(false);
-          return toast.error("order can't creted");
+          return toast.error(
+            "We're sorry, but there was a problem creating your barter order. Please try again in a few minutes."
+          );
         } else {
           if (data.data === "exceed") {
-            return toast.error("Product limit exceed");
+            return toast.error(
+              "This product is currently unavailable. Please check back later for restock updates!"
+            );
           } else {
-           
-            
             ProductImageRef.current.value = "";
             setOpenBarterModal();
-            navigate("/success", { state: { orderDetails:[{id:"",quantity:1,productDetails:singleProductData}] } });
+            navigate("/success", {
+              state: {
+                orderDetails: [
+                  { id: "", quantity: 1, productDetails: singleProductData },
+                ],
+              },
+            });
           }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (e) {
         setDisable(false);
-        toast.error("Failed to submit form.");
+        toast.error(
+          "We couldn't submit your form due to an error. Please check your information and try again."
+        );
       }
     }
   };
@@ -207,7 +217,9 @@ const BarterModal: React.FC = () => {
 
                 {/* Product Image */}
                 <div className="form-group">
-                  <label htmlFor="productImage">Your Exchange Product Image</label>
+                  <label htmlFor="productImage">
+                    Your Exchange Product Image
+                  </label>
                   <input
                     type="file"
                     id="productImage"
@@ -267,8 +279,6 @@ const BarterModal: React.FC = () => {
           </div>
         </div>
       </div>
-
-      {/* <ToastContainer /> */}
     </>
   );
 };

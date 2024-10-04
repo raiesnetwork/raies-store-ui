@@ -16,7 +16,7 @@ const BiddingModal: React.FC = () => {
     getAddress,
     OpenAddressModal,
     setIsOpenSelectAddressModal,
-    setAddressSuparator
+    setAddressSuparator,
   } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
@@ -38,7 +38,7 @@ const BiddingModal: React.FC = () => {
       productId: singleProductData.id,
     });
     setErrors({});
-  }, [isOpenBiddingModal, singleProductData,selectedAddress]);
+  }, [isOpenBiddingModal, singleProductData, selectedAddress]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -59,14 +59,15 @@ const BiddingModal: React.FC = () => {
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
 
-    
     if (!formData.addressId.trim())
       newErrors.addressId = "Address is Required.";
-    const bidAmd=Number(formData.biddingAmount)
-    if (!formData.biddingAmount.trim()){
-
+    const bidAmd = Number(formData.biddingAmount);
+    if (!formData.biddingAmount.trim()) {
       newErrors.biddingAmount = "Bid Amount is required.";
-    }else if (bidAmd<singleProductData.minBidPrice||bidAmd>singleProductData.maxBidPrice) {
+    } else if (
+      bidAmd < singleProductData.minBidPrice ||
+      bidAmd > singleProductData.maxBidPrice
+    ) {
       newErrors.biddingAmount = `Bid amount must in bitween ${singleProductData.minBidPrice}-${singleProductData.maxBidPrice}`;
     }
 
@@ -82,32 +83,43 @@ const BiddingModal: React.FC = () => {
         const data = await createBiddingOrder(formData);
         if (data.error) {
           setDisable(false);
-         return toast.error("Something wrong try again later");
+          return toast.error(
+            "We're sorry, but there was a problem creating your bid order. Please try again in a few minutes."
+          );
         } else {
-          if (data.data==="exceed") {
-            return toast.error("Item limit exceed");
-
+          if (data.data === "exceed") {
+            return toast.error(
+              "This product is currently unavailable. Please check back later for restock updates!"
+            );
           }
-         
+
           setOpenBiddingModal();
-        navigate("/success", { state: { orderDetails:[{id:"",quantity:1,productDetails:singleProductData}] } });
+          navigate("/success", {
+            state: {
+              orderDetails: [
+                { id: "", quantity: 1, productDetails: singleProductData },
+              ],
+            },
+          });
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
         setDisable(false);
-        toast.error("Failed to submit form.");
+        toast.error(
+          "We couldn't submit your form due to an error. Please check your information and try again."
+        );
       }
     }
   };
-// ===================================
-const handlenewAddress = () => {
-  OpenAddressModal();
-  setOpenBiddingModal();
-};
-const handleSelectAddressModalOpen = () => {
-  setIsOpenSelectAddressModal();
-  setOpenBiddingModal();
-};
+  // ===================================
+  const handlenewAddress = () => {
+    OpenAddressModal();
+    setOpenBiddingModal();
+  };
+  const handleSelectAddressModalOpen = () => {
+    setIsOpenSelectAddressModal();
+    setOpenBiddingModal();
+  };
   return (
     <>
       <div
@@ -131,7 +143,6 @@ const handleSelectAddressModalOpen = () => {
 
             <div className="modal-body">
               <form onSubmit={handleSubmit}>
-               
                 {/* Address Section */}
 
                 <div className="section address-section">
@@ -181,14 +192,11 @@ const handleSelectAddressModalOpen = () => {
                   )}
                 </div>
 
-               
-
-               
                 {/* Product biddingAmount */}
                 <div className="form-group">
-                  <label htmlFor="biddingAmount">Bid Amount
-                  (Min:{singleProductData.minBidPrice}-Max:{singleProductData.maxBidPrice})
-
+                  <label htmlFor="biddingAmount">
+                    Bid Amount (Min:{singleProductData.minBidPrice}-Max:
+                    {singleProductData.maxBidPrice})
                   </label>
                   <input
                     type="number"
@@ -214,11 +222,12 @@ const handleSelectAddressModalOpen = () => {
                 >
                   Submit
                 </button>
-                <button className="btn" 
-                onClick={() => {
-                  setOpenBiddingModal();
-                  setAddressSuparator(false);
-                }}
+                <button
+                  className="btn"
+                  onClick={() => {
+                    setOpenBiddingModal();
+                    setAddressSuparator(false);
+                  }}
                 >
                   Close
                 </button>

@@ -60,7 +60,7 @@ const CheckoutPage: React.FC = () => {
           productName: val?.productDetails?.productName,
           mainImage: val?.productDetails?.mainImage,
           cartId: val?.id,
-          price:val?.productDetails?.price
+          price: val?.productDetails?.price,
         };
       });
 
@@ -70,87 +70,89 @@ const CheckoutPage: React.FC = () => {
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
           totalAmount: totalPrice,
-
         });
         setBtndesable(false);
 
         if (data.error) {
           setBtndesable(false);
 
-          return toast.error("cant create order");
+          return toast.error(
+            "We couldn't create your order. Please try again."
+          );
         } else {
           setBtndesable(false);
-          await FetchToCart()
+          await FetchToCart();
           navigate("/success", { state: { orderDetails: details } });
         }
       } else {
         setBtndesable(false);
 
-  
- 
-          try {
-            // setLoading(true)
-      
-            const { order } = await createRazorpayOrder(totalPrice);
-            
-            const options = {
-              key: "rzp_test_7TGBri3PsjHg77",
-              amount: order.amount,
-              currency: "INR",
-              name: 'STORE CART PURCHASE',
-              description: "Fund for the campaign",
-              order_id: order.id,
-              // eslint-disable-next-line @typescript-eslint/no-explicit-any
-              handler: async (response: any) => {
-                try {
-                  // eslint-disable-next-line prefer-const
-                  let data={response,addressId: selectedAddress.id,
-                    paymentMethod: selectedPaymentMethod,
-                    productDetails: productDetais,
-                    totalAmount: totalPrice}
-                  await verifyRazorpayPayment(data);
-           
-                  // setLoading(false);
-                  setRefresh(true);
-                // eslint-disable-next-line @typescript-eslint/no-explicit-any
-                } catch (error: any) {
-                  // setLoading(false);
-                 toast.error("payment verification failed")
-      
-                }
-              },
-              profile: {
-                name: "John Doe",
-                email: "john.doe@example.com",
-                contact: "9999999999",
-              },
-              theme: {
-                color: "#3399cc",
-              },
-              modal: {
-                ondismiss: () => {
-                  // setLoading(false); 
-                  // Optionally stop loading if the user dismisses the payment modal
-                },
-              }
-            };
-      
+        try {
+          // setLoading(true)
+
+          const { order } = await createRazorpayOrder(totalPrice);
+
+          const options = {
+            key: "rzp_test_7TGBri3PsjHg77",
+            amount: order.amount,
+            currency: "INR",
+            name: "STORE CART PURCHASE",
+            description: "Fund for the campaign",
+            order_id: order.id,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
-            const rzp1 = new (window as any).Razorpay(options);
-            rzp1.open();
-          } catch (error) {
-            console.error("Payment failed:", error);
-            toast.error('Payment failed Please try again.');
-          }
-          await FetchToCart()
-          navigate("/success", { state: { orderDetails: details } });
-      
+            handler: async (response: any) => {
+              try {
+                // eslint-disable-next-line prefer-const
+                let data = {
+                  response,
+                  addressId: selectedAddress.id,
+                  paymentMethod: selectedPaymentMethod,
+                  productDetails: productDetais,
+                  totalAmount: totalPrice,
+                };
+                await verifyRazorpayPayment(data);
+
+                // setLoading(false);
+                setRefresh(true);
+                // eslint-disable-next-line @typescript-eslint/no-explicit-any
+              } catch (error: any) {
+                // setLoading(false);
+                toast.error(
+                  "Payment verification failed. Please check your payment details and try again."
+                );
+              }
+            },
+            profile: {
+              name: "John Doe",
+              email: "john.doe@example.com",
+              contact: "9999999999",
+            },
+            theme: {
+              color: "#3399cc",
+            },
+            modal: {
+              ondismiss: () => {
+                // setLoading(false);
+                // Optionally stop loading if the user dismisses the payment modal
+              },
+            },
+          };
+
+          // eslint-disable-next-line @typescript-eslint/no-explicit-any
+          const rzp1 = new (window as any).Razorpay(options);
+          rzp1.open();
+        } catch (error) {
+          console.error("Payment failed:", error);
+          toast.error("Payment failed. Please try again.");
+        }
+        await FetchToCart();
+        navigate("/success", { state: { orderDetails: details } });
       }
     } else {
       setBtndesable(false);
 
       toast.error(
-        "Plese select the delivery address and payment method properly"
+        "Please make sure to select your delivery address and payment method."
       );
     }
   };
@@ -180,7 +182,9 @@ const CheckoutPage: React.FC = () => {
               </>
             )}
             {!addressData?.length && !selectedAddress.id && (
-              <button onClick={setIsOpenSelectAddressModal}>Add new Address</button>
+              <button onClick={setIsOpenSelectAddressModal}>
+                Add new Address
+              </button>
             )}
             {addressData?.length && !selectedAddress.id && (
               <button onClick={setIsOpenSelectAddressModal}>

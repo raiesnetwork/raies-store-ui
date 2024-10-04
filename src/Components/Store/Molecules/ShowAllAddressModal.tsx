@@ -22,7 +22,8 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
     addressData,
     setSelectedAddress,
     setIsOpenSelectAddressModal,
-    addressSupparatorBarter,setOpenBiddingModal
+    addressSupparatorBarter,
+    setOpenBiddingModal,
   } = useMystoreStore((s) => s);
 
   const handleSelectAddress = (address: respStoreAddress) => {
@@ -30,7 +31,8 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
     setIsOpenSelectAddressModal();
     if (addressSupparator) {
       setOpenBiddingModal();
-    }if (addressSupparatorBarter) {
+    }
+    if (addressSupparatorBarter) {
       setOpenBarterModal();
     }
   };
@@ -42,10 +44,12 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
   const handleDeleteAddress = async (id: string) => {
     const data = await deleteAddress(id);
     if (data.error) {
-      toast.error("can't delete address");
+      toast.error(
+        "Unable to delete the address at this time. Please try again later."
+      );
     } else {
       await getAddress();
-      toast.error("address deleted successfully");
+      toast.error("Your address has been removed.");
     }
   };
 
@@ -53,7 +57,8 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
     setIsOpenSelectAddressModal();
     if (addressSupparator) {
       setOpenBiddingModal();
-    }if (addressSupparatorBarter) {
+    }
+    if (addressSupparatorBarter) {
       setOpenBarterModal();
     }
   };
@@ -62,20 +67,25 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
       {/* Modal */}
       <div className="select_address-modal-overlay">
         <div className="select_address-modal-content">
-          <div style={{display:"flex",alignItems:"center",justifyContent:"space-between"}}>
-
-          <div className="select_address-header">1. Delivery Address</div>
-          <button
+          <div
+            style={{
+              display: "flex",
+              alignItems: "center",
+              justifyContent: "space-between",
+            }}
+          >
+            <div className="select_address-header">1. Delivery Address</div>
+            <button
               style={{
-                border:"0",
-                backgroundColor:"transparent",
-                cursor:"pointer"
+                border: "0",
+                backgroundColor: "transparent",
+                cursor: "pointer",
               }}
               onClick={handleBarterSelectAddressModalClose}
-              >
-             <IoCloseSharp size={22} title="Close" />
+            >
+              <IoCloseSharp size={22} title="Close" />
             </button>
-              </div>
+          </div>
           <div className="select_address-details">
             {addressData.length === 0 ? (
               <button
@@ -97,55 +107,60 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
                       </p>
                       <p>{address.landmark}</p>
                       <p>{address.mobileNumber}</p>
-                      <div style={{
-                        display:"flex",
-                        justifyContent:"space-between"
-                      }}>
-
-                      <button
-                        className="select_address-button"
-                        onClick={() => handleSelectAddress(address)}
-                        style={{display:"flex",alignItems:"center",justifyContent:"center",gap:"5px"}}
-                        >
-                      <FaRegAddressCard  size={22}  />
-                      <span>Select</span>
-                      </button>
-                      <button
+                      <div
                         style={{
-                          border:"0px",
-                          backgroundColor:"transparent",
-                          cursor:"pointer"
+                          display: "flex",
+                          justifyContent: "space-between",
                         }}
-                        onClick={() => handleDeleteAddress(address.id)}
+                      >
+                        <button
+                          className="select_address-button"
+                          onClick={() => handleSelectAddress(address)}
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "center",
+                            gap: "5px",
+                          }}
                         >
-                        <MdDelete size={22} title="Delete Address" />
-                      </button>
-                        </div>
+                          <FaRegAddressCard size={22} />
+                          <span>Select</span>
+                        </button>
+                        <button
+                          style={{
+                            border: "0px",
+                            backgroundColor: "transparent",
+                            cursor: "pointer",
+                          }}
+                          onClick={() => handleDeleteAddress(address.id)}
+                        >
+                          <MdDelete size={22} title="Delete Address" />
+                        </button>
+                      </div>
                     </div>
                   ))}
-                <div style={{
-                   display:"flex",
-                      justifyContent:"flex-end",
-                      marginRight:"10px"
-                }}>
+                <div
+                  style={{
+                    display: "flex",
+                    justifyContent: "flex-end",
+                    marginRight: "10px",
+                  }}
+                >
                   <button
                     style={{
-                      border:"0px",
-                      backgroundColor:"transparent",
-                      cursor:"pointer",
-                     
+                      border: "0px",
+                      backgroundColor: "transparent",
+                      cursor: "pointer",
                     }}
                     onClick={handilOpenAddressmodal}
                   >
-                   <FaPlus size={22} title="Add new Address" />
+                    <FaPlus size={22} title="Add new Address" />
                   </button>
                 </div>
               </div>
             )}
           </div>
-          <div className="select_address-footer">
-          
-          </div>
+          <div className="select_address-footer"></div>
         </div>
       </div>
     </>

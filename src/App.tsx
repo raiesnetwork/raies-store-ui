@@ -7,35 +7,36 @@ import { getSubdomain } from "./Utils/Subdomain";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 
-
-
 const { hostname } = window.location;
 let hostName = getSubdomain(hostname);
 
 function App() {
-  const { getStoreIconAndName, storeData } = useMystoreStore((s) => s);
-  const [loading, setLoading] = useState(true);  // Loading state
+  const { getStoreIconAndName } = useMystoreStore((s) => s);
+  const [loading, setLoading] = useState(true); // Loading state
 
   useEffect(() => {
     const apiHelper = async () => {
       try {
-        const Data = await getStoreIconAndName(hostName);
-        console.log(Data.data);
+        await getStoreIconAndName(hostName);
       } catch (error) {
-        console.error("Error fetching store data:", error);
       } finally {
-        setLoading(false);  // Set loading to false once data is fetched
+        setLoading(false); // Set loading to false once data is fetched
       }
     };
     apiHelper();
   }, [getStoreIconAndName, hostName]);
 
-  console.log("storeData", storeData);
-
   if (loading) {
     // Show loader while data is being fetched
     return (
-      <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center', height: '100vh' }}>
+      <div
+        style={{
+          display: "flex",
+          justifyContent: "center",
+          alignItems: "center",
+          height: "100vh",
+        }}
+      >
         <div className="loader">Loading...</div>
       </div>
     );
@@ -43,15 +44,15 @@ function App() {
 
   return (
     <>
-    <Router>
-      <Auth>
-        <Routes>
-          {/* Define different routes for your application */}
-          <Route path="/" element={<MyStore />} />
-        </Routes>
-      </Auth>
-    </Router>
-    <ToastContainer/>
+      <Router>
+        <Auth>
+          <Routes>
+            {/* Define different routes for your application */}
+            <Route path="/" element={<MyStore />} />
+          </Routes>
+        </Auth>
+      </Router>
+      <ToastContainer />
     </>
   );
 }

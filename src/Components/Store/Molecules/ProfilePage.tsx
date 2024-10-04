@@ -9,7 +9,7 @@ import useMystoreStore from "../Core/Store";
 import { updateProfileInfo } from "../Core/Interfaces";
 import OtpVerify from "./OTPmodal";
 import { passwordChangeApi } from "../Core/StoreApi";
- type pages='info'|'password'
+type pages = "info" | "password";
 const ProfilePage: React.FC = () => {
   const {
     isOTPmodalVisible,
@@ -44,7 +44,9 @@ const ProfilePage: React.FC = () => {
       const data = await getProfileInfo();
       setLoader(false);
       if (data.error) {
-        toast.error("cant fetch user data");
+        toast.error(
+          "Unable to retrieve user data at this time. Please try again later."
+        );
       } else {
         // setFormData(profileData);
       }
@@ -63,7 +65,6 @@ const ProfilePage: React.FC = () => {
     });
   };
 
- 
   const handleImageChange = (e: React.ChangeEvent<HTMLInputElement>) => {
     setnameBtnDisable(true);
     const file = e.target.files?.[0];
@@ -94,13 +95,14 @@ const ProfilePage: React.FC = () => {
         };
         reader.readAsDataURL(file);
       } else {
-        toast.error("File size must be less than or equal to 1MB.");
+        toast.error("Please ensure the file size is 1MB or less.");
       }
     } else {
       toast.error("Please upload a valid image file.");
     }
   };
-  const [passwordSaveBtnVisible, setpasswordSaveBtnVisible] = useState<boolean>(false);
+  const [passwordSaveBtnVisible, setpasswordSaveBtnVisible] =
+    useState<boolean>(false);
   const [emailSaveBtnVisible, setEmailSaveBtnVisible] =
     useState<boolean>(false);
   const [mobileSaveBtnVisible, setMobileSaveBtnVisible] =
@@ -111,32 +113,34 @@ const ProfilePage: React.FC = () => {
       if (formData.fullName.trim()) {
         const data = await updateProfileInfo(formData);
         if (data.error) {
-          toast.error("We cant update now try after some time");
+          toast.error(
+            "We're unable to update right now. Please try again later."
+          );
         } else {
-          toast.success("Updated Successfully");
+          toast.success("Your update was successful!");
         }
       } else {
-        toast.error("Add any valid name");
+        toast.error("Please provide a valid name to continue.");
       }
 
       setnameBtnDisable(false);
     } else {
-      toast.error("Please add any changes");
+      toast.error("Let us know if you’d like to make any changes!");
     }
   };
-//  password Section
-const [pageSelector,setPageSelector]=useState<pages>('info')  
-const [nameSaveBtnVisible, setnameSaveBtnVisible] = useState<boolean>(false);
-const [passwordForm,setPasswordForm]=useState({
-    currentPassword:"",
-    newPassword:"",
-    confirmPassword:""
-})
-const [error, setError] = useState<string | null>(null);
+  //  password Section
+  const [pageSelector, setPageSelector] = useState<pages>("info");
+  const [nameSaveBtnVisible, setnameSaveBtnVisible] = useState<boolean>(false);
+  const [passwordForm, setPasswordForm] = useState({
+    currentPassword: "",
+    newPassword: "",
+    confirmPassword: "",
+  });
+  const [error, setError] = useState<string | null>(null);
 
   const validateForm = () => {
-    const {currentPassword, newPassword, confirmPassword } = passwordForm;
-    if (!newPassword || !confirmPassword ||!currentPassword) {
+    const { currentPassword, newPassword, confirmPassword } = passwordForm;
+    if (!newPassword || !confirmPassword || !currentPassword) {
       return "Password fields are required.";
     }
     if (newPassword !== confirmPassword) {
@@ -148,45 +152,52 @@ const [error, setError] = useState<string | null>(null);
 
     return null;
   };
-const passwordHandilChange=(e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>)=>{
-    const {name,value}=e.target
+  const passwordHandilChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLSelectElement>
+  ) => {
+    const { name, value } = e.target;
     setPasswordForm({
-        ...passwordForm,
-        [name]:value
-})
-setError(null)
-}
-const handilePasswordSubmit=async()=>{
-const erroes=validateForm()
-if (erroes) {
-    setError(erroes)
-}else{
-   const data=await passwordChangeApi(passwordForm.currentPassword,passwordForm.newPassword)
-   if (data?.error) {
-    toast.error("We cant update now try after some time");
-
-   }else{
-    if (!data?.data) {
-        setError('The current password you entered is incorrect. Please try again.')
-    }else if (data?.data==="NotFound") {
-        setError('User Not Found.')
-
-    }{
-        setPasswordForm({
-            confirmPassword:"",
-            currentPassword:"",
-            newPassword:""
-        })
-        setError(null)
-        toast.success("Password changed successfully");
-
+      ...passwordForm,
+      [name]: value,
+    });
+    setError(null);
+  };
+  const handilePasswordSubmit = async () => {
+    const erroes = validateForm();
+    if (erroes) {
+      setError(erroes);
+    } else {
+      const data = await passwordChangeApi(
+        passwordForm.currentPassword,
+        passwordForm.newPassword
+      );
+      if (data?.error) {
+        toast.error(
+          "We're unable to process updates at the moment. Please try again later."
+        );
+      } else {
+        if (!data?.data) {
+          setError(
+            "The password you entered is incorrect. Please check and try again."
+          );
+        } else if (data?.data === "NotFound") {
+          setError("User does not exist.");
+        }
+        {
+          setPasswordForm({
+            confirmPassword: "",
+            currentPassword: "",
+            newPassword: "",
+          });
+          setError(null);
+          toast.success("Password change successful");
+        }
+      }
     }
-   }
-}
-}
+  };
   return (
     <>
-          <Header />
+      <Header />
       {!loader ? (
         <>
           <div className="profile-page">
@@ -211,23 +222,33 @@ if (erroes) {
               <nav>
                 <ul>
                   <li
-                    style={pageSelector==="info"?{
-                        fontWeight: "bold",
-                        padding: "20px",
-                        backgroundColor: "lightgray",
-                      }:{}}
-                    onClick={()=>setPageSelector('info')}
+                    style={
+                      pageSelector === "info"
+                        ? {
+                            fontWeight: "bold",
+                            padding: "20px",
+                            backgroundColor: "lightgray",
+                          }
+                        : {}
+                    }
+                    onClick={() => setPageSelector("info")}
                   >
                     Personal Info.
                   </li>
                   <li
-                   style={pageSelector==="password"?{
-                    fontWeight: "bold",
-                    padding: "20px",
-                    backgroundColor: "lightgray",
-                  }:{}}
-                   onClick={()=>setPageSelector('password')}
-                  >Change Password</li>
+                    style={
+                      pageSelector === "password"
+                        ? {
+                            fontWeight: "bold",
+                            padding: "20px",
+                            backgroundColor: "lightgray",
+                          }
+                        : {}
+                    }
+                    onClick={() => setPageSelector("password")}
+                  >
+                    Change Password
+                  </li>
                   <Link
                     style={{
                       textDecoration: "none",
@@ -242,91 +263,291 @@ if (erroes) {
             </aside>
 
             <main className="main-content">
-                {pageSelector==="info"?
-              <section className="profile-info">
-                <form className="profile-form">
-                  <div
-                    className="form-group"
-                    style={{
-                      cursor: nameSaveBtnVisible ? "auto" : "not-allowed",
-                      padding: "10px",
-                      borderRadius: "5px",
-                    }}
-                  >
+              {pageSelector === "info" ? (
+                <section className="profile-info">
+                  <form className="profile-form">
                     <div
+                      className="form-group"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
+                        cursor: nameSaveBtnVisible ? "auto" : "not-allowed",
+                        padding: "10px",
+                        borderRadius: "5px",
                       }}
                     >
-                      <label>
-                        {profileData.role === "Admin"
-                          ? "Admin Information"
-                          : "Personal Information"}
-                      </label>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <label>
+                          {profileData.role === "Admin"
+                            ? "Admin Information"
+                            : "Personal Information"}
+                        </label>
 
-                      {nameSaveBtnVisible ? (
-                        <div
-                          onClick={() =>
-                            setnameSaveBtnVisible(!nameSaveBtnVisible)
-                          }
-                          style={{ color: "blue", cursor: "pointer" }}
-                        >
-                          {" "}
-                          &nbsp;Cancel
-                        </div>
-                      ) : (
-                        <div>
-                          &nbsp;
-                          <CiEdit
+                        {nameSaveBtnVisible ? (
+                          <div
                             onClick={() =>
                               setnameSaveBtnVisible(!nameSaveBtnVisible)
                             }
-                            size={22}
-                            color="blue"
-                            cursor={"pointer"}
-                          />
-                        </div>
-                      )}
-                    </div>
+                            style={{ color: "blue", cursor: "pointer" }}
+                          >
+                            {" "}
+                            &nbsp;Cancel
+                          </div>
+                        ) : (
+                          <div>
+                            &nbsp;
+                            <CiEdit
+                              onClick={() =>
+                                setnameSaveBtnVisible(!nameSaveBtnVisible)
+                              }
+                              size={22}
+                              color="blue"
+                              cursor={"pointer"}
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        opacity: nameSaveBtnVisible ? "1" : "0.5",
-                        pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                      }}
-                    >
-                      <input
-                        type="text"
-                        name="fullName"
-                        placeholder="Change Name"
-                        value={formData.fullName}
-                        onChange={handleChange}
-                        style={{ height: "10px", width: "80%" }}
-                      />
-
-                      <button
-                        onClick={handilNameSave}
-                        disabled={!nameSaveBtnVisible}
-                        style={{
-                          height: "100%",
-                          width: "20%",
-                          opacity: nameSaveBtnVisible ? "1" : "0",
-                          cursor: nameSaveBtnVisible ? "pointer" : "auto",
-                        }}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Save
-                      </button>
-                    </div>
-                    {/* gender */}
-                    {profileData?.role !== "Admin" ? (
                       <div
                         style={{
-                          marginTop: "5px",
+                          display: "flex",
+                          alignItems: "center",
+                          opacity: nameSaveBtnVisible ? "1" : "0.5",
+                          pointerEvents: nameSaveBtnVisible ? "auto" : "none",
+                        }}
+                      >
+                        <input
+                          type="text"
+                          name="fullName"
+                          placeholder="Change Name"
+                          value={formData.fullName}
+                          onChange={handleChange}
+                          style={{ height: "10px", width: "80%" }}
+                        />
+
+                        <button
+                          onClick={handilNameSave}
+                          disabled={!nameSaveBtnVisible}
+                          style={{
+                            height: "100%",
+                            width: "20%",
+                            opacity: nameSaveBtnVisible ? "1" : "0",
+                            cursor: nameSaveBtnVisible ? "pointer" : "auto",
+                          }}
+                          type="button"
+                          className="btn btn-primary"
+                        >
+                          Save
+                        </button>
+                      </div>
+                      {/* gender */}
+                      {profileData?.role !== "Admin" ? (
+                        <div
+                          style={{
+                            marginTop: "5px",
+                            opacity: nameSaveBtnVisible ? "1" : "0.5",
+                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
+                          }}
+                        >
+                          <label
+                            style={{
+                              fontWeight: "normal",
+                              marginBottom: "5px",
+                            }}
+                          >
+                            Gender
+                          </label>
+                          <div className="gender-inputs">
+                            <input
+                              type="radio"
+                              name="gender"
+                              value="male"
+                              checked={formData.gender === "male"}
+                              onChange={handleChange}
+                            />{" "}
+                            Male
+                            <input
+                              type="radio"
+                              name="gender"
+                              value="female"
+                              checked={formData.gender === "female"}
+                              onChange={handleChange}
+                            />{" "}
+                            Female
+                          </div>
+                        </div>
+                      ) : (
+                        <>
+                          <div
+                            style={{
+                              marginTop: "5px",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <label
+                              style={{
+                                fontWeight: "normal",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              Store Name
+                            </label>
+                            <input
+                              type="text"
+                              name="storeName"
+                              value={formData.storeName}
+                              style={{ width: "65%" }}
+                              onChange={handleChange}
+                            />{" "}
+                          </div>
+                          <div
+                            style={{
+                              marginTop: "5px",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <label
+                              style={{
+                                fontWeight: "normal",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              WareHouse Address
+                            </label>
+                            <input
+                              type="text"
+                              name="wareHouseAddress"
+                              value={formData.wareHouseAddress}
+                              style={{ width: "65%" }}
+                              onChange={handleChange}
+                            />{" "}
+                          </div>
+                          <div
+                            style={{
+                              marginTop: "5px",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <label
+                              style={{
+                                fontWeight: "normal",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              WareHouse Contact Number
+                            </label>
+                            <input
+                              type="text"
+                              name="wareHouseContactNumber"
+                              value={formData.wareHouseContactNumber}
+                              style={{ width: "65%" }}
+                              onChange={handleChange}
+                            />{" "}
+                          </div>
+
+                          <div
+                            style={{
+                              marginTop: "5px",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <label
+                              style={{
+                                fontWeight: "normal",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              Warehouse Owner Name
+                            </label>
+                            <input
+                              type="text"
+                              name="wareHouseOwnerName"
+                              value={formData.wareHouseOwnerName}
+                              style={{ width: "65%" }}
+                              onChange={handleChange}
+                            />{" "}
+                          </div>
+                          <div
+                            style={{
+                              marginTop: "5px",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <label
+                              style={{
+                                fontWeight: "normal",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              storeIcon
+                            </label>
+                            <img
+                              style={{ width: "70px", height: "70px" }}
+                              src={formData.storeIcon ? formData.storeIcon : ""}
+                            />
+                            <br />
+                            <input
+                              type="file"
+                              name="storeIcon"
+                              style={{ width: "65%" }}
+                              onChange={handleImageChange}
+                            />{" "}
+                          </div>
+                          <div
+                            style={{
+                              marginTop: "5px",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <label
+                              style={{
+                                fontWeight: "normal",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              Store Banner
+                            </label>
+                            <img
+                              style={{ width: "70px", height: "70px" }}
+                              src={
+                                formData.storeBanner ? formData.storeBanner : ""
+                              }
+                            />
+                            <br />
+                            <input
+                              type="file"
+                              name="storeBanner"
+                              style={{ width: "65%" }}
+                              onChange={handleImageChange}
+                            />{" "}
+                          </div>
+                        </>
+                      )}
+                      {/*user profile pic */}
+                      <div
+                        style={{
+                          marginTop: "15px",
                           opacity: nameSaveBtnVisible ? "1" : "0.5",
                           pointerEvents: nameSaveBtnVisible ? "auto" : "none",
                         }}
@@ -334,488 +555,321 @@ if (erroes) {
                         <label
                           style={{ fontWeight: "normal", marginBottom: "5px" }}
                         >
-                          Gender
+                          Profile Image
                         </label>
+                        <img
+                          src={formData.profileImage}
+                          style={{ width: "70px", height: "70px" }}
+                        />
                         <div className="gender-inputs">
                           <input
-                            type="radio"
-                            name="gender"
-                            value="male"
-                            checked={formData.gender === "male"}
-                            onChange={handleChange}
-                          />{" "}
-                          Male
-                          <input
-                            type="radio"
-                            name="gender"
-                            value="female"
-                            checked={formData.gender === "female"}
-                            onChange={handleChange}
-                          />{" "}
-                          Female
-                        </div>
-                      </div>
-                    ) : (
-                      <>
-                        <div
-                          style={{
-                            marginTop: "5px",
-                            opacity: nameSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                          }}
-                        >
-                          <label
-                            style={{
-                              fontWeight: "normal",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            Store Name
-                          </label>
-                          <input
-                            type="text"
-                            name="storeName"
-                            value={formData.storeName}
-                            style={{ width: "65%" }}
-                            onChange={handleChange}
-                          />{" "}
-                        </div>
-                        <div
-                          style={{
-                            marginTop: "5px",
-                            opacity: nameSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                          }}
-                        >
-                          <label
-                            style={{
-                              fontWeight: "normal",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            WareHouse Address
-                          </label>
-                          <input
-                            type="text"
-                            name="wareHouseAddress"
-                            value={formData.wareHouseAddress}
-                            style={{ width: "65%" }}
-                            onChange={handleChange}
-                          />{" "}
-                        </div>
-                        <div
-                          style={{
-                            marginTop: "5px",
-                            opacity: nameSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                          }}
-                        >
-                          <label
-                            style={{
-                              fontWeight: "normal",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            WareHouse Contact Number
-                          </label>
-                          <input
-                            type="text"
-                            name="wareHouseContactNumber"
-                            value={formData.wareHouseContactNumber}
-                            style={{ width: "65%" }}
-                            onChange={handleChange}
-                          />{" "}
-                        </div>
-
-                        <div
-                          style={{
-                            marginTop: "5px",
-                            opacity: nameSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                          }}
-                        >
-                          <label
-                            style={{
-                              fontWeight: "normal",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            Warehouse Owner Name
-                          </label>
-                          <input
-                            type="text"
-                            name="wareHouseOwnerName"
-                            value={formData.wareHouseOwnerName}
-                            style={{ width: "65%" }}
-                            onChange={handleChange}
-                          />{" "}
-                        </div>
-                        <div
-                          style={{
-                            marginTop: "5px",
-                            opacity: nameSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                          }}
-                        >
-                          <label
-                            style={{
-                              fontWeight: "normal",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            storeIcon
-                          </label>
-                          <img
-                            style={{ width: "70px", height: "70px" }}
-                            src={formData.storeIcon ? formData.storeIcon : ""}
-                          />
-                          <br />
-                          <input
                             type="file"
-                            name="storeIcon"
-                            style={{ width: "65%" }}
+                            name="profileImage"
+                            accept="image/*"
                             onChange={handleImageChange}
-                          />{" "}
-                        </div>
-                        <div
-                          style={{
-                            marginTop: "5px",
-                            opacity: nameSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                          }}
-                        >
-                          <label
-                            style={{
-                              fontWeight: "normal",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            Store Banner
-                          </label>
-                          <img
-                            style={{ width: "70px", height: "70px" }}
-                            src={
-                              formData.storeBanner ? formData.storeBanner : ""
-                            }
                           />
-                          <br />
-                          <input
-                            type="file"
-                            name="storeBanner"
-                            style={{ width: "65%" }}
-                            onChange={handleImageChange}
-                          />{" "}
                         </div>
-                      </>
-                    )}
-                    {/*user profile pic */}
-                    <div
-                      style={{
-                        marginTop: "15px",
-                        opacity: nameSaveBtnVisible ? "1" : "0.5",
-                        pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                      }}
-                    >
-                      <label
-                        style={{ fontWeight: "normal", marginBottom: "5px" }}
-                      >
-                        Profile Image
-                      </label>
-                      <img
-                        src={formData.profileImage}
-                        style={{ width: "70px", height: "70px" }}
-                      />
-                      <div className="gender-inputs">
-                        <input
-                          type="file"
-                          name="profileImage"
-                          accept="image/*"
-                          onChange={handleImageChange}
-                        />
                       </div>
                     </div>
-                  </div>
-                  {/* email Section */}
-                  <div
-                    className="form-group"
-                    style={{
-                      cursor: emailSaveBtnVisible ? "auto" : "not-allowed",
-                      padding: "10px",
-                      borderRadius: "5px",
-                    }}
-                  >
+                    {/* email Section */}
                     <div
+                      className="form-group"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
+                        cursor: emailSaveBtnVisible ? "auto" : "not-allowed",
+                        padding: "10px",
+                        borderRadius: "5px",
                       }}
                     >
-                      <label>Email</label>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <label>Email</label>
 
-                      {emailSaveBtnVisible ? (
-                        <div
-                          onClick={() =>
-                            setEmailSaveBtnVisible(!emailSaveBtnVisible)
-                          }
-                          style={{ color: "blue", cursor: "pointer" }}
-                        >
-                          {" "}
-                          &nbsp;Cancel
-                        </div>
-                      ) : (
-                        <div>
-                          &nbsp;
-                          <CiEdit
+                        {emailSaveBtnVisible ? (
+                          <div
                             onClick={() =>
                               setEmailSaveBtnVisible(!emailSaveBtnVisible)
                             }
-                            size={22}
-                            color="blue"
-                            cursor={"pointer"}
-                          />
-                        </div>
-                      )}
-                    </div>
+                            style={{ color: "blue", cursor: "pointer" }}
+                          >
+                            {" "}
+                            &nbsp;Cancel
+                          </div>
+                        ) : (
+                          <div>
+                            &nbsp;
+                            <CiEdit
+                              onClick={() =>
+                                setEmailSaveBtnVisible(!emailSaveBtnVisible)
+                              }
+                              size={22}
+                              color="blue"
+                              cursor={"pointer"}
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        opacity: emailSaveBtnVisible ? "1" : "0.5",
-                        pointerEvents: emailSaveBtnVisible ? "auto" : "none",
-                      }}
-                    >
-                      <input
-                        type="text"
-                        name="email"
-                        value={formData.email}
-                        onChange={handleChange}
-                        style={{ height: "10px", width: "80%" }}
-                      />
-
-                      <button
-                        onClick={() => setIsOtpModalVisible(formData.email)}
-                        disabled={!emailSaveBtnVisible}
+                      <div
                         style={{
-                          height: "100%",
-                          width: "20%",
-                          opacity: emailSaveBtnVisible ? "1" : "0",
-                          cursor: emailSaveBtnVisible ? "pointer" : "auto",
+                          display: "flex",
+                          alignItems: "center",
+                          opacity: emailSaveBtnVisible ? "1" : "0.5",
+                          pointerEvents: emailSaveBtnVisible ? "auto" : "none",
                         }}
-                        type="button"
-                        className="btn btn-primary"
                       >
-                        Save
-                      </button>
-                    </div>
-                  </div>
+                        <input
+                          type="text"
+                          name="email"
+                          value={formData.email}
+                          onChange={handleChange}
+                          style={{ height: "10px", width: "80%" }}
+                        />
 
-                  {/* mobile Number Section */}
-                  <div
-                    className="form-group"
-                    style={{
-                      cursor: mobileSaveBtnVisible ? "auto" : "not-allowed",
-                      padding: "10px",
-                      borderRadius: "5px",
-                    }}
-                  >
+                        <button
+                          onClick={() => setIsOtpModalVisible(formData.email)}
+                          disabled={!emailSaveBtnVisible}
+                          style={{
+                            height: "100%",
+                            width: "20%",
+                            opacity: emailSaveBtnVisible ? "1" : "0",
+                            cursor: emailSaveBtnVisible ? "pointer" : "auto",
+                          }}
+                          type="button"
+                          className="btn btn-primary"
+                        >
+                          Save
+                        </button>
+                      </div>
+                    </div>
+
+                    {/* mobile Number Section */}
                     <div
+                      className="form-group"
                       style={{
-                        display: "flex",
-                        alignItems: "center",
+                        cursor: mobileSaveBtnVisible ? "auto" : "not-allowed",
+                        padding: "10px",
+                        borderRadius: "5px",
                       }}
                     >
-                      <label>Mobile Number</label>
+                      <div
+                        style={{
+                          display: "flex",
+                          alignItems: "center",
+                        }}
+                      >
+                        <label>Mobile Number</label>
 
-                      {mobileSaveBtnVisible ? (
-                        <div
-                          onClick={() =>
-                            setMobileSaveBtnVisible(!mobileSaveBtnVisible)
-                          }
-                          style={{ color: "blue", cursor: "pointer" }}
-                        >
-                          {" "}
-                          &nbsp;Cancel
-                        </div>
-                      ) : (
-                        <div>
-                          &nbsp;
-                          <CiEdit
+                        {mobileSaveBtnVisible ? (
+                          <div
                             onClick={() =>
                               setMobileSaveBtnVisible(!mobileSaveBtnVisible)
                             }
-                            size={22}
-                            color="blue"
-                            cursor={"pointer"}
-                          />
-                        </div>
-                      )}
-                    </div>
+                            style={{ color: "blue", cursor: "pointer" }}
+                          >
+                            {" "}
+                            &nbsp;Cancel
+                          </div>
+                        ) : (
+                          <div>
+                            &nbsp;
+                            <CiEdit
+                              onClick={() =>
+                                setMobileSaveBtnVisible(!mobileSaveBtnVisible)
+                              }
+                              size={22}
+                              color="blue"
+                              cursor={"pointer"}
+                            />
+                          </div>
+                        )}
+                      </div>
 
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        opacity: mobileSaveBtnVisible ? "1" : "0.5",
-                        pointerEvents: mobileSaveBtnVisible ? "auto" : "none",
-                      }}
-                    >
-                      <input
-                        type="text"
-                        name="mobileNumber"
-                        value={formData.mobileNumber}
-                        onChange={handleChange}
-                        style={{ height: "10px", width: "80%" }}
-                      />
-
-                      <button
-                        onClick={() =>
-                          setIsOtpModalVisible(formData.mobileNumber)
-                        }
-                        disabled={!mobileSaveBtnVisible}
+                      <div
                         style={{
-                          height: "100%",
-                          width: "20%",
-                          opacity: mobileSaveBtnVisible ? "1" : "0",
-                          cursor: mobileSaveBtnVisible ? "pointer" : "auto",
+                          display: "flex",
+                          alignItems: "center",
+                          opacity: mobileSaveBtnVisible ? "1" : "0.5",
+                          pointerEvents: mobileSaveBtnVisible ? "auto" : "none",
                         }}
-                        type="button"
-                        className="btn btn-primary"
                       >
-                        Save
-                      </button>
-                    </div>
-                  </div>
-                </form>
-              </section>
-            //   Password section
-:<>
-<section className="profile-info">
-                <form className="profile-form">
-                  <div
-                    className="form-group"
-                    style={{
-                      cursor: passwordSaveBtnVisible ? "auto" : "not-allowed",
-                      padding: "10px",
-                      borderRadius: "5px",
-                    }}
-                  >
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                      }}
-                    >
-                      <label>
-                        Change Password
-                      </label>
+                        <input
+                          type="text"
+                          name="mobileNumber"
+                          value={formData.mobileNumber}
+                          onChange={handleChange}
+                          style={{ height: "10px", width: "80%" }}
+                        />
 
-                      {passwordSaveBtnVisible ? (
-                        <div
+                        <button
                           onClick={() =>
-                            setpasswordSaveBtnVisible(!passwordSaveBtnVisible)
+                            setIsOtpModalVisible(formData.mobileNumber)
                           }
-                          style={{ color: "blue", cursor: "pointer" }}
+                          disabled={!mobileSaveBtnVisible}
+                          style={{
+                            height: "100%",
+                            width: "20%",
+                            opacity: mobileSaveBtnVisible ? "1" : "0",
+                            cursor: mobileSaveBtnVisible ? "pointer" : "auto",
+                          }}
+                          type="button"
+                          className="btn btn-primary"
                         >
-                          {" "}
-                          &nbsp;Cancel
+                          Save
+                        </button>
+                      </div>
+                    </div>
+                  </form>
+                </section>
+              ) : (
+                //   Password section
+                <>
+                  <section className="profile-info">
+                    <form className="profile-form">
+                      <div
+                        className="form-group"
+                        style={{
+                          cursor: passwordSaveBtnVisible
+                            ? "auto"
+                            : "not-allowed",
+                          padding: "10px",
+                          borderRadius: "5px",
+                        }}
+                      >
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                          }}
+                        >
+                          <label>Change Password</label>
+
+                          {passwordSaveBtnVisible ? (
+                            <div
+                              onClick={() =>
+                                setpasswordSaveBtnVisible(
+                                  !passwordSaveBtnVisible
+                                )
+                              }
+                              style={{ color: "blue", cursor: "pointer" }}
+                            >
+                              {" "}
+                              &nbsp;Cancel
+                            </div>
+                          ) : (
+                            <div>
+                              &nbsp;
+                              <CiEdit
+                                onClick={() =>
+                                  setpasswordSaveBtnVisible(
+                                    !passwordSaveBtnVisible
+                                  )
+                                }
+                                size={22}
+                                color="blue"
+                                cursor={"pointer"}
+                              />
+                            </div>
+                          )}
                         </div>
-                      ) : (
-                        <div>
-                          &nbsp;
-                          <CiEdit
-                            onClick={() =>
-                              setpasswordSaveBtnVisible(!passwordSaveBtnVisible)
-                            }
-                            size={22}
-                            color="blue"
-                            cursor={"pointer"}
+
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            opacity: passwordSaveBtnVisible ? "1" : "0.5",
+                            pointerEvents: passwordSaveBtnVisible
+                              ? "auto"
+                              : "none",
+                          }}
+                        >
+                          {/* current password */}
+                          <input
+                            type="text"
+                            name="currentPassword"
+                            placeholder="Current password"
+                            value={passwordForm.currentPassword}
+                            onChange={passwordHandilChange}
+                            style={{ height: "10px", width: "80%" }}
+                          />
+
+                          <button
+                            onClick={handilePasswordSubmit}
+                            disabled={!passwordSaveBtnVisible}
+                            style={{
+                              height: "100%",
+                              width: "20%",
+                              opacity: passwordSaveBtnVisible ? "1" : "0",
+                              cursor: passwordSaveBtnVisible
+                                ? "pointer"
+                                : "auto",
+                            }}
+                            type="button"
+                            className="btn btn-primary"
+                          >
+                            Save
+                          </button>
+                        </div>
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            opacity: passwordSaveBtnVisible ? "1" : "0.5",
+                            pointerEvents: passwordSaveBtnVisible
+                              ? "auto"
+                              : "none",
+                          }}
+                        >
+                          {/* new password */}
+                          <input
+                            type="text"
+                            name="newPassword"
+                            placeholder="New Password"
+                            value={passwordForm.newPassword}
+                            onChange={passwordHandilChange}
+                            style={{ height: "10px", width: "66%" }}
                           />
                         </div>
-                      )}
-                    </div>
-
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        opacity: passwordSaveBtnVisible ? "1" : "0.5",
-                        pointerEvents: passwordSaveBtnVisible ? "auto" : "none",
-                      }}
-                    >
-                        {/* current password */}
-                      <input
-                        type="text"
-                        name="currentPassword"
-                        placeholder="Current password"
-                        value={passwordForm.currentPassword}
-                        onChange={passwordHandilChange}
-                        style={{ height: "10px", width: "80%" }}
-                      />
-
-                      <button
-                        onClick={handilePasswordSubmit}
-                        disabled={!passwordSaveBtnVisible}
-                        style={{
-                          height: "100%",
-                          width: "20%",
-                          opacity: passwordSaveBtnVisible ? "1" : "0",
-                          cursor: passwordSaveBtnVisible ? "pointer" : "auto",
-                        }}
-                        type="button"
-                        className="btn btn-primary"
-                      >
-                        Save
-                      </button>
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        opacity: passwordSaveBtnVisible ? "1" : "0.5",
-                        pointerEvents: passwordSaveBtnVisible ? "auto" : "none",
-                      }}
-                    >
-                        {/* new password */}
-                      <input
-                        type="text"
-                        name="newPassword"
-                        placeholder="New Password"
-                        value={passwordForm.newPassword}
-                        onChange={passwordHandilChange}
-                        style={{ height: "10px", width: "66%" }}
-                      />
-
-                      
-                    </div>
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        opacity: passwordSaveBtnVisible ? "1" : "0.5",
-                        pointerEvents: passwordSaveBtnVisible ? "auto" : "none",
-                        marginTop:"10px"
-                      }}
-                    >
-                        {/* confirm password */}
-                      <input
-                        type="text"
-                        name="confirmPassword"
-                        placeholder="confirm Password"
-                        value={passwordForm.confirmPassword}
-                        onChange={passwordHandilChange}
-                        style={{ height: "10px", width: "66%" }}
-                      />
-
-                      
-                    </div>
-                    <p style={{fontWeight:"10px",color:"red"
-                        ,maxWidth:"65%",textAlign:"center",
-                        fontSize:"normal"}}>{error}</p>
-                   </div>
-                   </form>
-                   </section>
-</>}
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            opacity: passwordSaveBtnVisible ? "1" : "0.5",
+                            pointerEvents: passwordSaveBtnVisible
+                              ? "auto"
+                              : "none",
+                            marginTop: "10px",
+                          }}
+                        >
+                          {/* confirm password */}
+                          <input
+                            type="text"
+                            name="confirmPassword"
+                            placeholder="confirm Password"
+                            value={passwordForm.confirmPassword}
+                            onChange={passwordHandilChange}
+                            style={{ height: "10px", width: "66%" }}
+                          />
+                        </div>
+                        <p
+                          style={{
+                            fontWeight: "10px",
+                            color: "red",
+                            maxWidth: "65%",
+                            textAlign: "center",
+                            fontSize: "normal",
+                          }}
+                        >
+                          {error}
+                        </p>
+                      </div>
+                    </form>
+                  </section>
+                </>
+              )}
             </main>
           </div>
         </>
@@ -826,10 +880,10 @@ if (erroes) {
               height: "100vh",
               alignItems: "center",
               justifyContent: "center",
-              width:"100%"
+              width: "100%",
             }}
           >
-            <p style={{textAlign:"center"}}>Loading...</p>
+            <p style={{ textAlign: "center" }}>Loading...</p>
           </div>
         </>
       )}

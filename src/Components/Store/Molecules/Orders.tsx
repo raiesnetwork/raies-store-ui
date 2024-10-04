@@ -67,10 +67,10 @@ const UserOrdersPage: React.FC = () => {
       setLoading(true); // Start loading
       const data = await getUserOrder(subdomain);
       if (data.error) {
-        toast.error("We can't fetch orders");
+        toast.error(
+          "We're sorry, but we couldn't fetch your orders. Please check your connection and try again."
+        );
       } else {
-        console.log(data?.data?.storeOrders);
-
         setOrders(data?.data?.storeOrders);
         setbiDOrders(data?.data?.biddingOrders);
         setBarterOrders(data.data?.barterOrders);
@@ -157,51 +157,55 @@ const UserOrdersPage: React.FC = () => {
                 }}
               >
                 {order?.productDetails?.map((item: details, index: number) => (
-                  <Link style={{textDecoration:"none",color:"auto"}} key={index} to='/orderdetails' state={{orderData:order}}>
-                  <div
-                    
-                    style={{
-                      display: "flex",
-                      alignItems: "center",
-                      justifyContent: "space-between",
-                      padding: "10px 0",
-                      borderBottom: "1px solid #ddd",
-                    }}
+                  <Link
+                    style={{ textDecoration: "none", color: "auto" }}
+                    key={index}
+                    to="/orderdetails"
+                    state={{ orderData: order }}
                   >
-                    {/* Product Image */}
-                    <img
-                      style={{
-                        width: "70px",
-                        height: "70px",
-                        objectFit: "cover",
-                      }}
-                      src={item.mainImage}
-                      alt={item.productName}
-                    />
-
-                    {/* Product Info */}
                     <div
                       style={{
-                        flex: "1",
-                        marginLeft: "10px",
+                        display: "flex",
+                        alignItems: "center",
+                        justifyContent: "space-between",
+                        padding: "10px 0",
+                        borderBottom: "1px solid #ddd",
                       }}
                     >
-                      <p>
-                        <strong>{item.productName}</strong>
-                      </p>
-                      <p>Quantity: {item.quantity}</p>
-                    </div>
+                      {/* Product Image */}
+                      <img
+                        style={{
+                          width: "70px",
+                          height: "70px",
+                          objectFit: "cover",
+                        }}
+                        src={item.mainImage}
+                        alt={item.productName}
+                      />
 
-                    <p
-                      style={{
-                        margin: "0 auto",
-                        textAlign: "center",
-                        flex: "1",
-                      }}
-                    >
-                      Price: {item?.price ? item?.price : "Free"}
-                    </p>
-                  </div>
+                      {/* Product Info */}
+                      <div
+                        style={{
+                          flex: "1",
+                          marginLeft: "10px",
+                        }}
+                      >
+                        <p>
+                          <strong>{item.productName}</strong>
+                        </p>
+                        <p>Quantity: {item.quantity}</p>
+                      </div>
+
+                      <p
+                        style={{
+                          margin: "0 auto",
+                          textAlign: "center",
+                          flex: "1",
+                        }}
+                      >
+                        Price: {item?.price ? item?.price : "Free"}
+                      </p>
+                    </div>
                   </Link>
                 ))}
 
@@ -261,164 +265,173 @@ const UserOrdersPage: React.FC = () => {
 
             {filteredBidOrders.length > 0 &&
               filteredBidOrders.map((order: respBid) => (
-                <Link style={{textDecoration:"none",color:"auto"}} key={order.id} to='/orderdetails' state={{orderData:order}}>
-
-                <div
+                <Link
+                  style={{ textDecoration: "none", color: "auto" }}
                   key={order.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "10px 70px",
-                    borderBottom: "1px solid #ddd",
-                    backgroundColor: "white",
-                    boxShadow: `1px 1px 4px 1px ${
-                      order.status === "Accepted" ? "green" : "red"
-                    }`,
-                    cursor: "pointer",
-                  }}
+                  to="/orderdetails"
+                  state={{ orderData: order }}
                 >
                   <div
+                    key={order.id}
                     style={{
                       display: "flex",
-                      gap: "5px",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "10px 70px",
+                      borderBottom: "1px solid #ddd",
+                      backgroundColor: "white",
+                      boxShadow: `1px 1px 4px 1px ${
+                        order.status === "Accepted" ? "green" : "red"
+                      }`,
+                      cursor: "pointer",
                     }}
                   >
-                    <img
+                    <div
                       style={{
-                        width: "70px",
-                        height: "70px",
-                        objectFit: "cover",
-                      }}
-                      src={order.productDetails.mainImage}
-                      alt={order.productDetails.productName}
-                    />
-                    <div>
-                      <p>
-                        <strong>{order.productDetails.productName}</strong>
-                      </p>
-                      <p>Quantity: {order.quantity}</p>
-                    </div>
-                  </div>
-                  <div className="order-header">
-                    <span className={`status ${order.status.toLowerCase()}`}>
-                      {/* Order Status :{order.status} */}
-                    </span>
-                  </div>
-                  <div
-                    style={{
-                      textAlign: "right",
-                    }}
-                  >
-                    <p style={{ backgroundColor: "orange" }}>
-                      <strong>Delivery Status:</strong> Pending{" "}
-                    </p>
-                    <span
-                      style={{
-                        backgroundColor:
-                          order.status === "Accepted" ? "lightgreen" : "red",
-                      }}
-                      className={`status ${order.status.toLowerCase()}`}
-                    >
-                      Order Status :{order.status}
-                    </span>
-                    <p>
-                      <strong>Bid Amount:</strong> {order.biddingAmount}
-                    </p>
-                  </div>
-                </div>
-                </Link>
-              ))}
-
-            {filteredBarterOrders.length > 0 &&
-              filteredBarterOrders.map((order: respBarter) => (
-                <Link style={{textDecoration:"none",color:"auto"}} key={order.id} to='/orderdetails' state={{orderData:order}}>
-
-                <div
-                  key={order.id}
-                  style={{
-                    display: "flex",
-                    alignItems: "center",
-                    justifyContent: "space-between",
-                    padding: "10px 70px",
-                    borderBottom: "1px solid #ddd",
-                    backgroundColor: "white",
-                    boxShadow: `1px 1px 4px 1px ${
-                      order.status === "Accepted" ? "green" : "red"
-                    }`,
-                    cursor: "pointer",
-                  }}
-                >
-                  <div
-                    style={{
-                      display: "flex",
-                      gap: "5px",
-                    }}
-                  >
-                    <img
-                      style={{
-                        width: "70px",
-                        height: "70px",
-                        objectFit: "cover",
-                      }}
-                      src={order.productDetails.mainImage}
-                      alt={order.productDetails.productName}
-                    />
-                    <div>
-                      <p>
-                        <strong>{order.productDetails.productName}</strong>
-                      </p>
-                      <p>Quantity: {order.quantity}</p>
-                    </div>
-                  </div>
-
-                  <div>
-                    <p
-                      style={{
-                        backgroundColor:
-                          order.status === "Accepted" ? "lightgreen" : "red",
-                        textAlign: "right",
+                        display: "flex",
+                        gap: "5px",
                       }}
                     >
-                      <span
-                        style={{ textAlign: "right" }}
-                        className={`status ${order.status.toLowerCase()}`}
-                      >
-                        Delivery Status: {order.status}
-                      </span>
-                    </p>
-                    <p style={{ textAlign: "right" }}>
-                      <span
-                        style={{
-                          textAlign: "right",
-                          backgroundColor:
-                            order.status === "Accepted" ? "lightgreen" : "red",
-                        }}
-                        className={`status ${order.status.toLowerCase()}`}
-                      >
-                        Order Status: {order.status}
-                      </span>
-                    </p>
-                    <p>
-                      <strong>Barter Image:</strong>{" "}
                       <img
                         style={{
                           width: "70px",
                           height: "70px",
                           objectFit: "cover",
                         }}
-                        src={order.productImage}
+                        src={order.productDetails.mainImage}
                         alt={order.productDetails.productName}
                       />
-                    </p>
+                      <div>
+                        <p>
+                          <strong>{order.productDetails.productName}</strong>
+                        </p>
+                        <p>Quantity: {order.quantity}</p>
+                      </div>
+                    </div>
+                    <div className="order-header">
+                      <span className={`status ${order.status.toLowerCase()}`}>
+                        {/* Order Status :{order.status} */}
+                      </span>
+                    </div>
+                    <div
+                      style={{
+                        textAlign: "right",
+                      }}
+                    >
+                      <p style={{ backgroundColor: "orange" }}>
+                        <strong>Delivery Status:</strong> Pending{" "}
+                      </p>
+                      <span
+                        style={{
+                          backgroundColor:
+                            order.status === "Accepted" ? "lightgreen" : "red",
+                        }}
+                        className={`status ${order.status.toLowerCase()}`}
+                      >
+                        Order Status :{order.status}
+                      </span>
+                      <p>
+                        <strong>Bid Amount:</strong> {order.biddingAmount}
+                      </p>
+                    </div>
                   </div>
-                </div>
+                </Link>
+              ))}
+
+            {filteredBarterOrders.length > 0 &&
+              filteredBarterOrders.map((order: respBarter) => (
+                <Link
+                  style={{ textDecoration: "none", color: "auto" }}
+                  key={order.id}
+                  to="/orderdetails"
+                  state={{ orderData: order }}
+                >
+                  <div
+                    key={order.id}
+                    style={{
+                      display: "flex",
+                      alignItems: "center",
+                      justifyContent: "space-between",
+                      padding: "10px 70px",
+                      borderBottom: "1px solid #ddd",
+                      backgroundColor: "white",
+                      boxShadow: `1px 1px 4px 1px ${
+                        order.status === "Accepted" ? "green" : "red"
+                      }`,
+                      cursor: "pointer",
+                    }}
+                  >
+                    <div
+                      style={{
+                        display: "flex",
+                        gap: "5px",
+                      }}
+                    >
+                      <img
+                        style={{
+                          width: "70px",
+                          height: "70px",
+                          objectFit: "cover",
+                        }}
+                        src={order.productDetails.mainImage}
+                        alt={order.productDetails.productName}
+                      />
+                      <div>
+                        <p>
+                          <strong>{order.productDetails.productName}</strong>
+                        </p>
+                        <p>Quantity: {order.quantity}</p>
+                      </div>
+                    </div>
+
+                    <div>
+                      <p
+                        style={{
+                          backgroundColor:
+                            order.status === "Accepted" ? "lightgreen" : "red",
+                          textAlign: "right",
+                        }}
+                      >
+                        <span
+                          style={{ textAlign: "right" }}
+                          className={`status ${order.status.toLowerCase()}`}
+                        >
+                          Delivery Status: {order.status}
+                        </span>
+                      </p>
+                      <p style={{ textAlign: "right" }}>
+                        <span
+                          style={{
+                            textAlign: "right",
+                            backgroundColor:
+                              order.status === "Accepted"
+                                ? "lightgreen"
+                                : "red",
+                          }}
+                          className={`status ${order.status.toLowerCase()}`}
+                        >
+                          Order Status: {order.status}
+                        </span>
+                      </p>
+                      <p>
+                        <strong>Barter Image:</strong>{" "}
+                        <img
+                          style={{
+                            width: "70px",
+                            height: "70px",
+                            objectFit: "cover",
+                          }}
+                          src={order.productImage}
+                          alt={order.productDetails.productName}
+                        />
+                      </p>
+                    </div>
+                  </div>
                 </Link>
               ))}
           </div>
         )}
       </div>
-
     </>
   );
 };
