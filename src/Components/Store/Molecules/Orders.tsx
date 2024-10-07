@@ -8,12 +8,12 @@ import { getSubdomain } from "../../../Utils/Subdomain";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
 import { CgDanger } from "react-icons/cg";
-import { FcSearch } from "react-icons/fc";
-import { GiSandsOfTime } from "react-icons/gi";
-import { IoTimerSharp } from "react-icons/io5";
-import { PiTimerFill } from "react-icons/pi";
+// import { FcSearch } from "react-icons/fc";
+// import { GiSandsOfTime } from "react-icons/gi";
+// import { IoTimerSharp } from "react-icons/io5";
+// import { PiTimerFill } from "react-icons/pi";
+// import { FaRegTimesCircle } from "react-icons/fa";
 import { RxLapTimer } from "react-icons/rx";
-import { FaRegTimesCircle } from "react-icons/fa";
 import { BiSolidError } from "react-icons/bi";
 import { FaTimesCircle } from "react-icons/fa";
 interface resp {

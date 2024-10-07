@@ -9,9 +9,9 @@ import { CiSearch } from "react-icons/ci";
 import { IoBagOutline } from "react-icons/io5";
 import { FiUser } from "react-icons/fi";
 import { getSubdomain } from "../../../Utils/Subdomain";
-import { IoBagCheck } from "react-icons/io5";
-import { FaUserLarge } from "react-icons/fa6";
-import { IoLogOut } from "react-icons/io5";
+// import { IoBagCheck } from "react-icons/io5";
+// import { FaUserLarge } from "react-icons/fa6";
+// import { IoLogOut } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoBagCheckOutline } from "react-icons/io5";
 
