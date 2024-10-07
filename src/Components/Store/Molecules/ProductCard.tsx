@@ -72,12 +72,12 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
               )}
             </div>
 
-            {data.productCount < 5 && (
+            {/* {data.productCount < 5 && (
               <p className="product-card__limited-stock">
                 Only <span style={{ color: "red" }}>{data.productCount} </span>{" "}
                 item left
               </p>
-            )}
+            )} */}
           </div>
           {/* {
           (data.priceOption === "normal" || data.priceOption === "free") && data.productCount > 0 && (
