@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../Helpers/scss/Orders.scss";
 import Header from "./Header";
 import useMystoreStore from "../Core/Store";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { LineWave } from "react-loader-spinner";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { Link } from "react-router-dom";
@@ -79,10 +79,10 @@ const UserOrdersPage: React.FC = () => {
       const data = await getUserOrder(subdomain);
       console.log('data', data)
       if (data.error) {
-        toast.error("We can't fetch orders");
+        toast.error(
+          "We're sorry, but we couldn't fetch your orders. Please check your connection and try again."
+        );
       } else {
-        console.log(data?.data?.storeOrders);
-
         setOrders(data?.data?.storeOrders);
         setbiDOrders(data?.data?.biddingOrders);
         setBarterOrders(data.data?.barterOrders);
@@ -115,10 +115,15 @@ const UserOrdersPage: React.FC = () => {
     barterOrders: filteredBarterOrders,
   } = filteredOrders();
 
+  const noOrders =
+  filteredOrderList.length === 0 &&
+  filteredBidOrders.length === 0 &&
+  filteredBarterOrders.length === 0;
   return (
     <>
       <Header />
       <div className="myorder-page">
+
         <div className="myorder-page__header">
           <div className="myorder-page__heading" >
             My Orders
@@ -147,7 +152,20 @@ const UserOrdersPage: React.FC = () => {
           >
             <LineWave />
           </div>
-        ) : (
+        ) : 
+        noOrders ? (
+          <div className="myorder-page__no-orders">
+            <h2>No Orders Found</h2>
+            <p>
+              You have not placed any orders yet. Start browsing our products
+              and place an order now!
+            </p>
+            <Link to="/" className="myorder-page__shop-link">
+              Go to Shop
+            </Link>
+          </div>
+        ) : 
+        (
           <div className="orders-list">
             {filteredOrderList.map((order: resp) => (
               <div key={order.id} className="myorder-page__card-container">
@@ -423,8 +441,6 @@ const UserOrdersPage: React.FC = () => {
           </div>
         )}
       </div>
-
-      <ToastContainer />
     </>
   );
 };

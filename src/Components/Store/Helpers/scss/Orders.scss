@@ -1,7 +1,11 @@
 .myorder-page {
   padding: 0px 15px 10px 15px;
   font-family: system-ui;
-
+&__no-orders{
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
   &__header {
     display: flex;
     justify-content: center;

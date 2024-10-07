@@ -3,42 +3,53 @@ import '../Helpers/scss/OrderDetails.scss';
 import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import useMystoreStore from '../Core/Store';
+import { FaTruckMoving } from "react-icons/fa";
+import { format } from 'date-fns';
 
-interface OrderData {
-  DeliveryAddress: {
-    fullName: string;
-    fullAddress: string;
-    landmark: string;
-    mobileNumber: string;
-    pincode: string;
-  };
-  status: string;
-  productDetails: {
-    mainImage: string;
-    productName: string;
-    price: number;
-  }[];
-}
+
 
 const OrderDetails: React.FC = () => {
   const location = useLocation();
-  
-  // Use real order data passed from the previous page
-  const {orderData,type} = location.state;
+  const { orderData, type } = location.state;
+  console.log('details', orderData);
 
-  // Define the possible statuses in the order tracker
-  const statuses = ['On Hold', 'Order Proccessed', 'preparing for shipment', 'shiped','out for delivery', 'delivered'];
+  const statuses = ['On Hold', 'Order Confirmed', 'Shipped', 'Out for Delivery', 'Delivered'];
 
-  // Function to get the index of the current status
   const getStatusIndex = (status: string) => statuses.indexOf(status);
+  const currentStatusIndex = type === "normal" ? getStatusIndex(orderData.status) : getStatusIndex(orderData.deliveryStatus);
 
-  const currentStatusIndex = getStatusIndex(orderData.status);
+  const { storeData } = useMystoreStore((state) => state);
 
-  const {
+  // Helper function to add days to a given date
+  const addDays = (date: Date, days: number) => {
+    const result = new Date(date);
+    result.setDate(result.getDate() + days);
+    return result;
+  };
 
-    storeData
-} = useMystoreStore((state) => state);
-console.log('order-details-d',orderData);
+  // Get the starting date (createdAt or the first updateHistory)
+  const createdAtDate = new Date(orderData.createdAt);
+  const updateHistoryDates = orderData.updateHistory.map((date:any) => new Date(date));
+
+  // Dates array to store the calculated dates
+  const statusDates: string[] = [];
+
+  // If order is on hold, use createdAt as the hold date
+  statusDates.push(format(createdAtDate, 'EEE, d MMM'));
+
+  // Fill the dates for the statuses that have been updated
+  updateHistoryDates.forEach((date:any, index:number) => {
+    if (index < statuses.length) {
+      statusDates.push(format(date, 'EEE, d MMM'));
+    }
+  });
+
+  // Calculate the remaining dates for statuses that haven't been updated yet
+  let lastKnownDate = updateHistoryDates.length > 0 ? updateHistoryDates[updateHistoryDates.length - 1] : createdAtDate;
+  for (let i = updateHistoryDates.length; i < statuses.length; i++) {
+    lastKnownDate = addDays(lastKnownDate, 3); // Add 3 days for each status
+    statusDates.push(format(lastKnownDate, 'EEE, d MMM'));
+  }
 
   return (
     <>
@@ -46,34 +57,60 @@ console.log('order-details-d',orderData);
       <div className="order_details__page">
         <div className="order_details">
           <div className="order_details-header">
-            <h2>Delivery Address</h2>
+            <h2>Order Details</h2>
             <button className="download-invoice-btn">Download Invoice</button>
           </div>
-          <div className="order_details-header">
-            <div className="delivery-address">
-              <p><strong>{orderData.DeliveryAddress.fullName}</strong></p>
-              <p>{orderData.DeliveryAddress.fullAddress}</p>
-              <p>{`${orderData.DeliveryAddress.landmark}, ${orderData.DeliveryAddress.pincode}`}</p>
-              <p>{orderData.DeliveryAddress.mobileNumber}</p>
-            </div>
-            <div className="order-info">
-              <div className="order-name-price">
-                <h3>{type==="normal"?orderData.productDetails[0]?.productName :orderData.productDetails.productName}</h3>
-                <p><strong>₹{type==="normal"?orderData.productDetails[0]?.productName :orderData.productDetails.price}</strong></p>
+          
+          <div className="order_details-content">
+            <div className="product-address-container">
+              <div className="order-product">
+                <h3>Product Details</h3>
+                <div className="order-name-price">
+                  <p>{type === "normal" ? orderData.productDetails[0]?.productName : orderData.productDetails.productName}</p>
+                  <p>{storeData?.storeName} Store</p>
+                </div>
               </div>
-              <div className="order-infor-storename">{`${storeData.storeName} STORE`} </div>
+              <div className="delivery-address">
+                <h3>Delivery Address</h3>
+                <div className="delivery-address-text">
+                  <div className="delivery-address-name">
+                    {orderData.DeliveryAddress.fullName}
+                  </div>
+                  <div className="delivery-address-no">
+                    {orderData.DeliveryAddress.mobileNumber}
+                  </div>
+                  <div className="delivery-address-full">
+                    {orderData.DeliveryAddress.fullAddress}
+                  </div>
+                  <div className="delivery-address-pin">
+                    {orderData.DeliveryAddress.pincode}
+                  </div>
+                </div>
+                <p>{orderData.DeliveryAddress.landmark}</p>
+              </div>
             </div>
-          </div>
 
-          <div className="order-details-status">
-            <div className="order-item">
+            <div className="order-image">
               <img
-                src={type==="normal"?orderData.productDetails[0]?.mainImage :orderData?.productDetails?.mainImage}
+                src={type === "normal" ? orderData.productDetails[0]?.mainImage : orderData?.productDetails?.mainImage}
                 alt="Product"
                 className="order-item-image"
               />
             </div>
+          </div>
 
+          <hr className='order-details-line' />
+          <div className="product-type">
+            <div className="product-type-name">
+              {type === "normal" ? "" : type === "barter" ? "Exchange" : "Auction"}
+            </div>
+            <div className="product-type-txt">
+              {type === "normal" ? `₹${orderData.productDetails[0]?.price}` : type === "barter" ? orderData?.productDetails?.barterProductName: `₹${orderData.biddingAmount}`}
+            </div>
+          </div>
+
+          <div className="delivery-tracker">
+            <div className='delivery-tracker__head'>Delivery Details</div>
             <div className="order-tracker">
               <ul className="order-status">
                 {statuses.map((status, index) => (
@@ -82,8 +119,8 @@ console.log('order-details-d',orderData);
                     className={`${index <= currentStatusIndex ? 'completed' : ''}`}
                   >
                     <span>{status}</span>
-                    {/* You can modify the date as per your orderData */}
-                    <p>{['Mon, 29th Aug', 'Wed, 31st Aug', 'Sun, 4th Sep', 'Sun, 4th Sep'][index]}</p>
+                    <p>{statusDates[index]}</p>
+                    {index === currentStatusIndex && <FaTruckMoving className="truck-icon" />}
                   </li>
                 ))}
               </ul>

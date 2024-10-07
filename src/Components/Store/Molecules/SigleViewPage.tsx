@@ -4,7 +4,7 @@ import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
 import BiddingModal from "./BiddingModal";
 import Header from "./Header";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import { Link } from "react-router-dom";
 import AddressModal from "./BuyAddressModal";
 import AddressComponentModal from "./ShowAllAddressModal";
@@ -12,46 +12,59 @@ import { FaShoppingCart } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
 const SingleProductView: React.FC = () => {
-  const { addressSupparator, addressSupparatorBarter, setaddressSupparatorBarter, setAddressSuparator, isOpenselectAddressModal, OpenAddressModal, isOpenAddressModal, logedIn, FetchToCart, AddToCart, isOpenBarteModal, isOpenBiddingModal, setOpenBiddingModal, singleProductData, setOpenBarterModal } = useMystoreStore(
-    (s) => s
-  );
+  const {
+    addressSupparator,
+    addressSupparatorBarter,
+    setaddressSupparatorBarter,
+    setAddressSuparator,
+    isOpenselectAddressModal,
+    OpenAddressModal,
+    isOpenAddressModal,
+    logedIn,
+    FetchToCart,
+    AddToCart,
+    isOpenBarteModal,
+    isOpenBiddingModal,
+    setOpenBiddingModal,
+    singleProductData,
+    setOpenBarterModal,
+  } = useMystoreStore((s) => s);
   const [imageView, setImageView] = useState<string>(
     singleProductData.mainImage
   );
   // eslint-disable-next-line no-unsafe-optional-chaining
   const [year, month, day] = singleProductData?.endDate.split("-");
   const lastDate = `${day}-${month}-${year}`;
-  const [disable, setDisable] = useState<boolean>(false)
+  const [disable, setDisable] = useState<boolean>(false);
 
   const handileCart = async (id: string, count: number, userId: string) => {
     if (logedIn) {
-
-      setDisable(true)
-      const data = await AddToCart(id, count, userId)
-      setDisable(false)
+      setDisable(true);
+      const data = await AddToCart(id, count, userId);
+      setDisable(false);
       if (data.error) {
-        toast.error("item could't add to cart")
+        toast.error("Unable to add the item to your cart. Please try again.");
       } else {
-        FetchToCart()
-        toast.success("Item added Successfully")
+        FetchToCart();
+        toast.success("Item added to cart successfully!");
       }
     } else {
-      return toast("You need to login first")
+      return toast("Please log in to continue.");
     }
-  }
+  };
   const handleBarterAddressModalClose = () => {
-    OpenAddressModal()
-    setOpenBarterModal()
-  }
+    OpenAddressModal();
+    setOpenBarterModal();
+  };
   const handleBidAddressModalClose = () => {
-    OpenAddressModal()
-    setOpenBiddingModal()
-  }
+    OpenAddressModal();
+    setOpenBiddingModal();
+  };
 
   return (
     <>
       <Header />
-      {singleProductData.id ?
+      {singleProductData.id ? (
         <>
           <div className="single-product-container">
             <div className="single-product-details">
@@ -68,7 +81,9 @@ const SingleProductView: React.FC = () => {
                   />
                   {singleProductData?.subImages[0] && (
                     <img
-                      onClick={() => setImageView(singleProductData?.subImages[0])}
+                      onClick={() =>
+                        setImageView(singleProductData?.subImages[0])
+                      }
                       src={singleProductData?.subImages[0]}
                       alt="sub1"
                       className="related-1"
@@ -76,7 +91,9 @@ const SingleProductView: React.FC = () => {
                   )}
                   {singleProductData?.subImages[1] && (
                     <img
-                      onClick={() => setImageView(singleProductData?.subImages[1])}
+                      onClick={() =>
+                        setImageView(singleProductData?.subImages[1])
+                      }
                       src={singleProductData?.subImages[1]}
                       alt="sub2"
                       className="related-1"
@@ -84,7 +101,9 @@ const SingleProductView: React.FC = () => {
                   )}
                   {singleProductData?.subImages[2] && (
                     <img
-                      onClick={() => setImageView(singleProductData?.subImages[2])}
+                      onClick={() =>
+                        setImageView(singleProductData?.subImages[2])
+                      }
                       src={singleProductData?.subImages[2]}
                       alt="sub3"
                       className="related-1"
@@ -97,37 +116,34 @@ const SingleProductView: React.FC = () => {
 
                 <div className="details-product-info-container">
                   <div className="product-details-info-sec">
-                    <div className="product-name">{singleProductData.productName}</div>
+                    <div className="product-name">
+                      {singleProductData.productName}
+                    </div>
                     {singleProductData.priceOption === "free" && (
-                      <div
-                        className="product-type-info"
-                      >
-                        Free
-                      </div>
+                      <div className="product-type-info">Free</div>
                     )}
 
                     {singleProductData.priceOption === "normal" && (
                       <div className="product-details-page-price">
-                        {singleProductData.currency + " " + singleProductData.price}
+                        {singleProductData.currency +
+                          " " +
+                          singleProductData.price}
                       </div>
                     )}
 
                     {singleProductData.priceOption === "barter" && (
                       <div className="product-type-info-barter">
-                        <LiaExchangeAltSolid /> Exchange With {singleProductData.barterProductName}
+                        <LiaExchangeAltSolid /> Exchange With{" "}
+                        {singleProductData.barterProductName}
                       </div>
                     )}
                     {singleProductData.priceOption === "bidding" && (
-                      <div className="product-type-info-auction">
-                         Auction
-                      </div>
+                      <div className="product-type-info-auction">Auction</div>
                     )}
-
                   </div>
                   <div className="single-product-brand">
                     {singleProductData.brandName}
                   </div>
-
 
                   {/* normal type */}
 
@@ -136,8 +152,12 @@ const SingleProductView: React.FC = () => {
                   {/*bidding type */}
                   {singleProductData.priceOption === "bidding" && (
                     <div className="single-product-page-auction-details">
-                      <div className="single-product-page-auction-bid">Bid start @ {singleProductData.minBidPrice}</div>
-                      <div className="single-product-page-auction-clse">Closing Date {lastDate}</div>
+                      <div className="single-product-page-auction-bid">
+                        Bid start @ {singleProductData.minBidPrice}
+                      </div>
+                      <div className="single-product-page-auction-clse">
+                        Closing Date {lastDate}
+                      </div>
                     </div>
                   )}
                   {/*barter type */}
@@ -145,12 +165,12 @@ const SingleProductView: React.FC = () => {
                   <div className="product-description">
                     {singleProductData.description}
                     Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Inventore provident, deleniti sunt, doloremque quo id assumenda
-                    unde numquam cupiditate voluptates, aut minus non quisquam eaque
-                    sequi debitis. Facilis eius debitis, quod, ducimus fuga aliquid
-                    veniam consectetur quia sit dolore recusandae molestias!
-                    Necessitatibus, at commodi! Quisquam rerum odit voluptatum.
-                    Labore, officia.
+                    Inventore provident, deleniti sunt, doloremque quo id
+                    assumenda unde numquam cupiditate voluptates, aut minus non
+                    quisquam eaque sequi debitis. Facilis eius debitis, quod,
+                    ducimus fuga aliquid veniam consectetur quia sit dolore
+                    recusandae molestias! Necessitatibus, at commodi! Quisquam
+                    rerum odit voluptatum. Labore, officia.
                   </div>
                   {singleProductData.productCount < 5 && (
                     <p className="product-card__limited-stock">
@@ -161,84 +181,137 @@ const SingleProductView: React.FC = () => {
                       item left
                     </p>
                   )}
-
-
-
                 </div>
                 <div className="purchase-btns">
                   {singleProductData.priceOption === "barter" && (
                     <>
                       <button
                         onClick={() => {
-                          setOpenBarterModal()
-                          setaddressSupparatorBarter(true)
-                        }}> <LiaExchangeAltSolid />Exchange</button>
-                    </>
-                  )}
-                  {singleProductData.priceOption === "free" && singleProductData.productCount > 0 && (
-
-                    <>
-                      <button disabled={disable} onClick={() => handileCart(singleProductData.id, singleProductData.productCount, singleProductData.userId)}>
-                        <FaShoppingCart className="product-details-page-cart-icon" />Add to cart
+                          setOpenBarterModal();
+                          setaddressSupparatorBarter(true);
+                        }}
+                      >
+                        {" "}
+                        <LiaExchangeAltSolid />
+                        Exchange
                       </button>
-                      <Link style={{ textDecoration: "none" }} to='/buy' state={
-                        {
-                          details: [{ id: "", quantity: 1, productDetails: singleProductData }],
-                          type: "single"
-                        }} >
-                        <button>
-                          <IoBag className="product-details-page-cart-icon" />Buy Now
-                        </button>
-                      </Link>
-                    </>
-
-                  )}
-                  {singleProductData.priceOption === "normal" && singleProductData.productCount > 0 && (
-                    <>
-                      <button disabled={disable} onClick={() => handileCart(singleProductData.id, singleProductData.productCount, singleProductData.userId)}>
-                        <FaShoppingCart className="product-details-page-cart-icon" />Add to cart
-                      </button>
-                      <Link style={{ textDecoration: "none" }} to='/buy' state={
-                        {
-                          details: [{ id: "", quantity: 1, productDetails: singleProductData }],
-                          type: "single"
-                        }} >
-                        <button>
-                          <IoBag className="product-details-page-cart-icon" />Buy Now
-                        </button>
-                      </Link>
                     </>
                   )}
+                  {singleProductData.priceOption === "free" &&
+                    singleProductData.productCount > 0 && (
+                      <>
+                        <button
+                          disabled={disable}
+                          onClick={() =>
+                            handileCart(
+                              singleProductData.id,
+                              singleProductData.productCount,
+                              singleProductData.userId
+                            )
+                          }
+                        >
+                          <FaShoppingCart className="product-details-page-cart-icon" />
+                          Add to cart
+                        </button>
+                        <Link
+                          style={{ textDecoration: "none" }}
+                          to="/buy"
+                          state={{
+                            details: [
+                              {
+                                id: "",
+                                quantity: 1,
+                                productDetails: singleProductData,
+                              },
+                            ],
+                            type: "single",
+                          }}
+                        >
+                          <button>
+                            <IoBag className="product-details-page-cart-icon" />
+                            Buy Now
+                          </button>
+                        </Link>
+                      </>
+                    )}
+                  {singleProductData.priceOption === "normal" &&
+                    singleProductData.productCount > 0 && (
+                      <>
+                        <button
+                          disabled={disable}
+                          onClick={() =>
+                            handileCart(
+                              singleProductData.id,
+                              singleProductData.productCount,
+                              singleProductData.userId
+                            )
+                          }
+                        >
+                          <FaShoppingCart className="product-details-page-cart-icon" />
+                          Add to cart
+                        </button>
+                        <Link
+                          style={{ textDecoration: "none" }}
+                          to="/buy"
+                          state={{
+                            details: [
+                              {
+                                id: "",
+                                quantity: 1,
+                                productDetails: singleProductData,
+                              },
+                            ],
+                            type: "single",
+                          }}
+                        >
+                          <button>
+                            <IoBag className="product-details-page-cart-icon" />
+                            Buy Now
+                          </button>
+                        </Link>
+                      </>
+                    )}
                   {singleProductData.priceOption === "bidding" && (
                     <>
                       <button
                         onClick={() => {
-                          setOpenBiddingModal()
-                          setAddressSuparator(true)
+                          setOpenBiddingModal();
+                          setAddressSuparator(true);
                         }}
-                      >Start Auction</button>
+                      >
+                        Start Auction
+                      </button>
                     </>
                   )}
                 </div>
               </div>
             </div>
-
           </div>
-          {isOpenAddressModal && <AddressModal closeModal={addressSupparatorBarter ? handleBarterAddressModalClose : addressSupparator ? handleBidAddressModalClose : () => { }} />}
+          {isOpenAddressModal && (
+            <AddressModal
+              closeModal={
+                addressSupparatorBarter
+                  ? handleBarterAddressModalClose
+                  : addressSupparator
+                  ? handleBidAddressModalClose
+                  : () => {}
+              }
+            />
+          )}
           {isOpenselectAddressModal && (
-            <AddressComponentModal
-
-              opencreateAddressModal={OpenAddressModal} />
+            <AddressComponentModal opencreateAddressModal={OpenAddressModal} />
           )}
 
           {isOpenBarteModal && <BarterModal />}
           {isOpenBiddingModal && <BiddingModal />}
-
         </>
-        : <>
-          <div style={{ textAlign: "center" }}>Please select any product...</div>
-        </>}
-      <ToastContainer />
+      ) : (
+        <>
+          <div style={{ textAlign: "center" }}>
+            Please select any product...
+          </div>
+        </>
+      )}
     </>
   );
 };

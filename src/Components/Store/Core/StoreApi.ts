@@ -1,6 +1,13 @@
 import { createAxiosInstance } from "../../../Utils/Axios";
-import { barterOrder, biddingOrder, createOrder, onlinePayment, StoreAddress, updateProfileInfo, userStoreCreate } from "./Interfaces";
-
+import {
+  barterOrder,
+  biddingOrder,
+  createOrder,
+  onlinePayment,
+  StoreAddress,
+  updateProfileInfo,
+  userStoreCreate,
+} from "./Interfaces";
 
 const axiosInstance = createAxiosInstance();
 
@@ -89,12 +96,18 @@ export const verifyNumberApi = async (mobileNumber: string) => {
     };
   }
 };
-export const registrationVerify = async (mobileNumber: string,hostname:string|null) => {
+export const registrationVerify = async (
+  mobileNumber: string,
+  hostname: string | null
+) => {
   try {
-    const { data } = await axiosInstance.post(`/userstore/auth/verify-register`, {
-      mobileNumber,
-      hostname
-    });
+    const { data } = await axiosInstance.post(
+      `/userstore/auth/verify-register`,
+      {
+        mobileNumber,
+        hostname,
+      }
+    );
     return data;
   } catch (error) {
     return {
@@ -140,16 +153,15 @@ export const loginUserApi = async (
 export const loginWithPasswordApi = async (
   mobileNumber: string,
   password: string,
-  subdomain: string|null
+  subdomain: string | null
 ) => {
   try {
-    
-    const response  = await axiosInstance.post(`/userstore/auth/passlogin`, {
+    const response = await axiosInstance.post(`/userstore/auth/passlogin`, {
       mobileNumber,
       password,
       subdomain,
     });
-    console.log("apires",response);
+    console.log("apires", response);
     return response.data;
   } catch (error) {
     return {
@@ -158,13 +170,15 @@ export const loginWithPasswordApi = async (
       data: error,
     };
   }
-}; 
-export const latestProductApi = async (hostName: string | null,name:string) => {
+};
+export const latestProductApi = async (
+  hostName: string | null,
+  name: string
+) => {
   try {
     const { data } = await axiosInstance.get(
       `/userstore/auth/latest/${hostName}`,
-      {params:{name:name,
-      }}
+      { params: { name: name } }
     );
     return data;
   } catch (error) {
@@ -226,9 +240,11 @@ export const createOrderApi = async (datas: createOrder) => {
   }
 };
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const createRazorpayOrderApi= async (amount: number): Promise<any> => {
+export const createRazorpayOrderApi = async (amount: number): Promise<any> => {
   try {
-    const response = await axiosInstance.post(`/storuser/online-payment`, { amount });
+    const response = await axiosInstance.post(`/storuser/online-payment`, {
+      amount,
+    });
     return response.data;
   } catch (error) {
     return {
@@ -240,10 +256,14 @@ export const createRazorpayOrderApi= async (amount: number): Promise<any> => {
 };
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
-export const verifyRazorpayPaymentApi= async(datas:onlinePayment ): Promise<any> => {
+export const verifyRazorpayPaymentApi = async (
+  datas: onlinePayment
+): Promise<any> => {
   try {
-   const {data}= await axiosInstance.post(`/storuser/verify-payment`, { datas  });
-   return data;
+    const { data } = await axiosInstance.post(`/storuser/verify-payment`, {
+      datas,
+    });
+    return data;
   } catch (error) {
     return {
       error: true,
@@ -252,7 +272,7 @@ export const verifyRazorpayPaymentApi= async(datas:onlinePayment ): Promise<any>
     };
   }
 };
-export const getUserOrderApi = async (subdomain:string|null) => {
+export const getUserOrderApi = async (subdomain: string | null) => {
   try {
     const { data } = await axiosInstance.get(`/storuser/order/${subdomain}`);
     return data;
@@ -293,8 +313,7 @@ export const createBiddingOrderApi = async (datas: biddingOrder) => {
   }
 };
 
-
-export const getStoreIconApi = async (hostName: string|null) => {
+export const getStoreIconApi = async (hostName: string | null) => {
   try {
     const { data } = await axiosInstance.get(
       `/userstore/auth/nameandicon/${hostName}`
@@ -310,9 +329,7 @@ export const getStoreIconApi = async (hostName: string|null) => {
 };
 export const getProfileInfoApi = async () => {
   try {
-    const { data } = await axiosInstance.get(
-      `/storuser/profileinfo`
-    );
+    const { data } = await axiosInstance.get(`/storuser/profileinfo`);
     return data;
   } catch (error) {
     return {
@@ -322,11 +339,11 @@ export const getProfileInfoApi = async () => {
     };
   }
 };
-export const updateProfileInfoApi = async (datas:updateProfileInfo) => {
+export const updateProfileInfoApi = async (datas: updateProfileInfo) => {
   try {
-    const { data } = await axiosInstance.put(
-      `/storuser/profileinfo`,{...datas}
-    );
+    const { data } = await axiosInstance.put(`/storuser/profileinfo`, {
+      ...datas,
+    });
     return data;
   } catch (error) {
     return {
@@ -336,11 +353,11 @@ export const updateProfileInfoApi = async (datas:updateProfileInfo) => {
     };
   }
 };
-export const verifyMailApi = async (email:string) => {
+export const verifyMailApi = async (email: string) => {
   try {
-    const { data } = await axiosInstance.post(
-      `/storuser/verifymail`,{email}
-    );
+    const { data } = await axiosInstance.post(`/storuser/verifymail`, {
+      email,
+    });
     return data;
   } catch (error) {
     return {
@@ -350,11 +367,12 @@ export const verifyMailApi = async (email:string) => {
     };
   }
 };
-export const updateMailApi = async (email:string,otp:string) => {
+export const updateMailApi = async (email: string, otp: string) => {
   try {
-    const { data } = await axiosInstance.post(
-      `/storuser/updatemail`,{email,otp}
-    );
+    const { data } = await axiosInstance.post(`/storuser/updatemail`, {
+      email,
+      otp,
+    });
     return data;
   } catch (error) {
     return {
@@ -364,11 +382,17 @@ export const updateMailApi = async (email:string,otp:string) => {
     };
   }
 };
-export const updateMobileNumberApi = async (mobileNumber:string,otp:string,hostName:string|null) => {
+export const updateMobileNumberApi = async (
+  mobileNumber: string,
+  otp: string,
+  hostName: string | null
+) => {
   try {
-    const { data } = await axiosInstance.post(
-      `/storuser/updatenumber`,{mobileNumber,otp,hostName}
-    );
+    const { data } = await axiosInstance.post(`/storuser/updatenumber`, {
+      mobileNumber,
+      otp,
+      hostName,
+    });
     return data;
   } catch (error) {
     return {
@@ -379,11 +403,15 @@ export const updateMobileNumberApi = async (mobileNumber:string,otp:string,hostN
   }
 };
 
-export const passwordChangeApi = async (currentPassword:string,newPassword:string) => {
+export const passwordChangeApi = async (
+  currentPassword: string,
+  newPassword: string
+) => {
   try {
-    const { data } = await axiosInstance.post(
-      `/storuser/updatepassword`,{currentPassword,newPassword}
-    );
+    const { data } = await axiosInstance.post(`/storuser/updatepassword`, {
+      currentPassword,
+      newPassword,
+    });
     return data;
   } catch (error) {
     return {

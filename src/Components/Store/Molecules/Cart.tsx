@@ -2,12 +2,12 @@ import React, { useEffect, useState } from "react";
 import { MdDelete } from "react-icons/md";
 import "../Helpers/scss/Cart.scss";
 import { FaPlus, FaMinus } from "react-icons/fa6";
-import { toast, ToastContainer } from "react-toastify";
+import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { respStoreCart } from "../Core/Interfaces";
 import Header from "./Header";
 import { Link } from "react-router-dom";
-import { FaSpinner } from "react-icons/fa"; 
+import { FaSpinner } from "react-icons/fa";
 
 const StoreCart: React.FC = () => {
   const {
@@ -20,7 +20,7 @@ const StoreCart: React.FC = () => {
   } = useMystoreStore((s) => s);
 
   const [cartItems, setCartItems] = useState<respStoreCart[]>(cartData);
-  const [loadingItems, setLoadingItems] = useState<string[]>([]); 
+  const [loadingItems, setLoadingItems] = useState<string[]>([]);
 
   useEffect(() => {
     if (cartData) {
@@ -34,8 +34,7 @@ const StoreCart: React.FC = () => {
     return cartItems
       .reduce(
         (total, item) =>
-          total +
-          Number(item.productDetails.price) * Number(item.quantity),
+          total + Number(item.productDetails.price) * Number(item.quantity),
         0
       )
       .toFixed(2);
@@ -51,18 +50,20 @@ const StoreCart: React.FC = () => {
       setLoadingItems((prev) => [...prev, id]);
       await updateCart(id, newQuantity);
       FetchToCart();
-      setLoadingItems((prev) => prev.filter((item) => item !== id)); 
+      setLoadingItems((prev) => prev.filter((item) => item !== id));
     } else {
-      toast.error("Item limit exceeded");
+      toast.error(
+        "You've exceeded the maximum quantity for this item in your cart."
+      );
     }
   };
 
   const handleDeleteItem = async (id: string) => {
     const data = await deleteCart(id);
     if (data.error) {
-      toast.error("Item can't be deleted");
+      toast.error("Unable to delete the item. Please try again.");
     } else {
-      toast.success("Item deleted successfully");
+      toast.success("The item has been deleted successfully!");
       FetchToCart();
     }
   };
@@ -110,9 +111,9 @@ const StoreCart: React.FC = () => {
                                 onClick={() =>
                                   handleQuantityChange(item.id, -1, 0, 2)
                                 }
-                                disabled={loadingItems.includes(item.id)} 
+                                disabled={loadingItems.includes(item.id)}
                               >
-                                {loadingItems.includes(item.id) ? ( 
+                                {loadingItems.includes(item.id) ? (
                                   <FaSpinner className="spinner" />
                                 ) : (
                                   <FaMinus size={12} />
@@ -137,9 +138,9 @@ const StoreCart: React.FC = () => {
                                   item.productDetails.productCount
                                 )
                               }
-                              disabled={loadingItems.includes(item.id)} 
+                              disabled={loadingItems.includes(item.id)}
                             >
-                              {loadingItems.includes(item.id) ? ( 
+                              {loadingItems.includes(item.id) ? (
                                 <FaSpinner className="spinner" />
                               ) : (
                                 <FaPlus size={12} />
@@ -174,7 +175,6 @@ const StoreCart: React.FC = () => {
           </div>
         </div>
       )}
-      <ToastContainer />
     </>
   );
 };
