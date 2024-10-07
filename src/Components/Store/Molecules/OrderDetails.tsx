@@ -105,7 +105,7 @@ const OrderDetails: React.FC = () => {
               {type === "normal" ? "" : type === "barter" ? "Exchange" : "Auction"}
             </div>
             <div className="product-type-txt">
-              {type === "normal" ? `₹${orderData.productDetails[0]?.price}` : type === "barter" ? orderData?.productDetails?.barterProductName: `₹${orderData.biddingAmount}`}
+              {type === "normal" ? `₹${orderData.productDetails[0]?.price}` : type === "barter" ? orderData?.productDetails?.barterProductName: `₹${orderData?.biddingAmount}`}
             </div>
           </div>
 
