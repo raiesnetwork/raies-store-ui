@@ -1,11 +1,13 @@
 .myorder-page {
   padding: 0px 15px 10px 15px;
   font-family: system-ui;
-&__no-orders{
-  display: flex;
-  flex-direction: column;
-  align-items: center;
-}
+
+  &__no-orders {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+  }
+
   &__header {
     display: flex;
     justify-content: center;
@@ -22,6 +24,34 @@
     margin-bottom: 10px;
     text-align: right;
   }
+
+  &__slider-btn-sec {
+    display: flex;
+    flex-direction: row;
+    margin: 10px 0;
+    position: absolute;
+    gap: 8px;
+  
+    button {
+      border: none;
+      height: 32px;
+      width: 32px;
+      font-size: 15px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      background-color: white; /* Optional: Add a background color */
+      cursor: pointer; /* Optional: Add a pointer cursor */
+      transition: background-color 0.5s ease;
+      border-radius: 5px;
+  
+      &:hover {
+        background-color: black; /* Optional: Hover effect */
+        color: white;
+      }
+    }
+  }
+  
 
   &__filter-container select {
     padding: 4px 11px 6px 6px;
@@ -120,102 +150,102 @@
     justify-content: space-between;
   }
 
-    &__status-pending {
-      background-color: #ff3d00; // Use for pending orders
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    &__status-processed {
-      background-color:#2196F3; // Yellow for Order Processed
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    &__status-preparing {
-      background-color: #ff9800; // Orange for Preparing for Shipment
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    &__status-shipped {
-      background-color: #03a9f4; // Light Blue for Shipped
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    &__status-outfordelivery {
-      background-color: #ffeb3b; // Bright Yellow for Out for Delivery
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    &__status-delivered {
-      background-color: #4caf50; // Green for Delivered
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    &__status-canceled {
-      background-color: red; // Red for Order Canceled
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
-    &__status-other {
-      background-color: #9e9e9e; // Grey for other statuses
-      border-radius: 17px;
-      padding: 0 11px;
-      color: white;
-      font-size: 13px;
-      height: 18px;
-      display: flex;
-      align-items: center;
-      justify-content: center;
-    }
-  
+  &__status-pending {
+    background-color: #ff3d00; // Use for pending orders
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__status-processed {
+    background-color: #2196F3; // Yellow for Order Processed
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__status-preparing {
+    background-color: #ff9800; // Orange for Preparing for Shipment
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__status-shipped {
+    background-color: #03a9f4; // Light Blue for Shipped
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__status-outfordelivery {
+    background-color: #ffeb3b; // Bright Yellow for Out for Delivery
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__status-delivered {
+    background-color: #4caf50; // Green for Delivered
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__status-canceled {
+    background-color: red; // Red for Order Canceled
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
+  &__status-other {
+    background-color: #9e9e9e; // Grey for other statuses
+    border-radius: 17px;
+    padding: 0 11px;
+    color: white;
+    font-size: 13px;
+    height: 18px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+
 
   &__bid-review-icon {
     font-size: 20px;
@@ -224,7 +254,7 @@
 
   &__status-other {
     background-color: #673AB7;
-  
+
 
 
   }
@@ -272,6 +302,7 @@
     color: #28a745;
     font-size: 20px;
   }
+
   &__order-amount-rejected {
     color: red;
     font-size: 20px;
@@ -287,6 +318,7 @@
     color: #F44336;
     font-size: 20px;
   }
+
   &__delivery-head {
     color: black;
     font-size: 15px;

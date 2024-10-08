@@ -8,14 +8,16 @@ import { getSubdomain } from "../../../Utils/Subdomain";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
 import { CgDanger } from "react-icons/cg";
-// import { FcSearch } from "react-icons/fc";
-// import { GiSandsOfTime } from "react-icons/gi";
-// import { IoTimerSharp } from "react-icons/io5";
-// import { PiTimerFill } from "react-icons/pi";
-// import { FaRegTimesCircle } from "react-icons/fa";
+import { FcSearch } from "react-icons/fc";
+import { GiSandsOfTime } from "react-icons/gi";
+import { IoTimerSharp } from "react-icons/io5";
+import { PiTimerFill } from "react-icons/pi";
 import { RxLapTimer } from "react-icons/rx";
+import { FaRegTimesCircle } from "react-icons/fa";
 import { BiSolidError } from "react-icons/bi";
 import { FaTimesCircle } from "react-icons/fa";
+
+import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 interface resp {
   id: string;
   status: string;
@@ -93,6 +95,26 @@ const UserOrdersPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
+
+  const [currentSlideIndex, setCurrentSlideIndex] = useState<{
+    [orderId: string]: number;
+  }>({});
+
+  const handlePrev = (orderId: string, maxIndex: number) => {
+    setCurrentSlideIndex((prevState) => ({
+      ...prevState,
+      [orderId]: prevState[orderId] > 0 ? prevState[orderId] - 1 : maxIndex,
+    }));
+  };
+
+  const handleNext = (orderId: string, maxIndex: number) => {
+    setCurrentSlideIndex((prevState) => ({
+      ...prevState,
+      [orderId]: prevState[orderId] < maxIndex ? prevState[orderId] + 1 : 0,
+    }));
+  };
+
+
   const filteredOrders = () => {
     if (filter === "all") {
       return { orders, bidOrders, barterOrders };
@@ -116,9 +138,9 @@ const UserOrdersPage: React.FC = () => {
   } = filteredOrders();
 
   const noOrders =
-  filteredOrderList.length === 0 &&
-  filteredBidOrders.length === 0 &&
-  filteredBarterOrders.length === 0;
+    filteredOrderList.length === 0 &&
+    filteredBidOrders.length === 0 &&
+    filteredBarterOrders.length === 0;
   return (
     <>
       <Header />
@@ -152,294 +174,308 @@ const UserOrdersPage: React.FC = () => {
           >
             <LineWave />
           </div>
-        ) : 
-        noOrders ? (
-          <div className="myorder-page__no-orders">
-            <h2>No Orders Found</h2>
-            <p>
-              You have not placed any orders yet. Start browsing our products
-              and place an order now!
-            </p>
-            <Link to="/" className="myorder-page__shop-link">
-              Go to Shop
-            </Link>
-          </div>
-        ) : 
-        (
-          <div className="orders-list">
-            {filteredOrderList.map((order: resp) => (
-              <div key={order.id} className="myorder-page__card-container">
-                {order?.productDetails?.map((item: details, index: number) => (
-                  <Link
-                    style={{ textDecoration: "none", color: "auto" }}
-                    key={index}
-                    to="/orderdetails"
-                    state={{ orderData: order,type:"normal" }}
-                  >
-                    <div className="myorder-page__card-name-sec">
-                      {/* Product Image */}
-                      <img
-                        className="myorder-page__card-img"
-                        src={item.mainImage}
-                        alt={item.productName}
-                      />
-                      <hr className="myorder-page__line" />
-                      {/* Product Info */}
-                      <div className="myorder-page__card-name-details">
-                        <div className="myorder-page__card-name">
-                          {item.productName}
-                        </div>
-                        <div className="myorder-page__order-methode"> {order.paymentMethod === "offline" ? "Cash on devilvery" : "Online"}</div>
-                      </div>
-                    </div>
-                  </Link>
-                ))}
+        ) :
+          noOrders ? (
+            <div className="myorder-page__no-orders">
+              <h2>No Orders Found</h2>
+              <p>
+                You have not placed any orders yet. Start browsing our products
+                and place an order now!
+              </p>
+              <Link to="/" className="myorder-page__shop-link">
+                Go to Shop
+              </Link>
+            </div>
+          ) :
+            (
+              <div className="orders-list">
+                {filteredOrderList.map((order: any) => {
+                  const currentIndex = currentSlideIndex[order.id] || 0;
+                  const maxIndex = order.productDetails.length - 1;
+                  const currentProduct = order.productDetails[currentIndex];
 
-                <div className="myorder-page__order-details-sec">
-
-                  <div className="myorder-page__order-amount-sec">
-                    {order.paymentMethod === "offline" ? (
-                      <>
-                        {order.totalAmount === 0 ? (
-                          <div className="myorder-page__order-amount">₹80</div>
-                        ) : (
-                          <div className="myorder-page__order-amount">{`₹${order.totalAmount}`}</div>
-                        )}
-
-                        <div className="myorder-page__payment-status">
-                          Payment Due <CgDanger className="myorder-page__order-amount-warning" />
-                        </div>
-                      </>
-                    ) : (
-                      <>
-
-                        <><div className="myorder-page__order-amount">
-
-                          {`₹${order.totalAmount}`}
-                        </div>
-                          <div className="myorder-page__payment-status">
-
-                            Paid <MdVerified className="myorder-page__order-amount-tick" />
-                          </div>
-                        </>
-                      </>
-                    )}
-                  </div>
-                  <div className="myorder-page__delivery-status">
-                    <div className="myorder-page__delivery-head">
-                      Delivery
-                    </div>
-                    <div
-                      className={
-                        order?.status === "Order Processed"
-                          ? "myorder-page__status-processed"
-                          : order?.status === "Preparing for Shipment"
-                            ? "myorder-page__status-preparing"
-                            : order?.status === "Shipped"
-                              ? "myorder-page__status-shipped"
-                              : order?.status === "Out for Delivery"
-                                ? "myorder-page__status-outfordelivery"
-                                : order?.status === "Delivered"
-                                  ? "myorder-page__status-delivered"
-                                  : order?.status === "Order Canceled"
-                                    ? "myorder-page__status-canceled"
-                                    : "myorder-page__status-other"
-                      }
-                    >
-                      {order?.status}
-                    </div>
-
-                  </div>
-
-                </div>
-              </div>
-            ))}
-
-            {filteredBidOrders.length > 0 &&
-              filteredBidOrders.map((order: respBid) => (
-                <div key={order.id} className="myorder-page__card-container">
-                  <Link
-                    style={{ textDecoration: "none", color: "auto" }}
-                    to="/orderdetails"
-                    state={{ orderData: order,type:"bid"  }}
-                  >
-                    <div className="myorder-page__card-name-sec">
-                      {/* Product Image */}
-                      <img
-                        className="myorder-page__card-img"
-                        src={order.productDetails.mainImage}
-                        alt={order.productDetails.productName}
-                      />
-
-                      {/* Product Info */}
-                      <hr className="myorder-page__line" />
-                      {/* Product Info */}
-                      <div className="myorder-page__card-name-details">
-                        <div className="myorder-page__card-name">
-                          {order.productDetails.productName}
-                        </div>
-                        <div className="myorder-page__order-methode">AUCTION</div>
-                      </div>
-                    </div>
-                  </Link>
-
-                  <div className="myorder-page__order-details-sec">
-                    {/* Conditionally render the bid amount */}
-
-                    <div className="myorder-page__order-amount-sec">
-                      <div className="myorder-page__bid-amount">
-
-                        ₹{order.biddingAmount}{" "}
-                      </div>
-                      <div className="myorder-page__bid-verified">
-                        {order.status === 'Accepted' ? (
-                          <>
-                            {order.status}
-                            <MdVerified className="myorder-page__order-amount-tick" />
-                          </>
-                        ) : order.status === "Rejected" ? (
-                          <>
-                            {order.status}
-                            <FaTimesCircle className="myorder-page__order-amount-rejected" />
-                          </>
-                        ) : order.status === "Bid under review" ? (
-                          <>
-                            {order.status}
-                            <RxLapTimer className="myorder-page__bid-review-icon" />
-                          </>
-                        ) : (
-                          <>
-                            {order.status}
-                            <BiSolidError className="myorder-page__bid-review-icon" />
-                          </>
-                        )}
-                      </div>
-
-                    </div>
-                    <div className="myorder-page__delivery-status">
-                      <div className="myorder-page__delivery-head">
-                        Delivery
-                      </div>
-                      <div
-                        className={
-                          order?.deliveryStatus === "Order Processed"
-                            ? "myorder-page__status-processed"
-                            : order?.deliveryStatus === "Preparing for Shipment"
-                              ? "myorder-page__status-preparing"
-                              : order?.deliveryStatus === "Shipped"
-                                ? "myorder-page__status-shipped"
-                                : order?.deliveryStatus === "Out for Delivery"
-                                  ? "myorder-page__status-outfordelivery"
-                                  : order?.deliveryStatus === "Delivered"
-                                    ? "myorder-page__status-delivered"
-                                    : order?.deliveryStatus === "Order Canceled"
-                                      ? "myorder-page__status-canceled"
-                                      : "myorder-page__status-other"
-                        }
-                      >
-                        {order?.deliveryStatus}
-                      </div>
-
-
-                    </div>
-
-                  </div>
-                </div>
-              ))}
-
-
-
-
-            {filteredBarterOrders.length > 0 &&
-              filteredBarterOrders.map((order: respBarter) => (
-                <Link style={{ textDecoration: "none", color: "auto" }} key={order.id} to='/orderdetails' state={{ orderData: order }}>
-
-                  <div key={order.id} className="myorder-page__card-container">
-                    <Link
-                      style={{ textDecoration: "none", color: "auto" }}
-                      to="/orderdetails"
-                      state={{ orderData: order ,type:"barter" }}
-                    >
+                  return (
+                    <div key={order.id} className="myorder-page__card-container">
+                      {/* Slider Section */}
                       <div className="myorder-page__card-name-sec">
-                        {/* Product Image */}
+
                         <img
                           className="myorder-page__card-img"
-                          src={order.productDetails.mainImage}
-                          alt={order.productDetails.productName}
+                          src={currentProduct.mainImage}
+                          alt={currentProduct.productName}
                         />
-
-                        {/* Product Info */}
-                        <hr className="myorder-page__line" />
-                        {/* Product Info */}
-                        <div className="myorder-page__card-name-details">
-                          <div className="myorder-page__card-name">
-                            {order.productDetails.productName}
+                        {order.productDetails.length > 1 && (
+                          <div className="myorder-page__slider-btn-sec">
+                            <button
+                              className="myorder-page__slider-arrow"
+                              onClick={() => handlePrev(order.id, maxIndex)}
+                            >
+                              <FaChevronLeft />
+                            </button>
+                            <button
+                              className="myorder-page__slider-arrow"
+                              onClick={() => handleNext(order.id, maxIndex)}
+                            >
+                              <FaChevronRight />
+                            </button>
                           </div>
-                          <div className="myorder-page__order-methode">EXCHANGE</div>
+                        )
+                        }
+                        <hr className="myorder-page__line" />
+                        <div className="myorder-page__card-name-details">
+                        <div className="myorder-page__card-name">
+                          {currentProduct.productName}
+                        </div>
+                        <div className="myorder-page__order-methode">
+                          {order.paymentMethod === "offline"
+                            ? "Cash on Delivery"
+                            : "Online"}
                         </div>
                       </div>
-                    </Link>
+                      </div>
 
-                    <div className="myorder-page__order-details-sec">
-                      {/* Conditionally render the bid amount */}
+                      {/* Product Info */}
+                    
 
-                      <div className="myorder-page__order-amount-sec">
-                        <div className="myorder-page__bid-amount">
-
-                          SHOE
-                        </div>
-                        <div className="myorder-page__bid-verified">
-                          {order.status === 'Accepted' ? (
+                      {/* Order Details */}
+                      <div className="myorder-page__order-details-sec">
+                        <div className="myorder-page__order-amount-sec">
+                          {order.paymentMethod === "offline" ? (
                             <>
-                              {order.status}
-                              <MdVerified className="myorder-page__order-amount-tick" />
-                            </>
-                          ) : order.status === "Rejected" ? (
-                            <>
-                              {order.status}
-                              <FaTimesCircle className="myorder-page__order-amount-rejected" />
+                              {order.totalAmount === 0 ? (
+                                <div className="myorder-page__order-amount">₹80</div>
+                              ) : (
+                                <div className="myorder-page__order-amount">
+                                  {`₹${order.totalAmount}`}
+                                </div>
+                              )}
+                              <div className="myorder-page__payment-status">
+                                Payment Due{" "}
+                                <CgDanger className="myorder-page__order-amount-warning" />
+                              </div>
                             </>
                           ) : (
                             <>
-                              {order.status}<RxLapTimer className="myorder-page__bid-review-icon" />
+                              <div className="myorder-page__order-amount">
+                                {`₹${order.totalAmount}`}
+                              </div>
+                              <div className="myorder-page__payment-status">
+                                Paid{" "}
+                                <MdVerified className="myorder-page__order-amount-tick" />
+                              </div>
                             </>
                           )}
                         </div>
 
-                      </div>
-                      <div className="myorder-page__delivery-status">
-                        <div className="myorder-page__delivery-head">
-                          Delivery
-                        </div>
-                        <div
-                          className={
-                            order?.deliveryStatus === "Order Processed"
-                              ? "myorder-page__status-processed"
-                              : order?.deliveryStatus === "Preparing for Shipment"
-                                ? "myorder-page__status-preparing"
-                                : order?.deliveryStatus === "Shipped"
-                                  ? "myorder-page__status-shipped"
-                                  : order?.deliveryStatus === "Out for Delivery"
-                                    ? "myorder-page__status-outfordelivery"
-                                    : order?.deliveryStatus === "Delivered"
+                        <div className="myorder-page__delivery-status">
+                          <div className="myorder-page__delivery-head">Delivery</div>
+                          <div
+                            className={
+                              order.status === "Order Confirmed"
+                                ? "myorder-page__status-processed"
+                                : order.status === "shipped"
+                                  ? "myorder-page__status-preparing"
+                                  : order.status === "Shipped"
+                                    ? "myorder-page__status-shipped"
+                                    : order.status === "Delivered"
                                       ? "myorder-page__status-delivered"
-                                      : order?.deliveryStatus === "Order Canceled"
-                                        ? "myorder-page__status-canceled"
-                                        : "myorder-page__status-other"
-                          }
-                        >
-                          {order?.deliveryStatus}
+                                      : "myorder-page__status-cancelled"
+                            }
+                          >
+                            {order.status}
+                          </div>
+                        </div>
+                      </div>
+                    </div>
+                  );
+                })}
+
+
+                {filteredBidOrders.length > 0 &&
+                  filteredBidOrders.map((order: respBid) => (
+                    <div key={order.id} className="myorder-page__card-container">
+                      <Link
+                        style={{ textDecoration: "none", color: "auto" }}
+                        to="/orderdetails"
+                        state={{ orderData: order, type: "bid" }}
+                      >
+                        <div className="myorder-page__card-name-sec">
+                          {/* Product Image */}
+                          <img
+                            className="myorder-page__card-img"
+                            src={order.productDetails.mainImage}
+                            alt={order.productDetails.productName}
+                          />
+
+                          {/* Product Info */}
+                          <hr className="myorder-page__line" />
+                          {/* Product Info */}
+                          <div className="myorder-page__card-name-details">
+                            <div className="myorder-page__card-name">
+                              {order.productDetails.productName}
+                            </div>
+                            <div className="myorder-page__order-methode">AUCTION</div>
+                          </div>
+                        </div>
+                      </Link>
+
+                      <div className="myorder-page__order-details-sec">
+                        {/* Conditionally render the bid amount */}
+
+                        <div className="myorder-page__order-amount-sec">
+                          <div className="myorder-page__bid-amount">
+
+                            ₹{order.biddingAmount}{" "}
+                          </div>
+                          <div className="myorder-page__bid-verified">
+                            {order.status === 'Accepted' ? (
+                              <>
+                                {order.status}
+                                <MdVerified className="myorder-page__order-amount-tick" />
+                              </>
+                            ) : order.status === "Rejected" ? (
+                              <>
+                                {order.status}
+                                <FaTimesCircle className="myorder-page__order-amount-rejected" />
+                              </>
+                            ) : order.status === "Bid under review" ? (
+                              <>
+                                {order.status}
+                                <RxLapTimer className="myorder-page__bid-review-icon" />
+                              </>
+                            ) : (
+                              <>
+                                {order.status}
+                                <BiSolidError className="myorder-page__bid-review-icon" />
+                              </>
+                            )}
+                          </div>
+
+                        </div>
+                        <div className="myorder-page__delivery-status">
+                          <div className="myorder-page__delivery-head">
+                            Delivery
+                          </div>
+                          <div
+                            className={
+                              order?.deliveryStatus === "Order Processed"
+                                ? "myorder-page__status-processed"
+                                : order?.deliveryStatus === "Preparing for Shipment"
+                                  ? "myorder-page__status-preparing"
+                                  : order?.deliveryStatus === "Shipped"
+                                    ? "myorder-page__status-shipped"
+                                    : order?.deliveryStatus === "Out for Delivery"
+                                      ? "myorder-page__status-outfordelivery"
+                                      : order?.deliveryStatus === "Delivered"
+                                        ? "myorder-page__status-delivered"
+                                        : order?.deliveryStatus === "Order Canceled"
+                                          ? "myorder-page__status-canceled"
+                                          : "myorder-page__status-other"
+                            }
+                          >
+                            {order?.deliveryStatus}
+                          </div>
+
+
                         </div>
 
-
                       </div>
-
                     </div>
-                  </div>
-                </Link>
-              ))}
-          </div>
-        )}
+                  ))}
+
+
+
+
+                {filteredBarterOrders.length > 0 &&
+                  filteredBarterOrders.map((order: respBarter) => (
+                    <Link style={{ textDecoration: "none", color: "auto" }} key={order.id} to='/orderdetails' state={{ orderData: order }}>
+
+                      <div key={order.id} className="myorder-page__card-container">
+                        <Link
+                          style={{ textDecoration: "none", color: "auto" }}
+                          to="/orderdetails"
+                          state={{ orderData: order, type: "barter" }}
+                        >
+                          <div className="myorder-page__card-name-sec">
+                            {/* Product Image */}
+                            <img
+                              className="myorder-page__card-img"
+                              src={order.productDetails.mainImage}
+                              alt={order.productDetails.productName}
+                            />
+
+                            {/* Product Info */}
+                            <hr className="myorder-page__line" />
+                            {/* Product Info */}
+                            <div className="myorder-page__card-name-details">
+                              <div className="myorder-page__card-name">
+                                {order.productDetails.productName}
+                              </div>
+                              <div className="myorder-page__order-methode">EXCHANGE</div>
+                            </div>
+                          </div>
+                        </Link>
+
+                        <div className="myorder-page__order-details-sec">
+                          {/* Conditionally render the bid amount */}
+
+                          <div className="myorder-page__order-amount-sec">
+                            <div className="myorder-page__bid-amount">
+
+                              SHOE
+                            </div>
+                            <div className="myorder-page__bid-verified">
+                              {order.status === 'Accepted' ? (
+                                <>
+                                  {order.status}
+                                  <MdVerified className="myorder-page__order-amount-tick" />
+                                </>
+                              ) : order.status === "Rejected" ? (
+                                <>
+                                  {order.status}
+                                  <FaTimesCircle className="myorder-page__order-amount-rejected" />
+                                </>
+                              ) : (
+                                <>
+                                  {order.status}<RxLapTimer className="myorder-page__bid-review-icon" />
+                                </>
+                              )}
+                            </div>
+
+                          </div>
+                          <div className="myorder-page__delivery-status">
+                            <div className="myorder-page__delivery-head">
+                              Delivery
+                            </div>
+                            <div
+                              className={
+                                order?.deliveryStatus === "Order Processed"
+                                  ? "myorder-page__status-processed"
+                                  : order?.deliveryStatus === "Preparing for Shipment"
+                                    ? "myorder-page__status-preparing"
+                                    : order?.deliveryStatus === "Shipped"
+                                      ? "myorder-page__status-shipped"
+                                      : order?.deliveryStatus === "Out for Delivery"
+                                        ? "myorder-page__status-outfordelivery"
+                                        : order?.deliveryStatus === "Delivered"
+                                          ? "myorder-page__status-delivered"
+                                          : order?.deliveryStatus === "Order Canceled"
+                                            ? "myorder-page__status-canceled"
+                                            : "myorder-page__status-other"
+                              }
+                            >
+                              {order?.deliveryStatus}
+                            </div>
+
+
+                          </div>
+
+                        </div>
+                      </div>
+                    </Link>
+                  ))}
+              </div>
+            )}
       </div>
     </>
   );
