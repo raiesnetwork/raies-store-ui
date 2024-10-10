@@ -191,46 +191,52 @@ const UserOrdersPage: React.FC = () => {
 
                   return (
                     <div key={order.id} className="myorder-page__card-container">
-                      {/* Slider Section */}
-                      <div className="myorder-page__card-name-sec">
+                      <Link
+                        style={{ textDecoration: "none", color: "auto" }}
+                        to="/orderdetails"
+                        state={{ orderData: order, type: "normal" }}
+                      >
+                        {/* Slider Section */}
+                        <div className="myorder-page__card-name-sec">
 
-                        <img
-                          className="myorder-page__card-img"
-                          src={currentProduct.mainImage}
-                          alt={currentProduct.productName}
-                        />
-                        {order.productDetails.length > 1 && (
-                          <div className="myorder-page__slider-btn-sec">
-                            <button
-                              className="myorder-page__slider-arrow"
-                              onClick={() => handlePrev(order.id, maxIndex)}
-                            >
-                              <FaChevronLeft />
-                            </button>
-                            <button
-                              className="myorder-page__slider-arrow"
-                              onClick={() => handleNext(order.id, maxIndex)}
-                            >
-                              <FaChevronRight />
-                            </button>
+                          <img
+                            className="myorder-page__card-img"
+                            src={currentProduct.mainImage}
+                            alt={currentProduct.productName}
+                          />
+                          {order.productDetails.length > 1 && (
+                            <div className="myorder-page__slider-btn-sec">
+                              <button
+                                className="myorder-page__slider-arrow"
+                                onClick={() => handlePrev(order.id, maxIndex)}
+                              >
+                                <FaChevronLeft />
+                              </button>
+                              <button
+                                className="myorder-page__slider-arrow"
+                                onClick={() => handleNext(order.id, maxIndex)}
+                              >
+                                <FaChevronRight />
+                              </button>
+                            </div>
+                          )
+                          }
+                          <hr className="myorder-page__line" />
+                          <div className="myorder-page__card-name-details">
+                            <div className="myorder-page__card-name">
+                              {currentProduct.productName}
+                            </div>
+                            <div className="myorder-page__order-methode">
+                              {order.paymentMethod === "offline"
+                                ? "Cash on Delivery"
+                                : "Online"}
+                            </div>
                           </div>
-                        )
-                        }
-                        <hr className="myorder-page__line" />
-                        <div className="myorder-page__card-name-details">
-                        <div className="myorder-page__card-name">
-                          {currentProduct.productName}
                         </div>
-                        <div className="myorder-page__order-methode">
-                          {order.paymentMethod === "offline"
-                            ? "Cash on Delivery"
-                            : "Online"}
-                        </div>
-                      </div>
-                      </div>
+                      </Link>
 
                       {/* Product Info */}
-                    
+
 
                       {/* Order Details */}
                       <div className="myorder-page__order-details-sec">

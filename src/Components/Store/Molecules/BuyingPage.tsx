@@ -64,12 +64,13 @@ const CheckoutPage: React.FC = () => {
         };
       });
 
+      const totalAmountWithDelivery = totalPrice + 80;
       if (selectedPaymentMethod === "offline") {
         const data = await createOrdr({
           addressId: selectedAddress.id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
-          totalAmount: totalPrice,
+          totalAmount: totalAmountWithDelivery,
         });
         setBtndesable(false);
 
@@ -90,7 +91,7 @@ const CheckoutPage: React.FC = () => {
         try {
           // setLoading(true)
 
-          const { order } = await createRazorpayOrder(totalPrice);
+          const { order } = await createRazorpayOrder(totalAmountWithDelivery);
 
           const options = {
             key: "rzp_test_7TGBri3PsjHg77",
@@ -108,7 +109,7 @@ const CheckoutPage: React.FC = () => {
                   addressId: selectedAddress.id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
-                  totalAmount: totalPrice,
+                  totalAmount: totalAmountWithDelivery,
                 };
                 await verifyRazorpayPayment(data);
 

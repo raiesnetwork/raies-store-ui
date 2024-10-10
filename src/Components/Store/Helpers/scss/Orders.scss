@@ -34,16 +34,17 @@
   
     button {
       border: none;
-      height: 32px;
-      width: 32px;
+      height: 41px;
+      width: 41px;
       font-size: 15px;
       display: flex;
       align-items: center;
       justify-content: center;
-      background-color: white; /* Optional: Add a background color */
-      cursor: pointer; /* Optional: Add a pointer cursor */
-      transition: background-color 0.5s ease;
-      border-radius: 5px;
+      background-color: #e7e7e7;
+      cursor: pointer;
+      transition: background-color .5s ease;
+      border-radius: 66px;
+      padding: 0px;
   
       &:hover {
         background-color: black; /* Optional: Hover effect */

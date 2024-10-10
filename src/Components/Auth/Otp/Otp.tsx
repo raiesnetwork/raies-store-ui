@@ -12,11 +12,11 @@ export const OtpPage: React.FC = () => {
     const location = useLocation();
 
     // Extract necessary data from location state
-    const mobileNumber = location.state?.mobileNumber || ""; 
-    const subdomain = location.state?.subdomain || ""; 
-    const registration = location.state?.registration || false; 
-    const username = location.state?.username || ""; 
-    const password = location.state?.password || ""; 
+    const mobileNumber = location.state?.mobileNumber || "";
+    const subdomain = location.state?.subdomain || "";
+    const registration = location.state?.registration || false;
+    const username = location.state?.username || "";
+    const password = location.state?.password || "";
 
     const handleOtpSubmit = async () => {
         const enteredOtp = otp.join(""); // Combine the array into a single string
@@ -45,7 +45,7 @@ export const OtpPage: React.FC = () => {
                         "kt-auth-react-st",
                         JSON.stringify({ api_token: response.data?.token })
                     );
-                    navigate("/"); // Redirect to home page on successful registration
+                    window.location.reload() // Redirect to home page on successful registration
                 }
             } else {
                 // Login Flow: Verify OTP for existing user
@@ -62,7 +62,7 @@ export const OtpPage: React.FC = () => {
                         JSON.stringify({ api_token: response.data?.token })
                     );
                     toast.success("OTP verified successfully!");
-                    navigate("/"); // Redirect to home page on successful login
+                    window.location.reload() // Redirect to home page on successful login
                 }
             }
         } else {
@@ -94,11 +94,11 @@ export const OtpPage: React.FC = () => {
                     Enter OTP
                 </div>
                 <div className="otp-page__input-container">
-                    {otp.map((data:any, index) => (
+                    {otp.map((data: any, index) => (
                         <input
                             type="text"
                             maxLength={1}
-                            key={index?index:data}
+                            key={index ? index : data}
                             value={otp[index]}
                             onChange={(e) => handleChange(e, index)}
                             id={`otp-input-${index}`}
