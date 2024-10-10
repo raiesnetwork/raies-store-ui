@@ -191,11 +191,7 @@ const UserOrdersPage: React.FC = () => {
 
                   return (
                     <div key={order.id} className="myorder-page__card-container">
-                      <Link
-                        style={{ textDecoration: "none", color: "auto" }}
-                        to="/orderdetails"
-                        state={{ orderData: order, type: "normal" }}
-                      >
+                  
                         {/* Slider Section */}
                         <div className="myorder-page__card-name-sec">
 
@@ -233,11 +229,14 @@ const UserOrdersPage: React.FC = () => {
                             </div>
                           </div>
                         </div>
-                      </Link>
 
                       {/* Product Info */}
 
-
+                      <Link
+                      style={{ textDecoration: "none", color: "auto" }}
+                      to="/orderdetails"
+                      state={{ orderData: order, type: "normal" }}
+                    >
                       {/* Order Details */}
                       <div className="myorder-page__order-details-sec">
                         <div className="myorder-page__order-amount-sec">
@@ -287,6 +286,8 @@ const UserOrdersPage: React.FC = () => {
                           </div>
                         </div>
                       </div>
+                      </Link>
+
                     </div>
                   );
                 })}
