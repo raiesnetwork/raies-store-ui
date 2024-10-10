@@ -1,4 +1,4 @@
-import { useNavigate, useLocation } from "react-router-dom";
+import {  useLocation } from "react-router-dom";
 import useMystoreStore from "../../Store/Core/Store";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -8,7 +8,7 @@ import "./Otp.scss"
 export const OtpPage: React.FC = () => {
     const [otp, setOtp] = useState(Array(6).fill(""));
     const { loginUser, createUser, setUserName, checkLoggedIn } = useMystoreStore((state) => state);
-    const navigate = useNavigate();
+    // const navigate = useNavigate();
     const location = useLocation();
 
     // Extract necessary data from location state
