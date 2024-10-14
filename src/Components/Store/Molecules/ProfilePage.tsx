@@ -203,11 +203,23 @@ const ProfilePage: React.FC = () => {
           <div className="profile-page">
             <aside className="sidebar">
               <div className="profile-pic">
+                <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
+
                 {formData.profileImage ? (
                   <img src={formData.profileImage} alt="Profile" />
                 ) : (
                   <FiUser className="header__profile_icon" />
                 )}
+                {
+                  profileData?.role==="Admin"&&
+<a 
+  href={`${import.meta.env.VITE_APP_REACT_URL}/mystore`} 
+  target="_blank" 
+  rel="noopener noreferrer"
+>
+  Go to Dashboard
+</a>                }
+                </div>
 
                 <h3>
                   Hello{" "}
