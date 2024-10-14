@@ -1,17 +1,19 @@
-import React, { useState } from "react";
+import React, { useEffect, useState } from "react";
 import "../Helpers/scss/SinglePageView.scss";
 import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
 import BiddingModal from "./BiddingModal";
 import Header from "./Header";
 import { toast } from "react-toastify";
-import { Link } from "react-router-dom";
+import { Link, useParams } from "react-router-dom";
 import AddressModal from "./BuyAddressModal";
 import AddressComponentModal from "./ShowAllAddressModal";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
 const SingleProductView: React.FC = () => {
+  const {id}=useParams()
+  
   const {
     addressSupparator,
     addressSupparatorBarter,
@@ -28,10 +30,17 @@ const SingleProductView: React.FC = () => {
     setOpenBiddingModal,
     singleProductData,
     setOpenBarterModal,
+    getSingleProduct
   } = useMystoreStore((s) => s);
   const [imageView, setImageView] = useState<string>(
     singleProductData.mainImage
   );
+  useEffect(()=>{
+    setImageView( singleProductData.mainImage)
+  },[ singleProductData])
+  useEffect(()=>{
+     getSingleProduct(id);
+  },[id])
   // eslint-disable-next-line no-unsafe-optional-chaining
   const [year, month, day] = singleProductData?.endDate.split("-");
   const lastDate = `${day}-${month}-${year}`;
@@ -308,7 +317,7 @@ const SingleProductView: React.FC = () => {
       ) : (
         <>
           <div style={{ textAlign: "center" }}>
-            Please select any product...
+            Loading...
           </div>
         </>
       )}

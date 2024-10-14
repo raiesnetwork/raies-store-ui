@@ -105,6 +105,7 @@ storeIconRefresh:boolean
   setIsOtpModalVisible:(data:string)=>void
   modalOpener:string
   verifyEmail:(mail:string)=>void
+  getSingleProduct:(id?:string)=>void
 }
 export interface createOrder{
   productDetails:[]          

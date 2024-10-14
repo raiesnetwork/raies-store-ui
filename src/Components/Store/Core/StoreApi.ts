@@ -421,3 +421,17 @@ export const passwordChangeApi = async (
     };
   }
 };
+
+
+export const getSingleProductDetailsApi = async (id?:string) => {
+  try {
+    const { data } = await axiosInstance.get(`/userstore/auth/singleProducts/${id}`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
+};

@@ -32,7 +32,7 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Route path="/cart" element={<StoreCart />} />
             <Route path="/success" element={<SuccessPage />} />
             <Route path="/orders" element={<UserOrdersPage />} />
-            <Route path="/details" element={<SingleProductView />} />
+            <Route path="/details/:id" element={<SingleProductView />} />
             <Route path="/buy" element={<ProductBuyingPage />} />
             <Route path="/login" element={<Navigate to='/'/>} />
             <Route path="/register" element={<Navigate to='/'/>} />
@@ -41,7 +41,7 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Route path="/orderdetails" element={<OrderDetails/>} />
           </>
         )}
-        <Route path="/details" element={<SingleProductView />} />
+        <Route path="/details/:id" element={<SingleProductView />} />
         <Route path="/order" element={<Navigate to='/login'/>} />
         <Route path="/cart" element={<Navigate to='/login'/>} />
         <Route path="/success" element={<Navigate to='/login'/>} />

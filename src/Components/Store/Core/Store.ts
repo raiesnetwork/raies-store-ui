@@ -13,6 +13,7 @@ import {
   FetchToCartApi,
   getAddressApi,
   getProfileInfoApi,
+  getSingleProductDetailsApi,
   getStoreIconApi,
   // getAllProductApi,
   getUserOrderApi,
@@ -267,6 +268,14 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   },
   verifyEmail:async(mail)=>{
     await verifyMailApi(mail)
+  },
+  getSingleProduct:async(id)=>{
+    const data=await getSingleProductDetailsApi(id)
+    console.log(data);
+    
+    set(()=>({singleProductData:data?.data
+
+    }))
   }
 }));
 
