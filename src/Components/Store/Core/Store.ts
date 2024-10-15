@@ -34,7 +34,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   storeData: {
     storeName: "",
     storeIcon: "",
-    storeBanner: ""
+    storeBanner: "",
+    refundAndCancelPolicy:""
   },
   AllProducts: [],
   // getAllProduct: async (hostName) => {
