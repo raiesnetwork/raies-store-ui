@@ -8,6 +8,7 @@ import { respStoreCart } from "../Core/Interfaces";
 import Header from "./Header";
 import { Link } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
+import StoreFooter from "../../Footer/Footer";
 
 const StoreCart: React.FC = () => {
   const {
@@ -175,6 +176,14 @@ const StoreCart: React.FC = () => {
           </div>
         </div>
       )}
+      <div style={{
+        position:"fixed",
+        bottom:0,
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
+      </div>
     </>
   );
 };

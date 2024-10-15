@@ -5,6 +5,7 @@ import Header from './Header';
 import useMystoreStore from '../Core/Store';
 import { FaTruckMoving } from "react-icons/fa";
 import { format } from 'date-fns';
+import StoreFooter from '../../Footer/Footer';
 
 
 
@@ -130,6 +131,14 @@ const OrderDetails: React.FC = () => {
             </div>
           </div>
         </div>
+      </div>
+      <div style={{
+        position:"fixed",
+        bottom:0,
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
       </div>
     </>
   );

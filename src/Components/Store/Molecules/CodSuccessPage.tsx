@@ -5,6 +5,7 @@ import { Link, useLocation } from "react-router-dom";
 import { respStoreCart } from "../Core/Interfaces";
 import { FaShoppingCart } from "react-icons/fa";
 import { GiShoppingBag } from "react-icons/gi";
+import StoreFooter from "../../Footer/Footer";
 const SuccessPage: React.FC = () => {
   const location = useLocation();
   const { orderDetails } = location.state || {};
@@ -66,6 +67,14 @@ const SuccessPage: React.FC = () => {
             </Link>
           </div>
         </div>
+      </div>
+      <div style={{
+        position:"fixed",
+        bottom:0,
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
       </div>
     </>
   );

@@ -8,6 +8,7 @@ import AddressModal from "./BuyAddressModal";
 import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
+import StoreFooter from "../../Footer/Footer";
 
 const CheckoutPage: React.FC = () => {
   const {
@@ -306,6 +307,14 @@ const CheckoutPage: React.FC = () => {
       {isOpenselectAddressModal && (
         <AddressComponent opencreateAddressModal={OpenAddressModal} />
       )}
+      <div style={{
+        position:"fixed",
+        bottom:0,
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
+      </div>
     </>
   );
 };

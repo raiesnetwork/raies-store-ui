@@ -103,12 +103,12 @@ export const MyStore: React.FC = () => {
     <>
       <Header />
       {homeLoader ? (
-        <div className="mystore__spinner-container">
+        <div  className="mystore__spinner-container">
           <ClipLoader size={50} color={"#123abc"} loading={homeLoader} />
         </div>
       ) : (
         <>
-          <div className="mystore">
+          <div  className="mystore">
             <div className="myStore__banner">
               <img
                 src={
@@ -174,7 +174,14 @@ export const MyStore: React.FC = () => {
               </button>
             </div>
           </div>
-          <StoreFooter/>
+          <div style={{
+        position:"fixed",
+        bottom:"-20px",
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
+      </div>
         </>
       )}
     </>

@@ -9,6 +9,7 @@ import useMystoreStore from "../Core/Store";
 import { updateProfileInfo } from "../Core/Interfaces";
 import OtpVerify from "./OTPmodal";
 import { passwordChangeApi } from "../Core/StoreApi";
+import StoreFooter from "../../Footer/Footer";
 type pages = "info" | "password";
 const ProfilePage: React.FC = () => {
   const {
@@ -901,6 +902,14 @@ const ProfilePage: React.FC = () => {
         </>
       )}
       {isOTPmodalVisible && <OtpVerify />}
+      <div style={{
+        position:"fixed",
+        bottom:0,
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
+      </div>
     </>
   );
 };

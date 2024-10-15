@@ -11,6 +11,7 @@ import AddressComponentModal from "./ShowAllAddressModal";
 import { FaShoppingCart } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
+import StoreFooter from "../../Footer/Footer";
 const SingleProductView: React.FC = () => {
   const {id}=useParams()
   
@@ -321,6 +322,14 @@ const SingleProductView: React.FC = () => {
           </div>
         </>
       )}
+      <div style={{
+        position:"fixed",
+        bottom:0,
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
+      </div>
     </>
   );
 };

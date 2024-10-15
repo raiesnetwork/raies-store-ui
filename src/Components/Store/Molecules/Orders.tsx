@@ -12,6 +12,7 @@ import { RxLapTimer } from "react-icons/rx";
 import { BiSolidError } from "react-icons/bi";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import StoreFooter from "../../Footer/Footer";
 
 interface resp {
   id: string;
@@ -478,6 +479,14 @@ const UserOrdersPage: React.FC = () => {
                   ))}
               </div>
             )}
+      </div>
+      <div style={{
+        position:"fixed",
+        bottom:0,
+        width:"100%"
+      }}>
+
+      <StoreFooter/>
       </div>
     </>
   );
