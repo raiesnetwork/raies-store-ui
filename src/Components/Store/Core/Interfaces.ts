@@ -35,6 +35,7 @@ export interface storeData{
   storeName:string
     storeIcon: string
     storeBanner:string
+    refundAndCancelPolicy:string
 }
 export interface MystoreStore {
   // getAllProduct: (id?: string|null) => Promise<ApiResponce>;

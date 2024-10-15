@@ -12,6 +12,7 @@ import { Register } from "./Register/Register";
 import { OtpPage } from "./Otp/Otp";
 import ProfilePage from "../Store/Molecules/ProfilePage";
 import OrderDetails from "../Store/Molecules/OrderDetails";
+import RefundAndCancellationPolicy from "../Footer/RefundAndCancellationPolicy";
 const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
   const { AuthApiCall } = useAuth((state) => state);
   const { checkLoggedIn, logedIn } = useMystoreStore((s) => s);
@@ -39,6 +40,8 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
             <Route path="/otp" element={<Navigate to='/'/>} />
             <Route path="/profile" element={<ProfilePage/>} />
             <Route path="/orderdetails" element={<OrderDetails/>} />
+            <Route path="/refund-cancellation-policy" element={<RefundAndCancellationPolicy/>}/>
+
           </>
         )}
         <Route path="/details/:id" element={<SingleProductView />} />
@@ -49,6 +52,7 @@ const Auth: React.FC<{ children: React.ReactNode }> = ({ children }) => {
         <Route path="/login" element={<Login></Login>}/>
         <Route path="/register" element={<Register></Register>}/>
         <Route path="/otp" element={<OtpPage></OtpPage>}/>
+        <Route path="/refund-cancellation-policy" element={<RefundAndCancellationPolicy/>}/>
 
         <Route path="/*" element={<Navigate to="/" />} />
       </Routes>
