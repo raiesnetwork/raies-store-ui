@@ -1,0 +1,38 @@
+// StoreFooter.scss
+
+.store_footer {
+    background-color: #f8f8f8;
+    padding: 20px;
+    text-align: center;
+    color: #333;
+}
+    .store_footer__links {
+      margin-bottom: 10px;
+    }
+      .store_footer__link {
+        color: #333;
+        text-decoration: none;
+        margin: 0 10px;
+      }
+        .store_footer__link:hover {
+          text-decoration: underline;
+          color: #1e53b6;
+        }
+  
+    .store_footer__copyright {
+      font-size: 14px;
+      color: #999;
+    }
+  
+    @media (max-width: 768px) {
+        .store_footer__links {
+        display: flex;
+        flex-direction: column;
+  
+        .store_footer__link {
+          margin: 5px 0;
+        }
+      }
+    }
+  
+  

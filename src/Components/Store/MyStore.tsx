@@ -7,6 +7,7 @@ import { getSubdomain } from "../../Utils/Subdomain";
 import ClipLoader from "react-spinners/ClipLoader";
 import "./Helpers/scss/mystore.scss";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
+import StoreFooter from "../Footer/Footer";
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 
@@ -173,6 +174,7 @@ export const MyStore: React.FC = () => {
               </button>
             </div>
           </div>
+          <StoreFooter/>
         </>
       )}
     </>
