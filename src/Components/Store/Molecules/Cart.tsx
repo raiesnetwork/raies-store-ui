@@ -81,7 +81,7 @@ const StoreCart: React.FC = () => {
             <div className="cart-items">
               {cartItems.length > 0 ? (
                 cartItems.map((item) => (
-                  <div key={item.productDetails.id} className="cart-item">
+                  <div key={item.productDetails._id} className="cart-item">
                     <img
                       src={item.productDetails.mainImage}
                       alt="img"
@@ -97,7 +97,7 @@ const StoreCart: React.FC = () => {
                       </p>
                       <div className="cart-buttonss">
                         <div>
-                          <label htmlFor={`quantity-${item.productDetails.id}`}>
+                          <label htmlFor={`quantity-${item.productDetails._id}`}>
                             Quantity:
                           </label>
                           <div
@@ -110,11 +110,11 @@ const StoreCart: React.FC = () => {
                               <button
                                 className="quantity-btn"
                                 onClick={() =>
-                                  handleQuantityChange(item.id, -1, 0, 2)
+                                  handleQuantityChange(item._id, -1, 0, 2)
                                 }
-                                disabled={loadingItems.includes(item.id)}
+                                disabled={loadingItems.includes(item._id)}
                               >
-                                {loadingItems.includes(item.id) ? (
+                                {loadingItems.includes(item._id) ? (
                                   <FaSpinner className="spinner" />
                                 ) : (
                                   <FaMinus size={12} />
@@ -133,15 +133,15 @@ const StoreCart: React.FC = () => {
                               className="quantity-btn"
                               onClick={() =>
                                 handleQuantityChange(
-                                  item.id,
+                                  item._id,
                                   1,
                                   item.quantity,
                                   item.productDetails.productCount
                                 )
                               }
-                              disabled={loadingItems.includes(item.id)}
+                              disabled={loadingItems.includes(item._id)}
                             >
-                              {loadingItems.includes(item.id) ? (
+                              {loadingItems.includes(item._id) ? (
                                 <FaSpinner className="spinner" />
                               ) : (
                                 <FaPlus size={12} />
@@ -151,7 +151,7 @@ const StoreCart: React.FC = () => {
                         </div>
                         <button
                           className="delete-btn"
-                          onClick={() => handleDeleteItem(item.id)}
+                          onClick={() => handleDeleteItem(item._id)}
                         >
                           <MdDelete size={18} color="red" />
                         </button>

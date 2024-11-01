@@ -20,9 +20,9 @@ const BiddingModal: React.FC = () => {
   } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
-    addressId: selectedAddress.id,
+    addressId: selectedAddress._id,
     biddingAmount: "",
-    productId: singleProductData.id,
+    productId: singleProductData._id,
   });
   useEffect(() => {
     getAddress();
@@ -33,9 +33,9 @@ const BiddingModal: React.FC = () => {
 
   useEffect(() => {
     setFormData({
-      addressId: selectedAddress.id,
+      addressId: selectedAddress._id,
       biddingAmount: "",
-      productId: singleProductData.id,
+      productId: singleProductData._id,
     });
     setErrors({});
   }, [isOpenBiddingModal, singleProductData, selectedAddress]);
@@ -148,7 +148,7 @@ const BiddingModal: React.FC = () => {
                 <div className="section address-section">
                   <div className="section-header">Select Delivery Address</div>
                   <div className="address-details">
-                    {selectedAddress.id && (
+                    {selectedAddress._id && (
                       <>
                         <div>
                           <p>
@@ -168,7 +168,7 @@ const BiddingModal: React.FC = () => {
                         </button>
                       </>
                     )}
-                    {!addressData?.length && !selectedAddress.id && (
+                    {!addressData?.length && !selectedAddress._id && (
                       <button
                         className="btn btn-primary"
                         onClick={handlenewAddress}
@@ -176,7 +176,7 @@ const BiddingModal: React.FC = () => {
                         Add new Address
                       </button>
                     )}
-                    {addressData?.length > 0 && !selectedAddress.id && (
+                    {addressData?.length > 0 && !selectedAddress._id && (
                       <button
                         className="btn btn-primary"
                         onClick={handleSelectAddressModalOpen}

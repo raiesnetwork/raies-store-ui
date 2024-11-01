@@ -49,7 +49,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     brandName: "",
     description: "",
     flag: false,
-    id: "",
+    _id: "",
     mainImage: "",
     price: 0,
     productCount: 0,
@@ -154,7 +154,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   selectedAddress: {
     fullAddress: "",
     fullName: "",
-    id: "",
+    _id: "",
     landmark: "",
     mobileNumber: "",
     pincode: "",

@@ -12,7 +12,7 @@ export interface respProduct {
   userId: string;
   flag: boolean;
   description: string;
-  id: string;
+  _id: string;
   currency: string;
   priceOption: string;
   endDate: string;
@@ -154,7 +154,7 @@ export interface myStoreCart {
   currency: string;
   mainImage: string;
   endDate: string;
-  id: string;
+  _id: string;
   maxBidPrice: string;
   minBidPrice: string;
   productCount: number;
@@ -163,7 +163,7 @@ export interface myStoreCart {
   price: string;
 }
 export interface respStoreCart {
-  id: string;
+  _id: string;
   quantity: number;
   productDetails: myStoreCart;
 }
@@ -175,7 +175,7 @@ export interface userStoreCreate {
   password:string
 }
 export interface respStoreAddress {
-  id: string;
+  _id: string;
   fullName: string;
   mobileNumber: string;
   fullAddress: string;

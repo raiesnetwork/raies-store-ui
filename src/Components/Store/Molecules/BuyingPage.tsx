@@ -52,15 +52,15 @@ const CheckoutPage: React.FC = () => {
   }, [refresh]);
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
-    if (selectedAddress.id.trim() && selectedPaymentMethod.trim()) {
+    if (selectedAddress._id.trim() && selectedPaymentMethod.trim()) {
       setBtndesable(true);
       const productDetais = details.map((val: respStoreCart) => {
         return {
-          id: val?.productDetails?.id,
+          id: val?.productDetails?._id,
           quantity: val?.quantity,
           productName: val?.productDetails?.productName,
           mainImage: val?.productDetails?.mainImage,
-          cartId: val?.id,
+          cartId: val?._id,
           price: val?.productDetails?.price,
         };
       });
@@ -68,7 +68,7 @@ const CheckoutPage: React.FC = () => {
       const totalAmountWithDelivery = totalPrice + 80;
       if (selectedPaymentMethod === "offline") {
         const data = await createOrdr({
-          addressId: selectedAddress.id,
+          addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
           totalAmount: totalAmountWithDelivery,
@@ -107,7 +107,7 @@ const CheckoutPage: React.FC = () => {
                 // eslint-disable-next-line prefer-const
                 let data = {
                   response,
-                  addressId: selectedAddress.id,
+                  addressId: selectedAddress._id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
                   totalAmount: totalAmountWithDelivery,
@@ -168,7 +168,7 @@ const CheckoutPage: React.FC = () => {
         <div className="section address-section">
           <div className="section-header">1. Delivery Address</div>
           <div className="address-details">
-            {selectedAddress.id && (
+            {selectedAddress._id && (
               <>
                 <div className="checkout-page-address-details">
                   <p>
@@ -185,12 +185,12 @@ const CheckoutPage: React.FC = () => {
                 </button>
               </>
             )}
-            {!addressData?.length && !selectedAddress.id && (
+            {!addressData?.length && !selectedAddress._id && (
               <button onClick={setIsOpenSelectAddressModal}>
                 Add new Address
               </button>
             )}
-            {addressData?.length && !selectedAddress.id && (
+            {addressData?.length && !selectedAddress._id && (
               <button onClick={setIsOpenSelectAddressModal}>
                 Select Address
               </button>
@@ -244,7 +244,7 @@ const CheckoutPage: React.FC = () => {
               {details?.length &&
                 details?.map((product: respStoreCart) => (
                   <>
-                    <hr key={product.id} />
+                    <hr key={product._id} />
 
                     <div
                       style={{

@@ -19,9 +19,9 @@ const BarterModal: React.FC = () => {
   } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
-    addressId: selectedAddress.id,
+    addressId: selectedAddress._id,
     productImage: "",
-    productId: singleProductData.id,
+    productId: singleProductData._id,
     // quantity:"1"
   });
   useEffect(() => {
@@ -36,9 +36,9 @@ const BarterModal: React.FC = () => {
 
   useEffect(() => {
     setFormData({
-      addressId: selectedAddress.id,
+      addressId: selectedAddress._id,
       productImage: "",
-      productId: singleProductData.id,
+      productId: singleProductData._id,
       // quantity:"1"
     });
     setErrors({});
@@ -171,7 +171,7 @@ const BarterModal: React.FC = () => {
                 <div className="section address-section">
                   <div className="section-header">Select Delivery Address</div>
                   <div className="address-details">
-                    {selectedAddress.id && (
+                    {selectedAddress._id && (
                       <>
                         <div>
                           <p>
@@ -191,7 +191,7 @@ const BarterModal: React.FC = () => {
                         </button>
                       </>
                     )}
-                    {!addressData?.length && !selectedAddress.id && (
+                    {!addressData?.length && !selectedAddress._id && (
                       <button
                         className="btn btn-primary"
                         onClick={handlenewAddress}
@@ -199,7 +199,7 @@ const BarterModal: React.FC = () => {
                         Add new Address
                       </button>
                     )}
-                    {addressData?.length > 0 && !selectedAddress.id && (
+                    {addressData?.length > 0 && !selectedAddress._id && (
                       <button
                         className="btn btn-primary"
                         onClick={handleSelectAddressModalOpen}

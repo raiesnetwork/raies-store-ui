@@ -74,7 +74,7 @@ const SingleProductView: React.FC = () => {
   return (
     <>
       <Header />
-      {singleProductData.id ? (
+      {singleProductData._id ? (
         <>
           <div className="single-product-container">
             <div className="single-product-details">
@@ -214,7 +214,7 @@ const SingleProductView: React.FC = () => {
                           disabled={disable}
                           onClick={() =>
                             handileCart(
-                              singleProductData.id,
+                              singleProductData._id,
                               singleProductData.productCount,
                               singleProductData.userId
                             )
@@ -251,7 +251,7 @@ const SingleProductView: React.FC = () => {
                           disabled={disable}
                           onClick={() =>
                             handileCart(
-                              singleProductData.id,
+                              singleProductData._id,
                               singleProductData.productCount,
                               singleProductData.userId
                             )

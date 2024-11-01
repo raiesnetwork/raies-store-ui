@@ -31,10 +31,10 @@ const SuccessPage: React.FC = () => {
             <h2>Order Summary</h2>
             {data?.map((val: respStoreCart) => (
               <>
-                <hr key={val.id} />
+                <hr key={val._id} />
 
                 <p>
-                  <strong>Order Number:</strong> {val.id}
+                  <strong>Order Number:</strong> {val._id}
                 </p>
                 <p>
                   <strong>Product Name:</strong>{" "}

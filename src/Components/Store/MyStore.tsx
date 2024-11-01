@@ -134,7 +134,7 @@ export const MyStore: React.FC = () => {
             <div className="mystore__products_sec">
               {paginatedData.length > 0 ? (
                 paginatedData.map((val) =>
-                  !val.flag ? <ProductViewCard key={val.id} data={val} /> : null
+                  !val.flag ? <ProductViewCard key={val._id} data={val} /> : null
                 )
               ) : (
                 <div className="mystore__empty_msg">Store is empty</div>

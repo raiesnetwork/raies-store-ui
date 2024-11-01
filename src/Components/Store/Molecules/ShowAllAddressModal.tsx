@@ -132,7 +132,7 @@ const AddressComponentModal: React.FC<AddressModalProps> = ({
                             backgroundColor: "transparent",
                             cursor: "pointer",
                           }}
-                          onClick={() => handleDeleteAddress(address.id)}
+                          onClick={() => handleDeleteAddress(address._id)}
                         >
                           <MdDelete size={22} title="Delete Address" />
                         </button>

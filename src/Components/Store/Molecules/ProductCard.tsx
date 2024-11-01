@@ -12,7 +12,7 @@ const ProductViewCard: React.FC<ProductViewCardProps> = ({ data }) => {
   return (
     <>
       <div className="product-card" >
-        <Link style={{ textDecoration: "none" }} to={`/details/${data?.id}`}>
+        <Link style={{ textDecoration: "none" }} to={`/details/${data?._id}`}>
           <div className="product-card__image-sec">
             <img
               src={data.mainImage}
