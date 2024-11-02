@@ -30,7 +30,8 @@ const OrderDetails: React.FC = () => {
 
   // Get the starting date (createdAt or the first updateHistory)
   const createdAtDate = new Date(orderData.createdAt);
-  const updateHistoryDates = orderData.updateHistory.map((date:any) => new Date(date));
+  
+  const updateHistoryDates = orderData?.updateHistory?.map((date:any) => new Date(date));
 
   // Dates array to store the calculated dates
   const statusDates: string[] = [];
@@ -114,7 +115,8 @@ const OrderDetails: React.FC = () => {
             <div className='delivery-tracker__head'>Delivery Details</div>
             <div className="order-tracker">
               <ul className="order-status">
-                {statuses.map((status, index) => (
+                {statuses.length>0&&
+                statuses?.map((status, index) => (
                   <li
                     key={status}
                     className={`${index <= currentStatusIndex ? 'completed' : ''}`}

@@ -216,7 +216,7 @@ const SingleProductView: React.FC = () => {
                             handileCart(
                               singleProductData._id,
                               singleProductData.productCount,
-                              singleProductData.userId
+                              singleProductData.user
                             )
                           }
                         >
@@ -229,7 +229,7 @@ const SingleProductView: React.FC = () => {
                           state={{
                             details: [
                               {
-                                id: "",
+                                id: singleProductData._id,
                                 quantity: 1,
                                 productDetails: singleProductData,
                               },
@@ -253,7 +253,7 @@ const SingleProductView: React.FC = () => {
                             handileCart(
                               singleProductData._id,
                               singleProductData.productCount,
-                              singleProductData.userId
+                              singleProductData.user
                             )
                           }
                         >

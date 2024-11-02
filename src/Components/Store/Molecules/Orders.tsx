@@ -186,7 +186,7 @@ const UserOrdersPage: React.FC = () => {
             (
               <div className="orders-list">
                 {filteredOrderList.map((order: any) => {
-                  const currentIndex = currentSlideIndex[order.id] || 0;
+                  const currentIndex = currentSlideIndex[order._id] || 0;
                   const maxIndex = order.productDetails.length - 1;
                   const currentProduct = order.productDetails[currentIndex];
 
@@ -198,20 +198,20 @@ const UserOrdersPage: React.FC = () => {
 
                           <img
                             className="myorder-page__card-img"
-                            src={currentProduct.mainImage}
-                            alt={currentProduct.productName}
+                            src={currentProduct?.mainImage}
+                            alt={currentProduct?.productName}
                           />
                           {order.productDetails.length > 1 && (
                             <div className="myorder-page__slider-btn-sec">
                               <button
                                 className="myorder-page__slider-arrow"
-                                onClick={() => handlePrev(order.id, maxIndex)}
+                                onClick={() => handlePrev(order?._id, maxIndex)}
                               >
                                 <FaChevronLeft />
                               </button>
                               <button
                                 className="myorder-page__slider-arrow"
-                                onClick={() => handleNext(order.id, maxIndex)}
+                                onClick={() => handleNext(order?._id, maxIndex)}
                               >
                                 <FaChevronRight />
                               </button>
@@ -294,7 +294,7 @@ const UserOrdersPage: React.FC = () => {
                 })}
 
 
-                {filteredBidOrders.length > 0 &&
+                {filteredBidOrders?.length > 0 &&
                   filteredBidOrders.map((order: respBid) => (
                     <div key={order.id} className="myorder-page__card-container">
                       <Link

@@ -34,6 +34,8 @@ const ProfilePage: React.FC = () => {
     wareHouseOwnerName: profileData.wareHouseOwnerName,
     subscriptionId: profileData.subscriptionId,
   });
+  console.log(profileData);
+  
   useEffect(() => {
     if (profileData) {
       setFormData(profileData);

@@ -55,7 +55,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     productCount: 0,
     productName: "",
     subImages: [],
-    userId: "",
+    user: "",
     currency: "",
     priceOption: "",
     endDate: "",

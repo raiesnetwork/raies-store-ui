@@ -56,7 +56,7 @@ const CheckoutPage: React.FC = () => {
       setBtndesable(true);
       const productDetais = details.map((val: respStoreCart) => {
         return {
-          id: val?.productDetails?._id,
+          _id: val?.productDetails?._id,
           quantity: val?.quantity,
           productName: val?.productDetails?.productName,
           mainImage: val?.productDetails?.mainImage,
