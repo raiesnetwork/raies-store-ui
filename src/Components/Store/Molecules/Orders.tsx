@@ -134,9 +134,9 @@ const UserOrdersPage: React.FC = () => {
   } = filteredOrders();
 
   const noOrders =
-    filteredOrderList.length === 0 &&
-    filteredBidOrders.length === 0 &&
-    filteredBarterOrders.length === 0;
+    filteredOrderList?.length === 0 &&
+    filteredBidOrders?.length === 0 &&
+    filteredBarterOrders?.length === 0;
   return (
     <>
       <Header />
