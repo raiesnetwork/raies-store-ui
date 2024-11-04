@@ -107,6 +107,7 @@ storeIconRefresh:boolean
   modalOpener:string
   verifyEmail:(mail:string)=>void
   getSingleProduct:(id?:string)=>void
+  postCouponApi:(id?:string)=>Promise<any>
 }
 export interface createOrder{
   productDetails:[]          

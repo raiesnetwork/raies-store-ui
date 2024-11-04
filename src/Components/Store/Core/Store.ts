@@ -20,6 +20,7 @@ import {
   latestProductApi,
   loginUserApi,
   loginWithPasswordApi,
+  PostcouponApi,
   registrationVerify,
   updateCartApi,
   updateProfileInfoApi,
@@ -277,6 +278,10 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     set(()=>({singleProductData:data?.data
 
     }))
+  },
+  postCouponApi:async(code)=>{
+    const data=await PostcouponApi(code)
+    return data
   }
 }));
 

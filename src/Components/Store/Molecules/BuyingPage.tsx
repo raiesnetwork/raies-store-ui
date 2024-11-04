@@ -21,6 +21,7 @@ const CheckoutPage: React.FC = () => {
     setIsOpenSelectAddressModal,
     createOrdr,
     FetchToCart,
+    postCouponApi
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("");
@@ -30,12 +31,15 @@ const CheckoutPage: React.FC = () => {
   // const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
 
-  const totalPrice = details.reduce(
+  let totalPrice = details.reduce(
     (total: number, product: respStoreCart) =>
       total + Number(product.productDetails.price) * product.quantity,
     0
   );
-
+const [totalAmount,setTotalAmount]=useState(0)
+useEffect(()=>{
+  setTotalAmount(totalPrice)
+},[totalPrice])
   const [isOpenAddressModal, setAddressModal] = useState<boolean>(false);
   const OpenAddressModal = () => {
     setAddressModal(true);
@@ -158,8 +162,36 @@ const CheckoutPage: React.FC = () => {
       );
     }
   };
-  console.log('addree',addressData);
-  
+  const [couponCode,setCouponCode]=useState<string>("")
+  const [couponAmount,setCouponAmount]=useState<number>(0)
+  const [couponCodeErr,setCouponCodeErr]=useState<string>("")
+  const [CouponBtnDisable,setCouponBtnDesable]=useState<boolean>(false)
+
+  const handileCoupon=async()=>{
+if(couponCode.trim()){
+  setCouponBtnDesable(true)
+  const data=await postCouponApi(couponCode)
+  setCouponBtnDesable(false)
+  if(data.error){
+    setCouponCodeErr(data?.message)
+  }else{
+    if(data?.data?.type==="fixed"){
+      setCouponAmount(data?.data?.amount)
+      totalPrice = Math.max(0, totalPrice - (data?.data?.amount || 0));
+      setTotalAmount(totalPrice)
+    }else if(data?.data?.type==="percentage"){
+      totalPrice -= totalPrice*(data?.data?.amount / 100);
+      setTotalAmount(totalPrice)
+      setCouponAmount(data?.data?.amount)
+
+    }
+    toast.success("Coupon Apply Successfully")
+  }
+
+}else{
+  setCouponCodeErr("Enter a valid coupon code")
+}
+  }
   return (
     <>
       <Header />
@@ -280,7 +312,44 @@ const CheckoutPage: React.FC = () => {
             </div>
           </div>
         </div>
+        {/* coupon section */}
+        <div className="section order-summary">
+        <div className="section-header">Apply Coupon</div>
+       <div style={{
+        display:"flex",
+        alignItems:"center",
+        justifyContent:"center",
+        gap:"10px"
 
+       }}>
+       <input style={{
+        width:"85%",
+        height:"35px",
+        borderRadius:"5px",
+        outline:"none",
+        border:"1px solid"
+
+       }} 
+       value={couponCode}
+       placeholder="Enter coupon code"
+       onChange={(e)=>setCouponCode(e.target.value)}
+       />
+       <button style={{
+        width:"15%"
+       }}
+       onClick={handileCoupon}
+       >
+        {
+          CouponBtnDisable?"Applying...":"Apply"
+        }
+        
+       </button>
+       
+       </div>
+<div style={{
+  color:"red"
+}}>{couponCodeErr}</div>
+        </div>
         {/* Order Summary Section */}
         <div className="section order-summary">
           <>
@@ -292,9 +361,13 @@ const CheckoutPage: React.FC = () => {
               <span>Delivery:</span>
               <span>₹80.00</span>
             </div>
+             <div className="summary-row">
+              <span>Discount Coupon:</span>
+              <span>₹{couponAmount}</span>
+            </div>
             <div className="summary-row">
               <span>Total:</span>
-              <span className="total-price">₹{totalPrice + 80}</span>
+              <span className="total-price">₹{totalAmount + 80}</span>
             </div>
           </>
 

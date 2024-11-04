@@ -435,3 +435,15 @@ export const getSingleProductDetailsApi = async (id?:string) => {
     };
   }
 };
+export const PostcouponApi = async (code?:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/storcoupon/apply`,{code});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong plese try after sometime",
+      data: error,
+    };
+  }
+};
