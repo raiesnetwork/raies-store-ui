@@ -10,7 +10,8 @@ import { updateProfileInfo } from "../Core/Interfaces";
 import OtpVerify from "./OTPmodal";
 import { passwordChangeApi } from "../Core/StoreApi";
 import StoreFooter from "../../Footer/Footer";
-type pages = "info" | "password";
+import CouponCardList from "./CouponView";
+type pages = "info" | "password" |"coupon";
 const ProfilePage: React.FC = () => {
   const {
     isOTPmodalVisible,
@@ -198,6 +199,8 @@ const ProfilePage: React.FC = () => {
       }
     }
   };
+
+  
   return (
     <>
       <Header />
@@ -264,6 +267,20 @@ const ProfilePage: React.FC = () => {
                     onClick={() => setPageSelector("password")}
                   >
                     Change Password
+                  </li>
+                  <li
+                    style={
+                      pageSelector === "coupon"
+                        ? {
+                          backgroundColor: "white",
+                            color:"black",
+                                border:"1px solid black"
+                          }
+                        : {}
+                    }
+                    onClick={() => setPageSelector("coupon")}
+                  >
+                    Coupons
                   </li>
                   <Link
                     style={{
@@ -740,7 +757,7 @@ const ProfilePage: React.FC = () => {
                     </div>
                   </form>
                 </section>
-              ) : (
+              ) :pageSelector==="password"? (
                 //   Password section
                 <>
                   <section className="profile-info">
@@ -885,6 +902,8 @@ const ProfilePage: React.FC = () => {
                     </form>
                   </section>
                 </>
+              ): pageSelector==="coupon"&&(
+                <CouponCardList coupon={profileData.coupon} />
               )}
             </main>
           </div>
@@ -901,6 +920,8 @@ const ProfilePage: React.FC = () => {
           >
             <p style={{ textAlign: "center" }}>Loading...</p>
           </div>
+
+
         </>
       )}
       {isOTPmodalVisible && <OtpVerify />}

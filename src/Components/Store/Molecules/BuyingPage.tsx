@@ -30,6 +30,7 @@ const CheckoutPage: React.FC = () => {
   const [btnDisable, setBtndesable] = useState<boolean>(false);
   // const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [couponAmount,setCouponAmount]=useState<{amount:number,type:string,couponId:string}>({amount:0,type:"",couponId:""})
 
   let totalPrice = details.reduce(
     (total: number, product: respStoreCart) =>
@@ -75,7 +76,8 @@ useEffect(()=>{
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
-          totalAmount: totalAmountWithDelivery,
+          totalAmount: totalAmount+80,
+          couponData:couponAmount
         });
         setBtndesable(false);
 
@@ -114,7 +116,9 @@ useEffect(()=>{
                   addressId: selectedAddress._id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
-                  totalAmount: totalAmountWithDelivery,
+                  totalAmount: totalAmount+80,
+                  couponData:couponAmount
+
                 };
                 await verifyRazorpayPayment(data);
 
@@ -163,7 +167,6 @@ useEffect(()=>{
     }
   };
   const [couponCode,setCouponCode]=useState<string>("")
-  const [couponAmount,setCouponAmount]=useState<number>(0)
   const [couponCodeErr,setCouponCodeErr]=useState<string>("")
   const [CouponBtnDisable,setCouponBtnDesable]=useState<boolean>(false)
 
@@ -176,15 +179,26 @@ if(couponCode.trim()){
     setCouponCodeErr(data?.message)
   }else{
     if(data?.data?.type==="fixed"){
-      setCouponAmount(data?.data?.amount)
+      setCouponAmount({
+        amount:data?.data?.amount,
+        type:"fixed",
+        couponId:data?.data?.couponId
+      })
       totalPrice = Math.max(0, totalPrice - (data?.data?.amount || 0));
       setTotalAmount(totalPrice)
     }else if(data?.data?.type==="percentage"){
       totalPrice -= totalPrice*(data?.data?.amount / 100);
       setTotalAmount(totalPrice)
-      setCouponAmount(data?.data?.amount)
+      setCouponAmount({
+        amount:data?.data?.amount,
+        type:"percentage",
+        couponId:data?.data?.couponId
+
+      })
 
     }
+    setCouponCodeErr("")
+
     toast.success("Coupon Apply Successfully")
   }
 
@@ -363,7 +377,7 @@ if(couponCode.trim()){
             </div>
              <div className="summary-row">
               <span>Discount Coupon:</span>
-              <span>₹{couponAmount}</span>
+              <span>₹{couponAmount.amount}</span>
             </div>
             <div className="summary-row">
               <span>Total:</span>

@@ -111,9 +111,10 @@ storeIconRefresh:boolean
 }
 export interface createOrder{
   productDetails:[]          
-    totalAmount:string  
+    totalAmount:string |number 
     paymentMethod :string
-    addressId  :string
+    addressId  :string,
+    couponData?:any
     
 }
 export interface updateProfileInfo{
@@ -130,16 +131,18 @@ export interface updateProfileInfo{
   storeIcon?:string
   storeBanner?:string
   subscriptionId?:string
+  coupon?:any
     
 }
 export interface onlinePayment{
   productDetails:[]          
-    totalAmount:string  
+    totalAmount:string  |number
     paymentMethod :string
     addressId  :string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     response:any
-    
+    couponData?:any
+
 }
 export interface ApiResponce {
   [x: string]: boolean;
