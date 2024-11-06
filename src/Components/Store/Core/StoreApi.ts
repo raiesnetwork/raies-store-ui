@@ -435,9 +435,9 @@ export const getSingleProductDetailsApi = async (id?:string) => {
     };
   }
 };
-export const PostcouponApi = async (code?:string) => {
+export const PostcouponApi = async (code?:string,productDetails?:any) => {
   try {
-    const { data } = await axiosInstance.post(`/storcoupon/apply`,{code});
+    const { data } = await axiosInstance.post(`/storcoupon/apply`,{code,productDetails});
     return data;
   } catch (error) {
     return {

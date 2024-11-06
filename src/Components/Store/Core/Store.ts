@@ -279,8 +279,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
 
     }))
   },
-  postCouponApi:async(code)=>{
-    const data=await PostcouponApi(code)
+  postCouponApi:async(code,details)=>{
+    const data=await PostcouponApi(code,details)
     return data
   }
 }));

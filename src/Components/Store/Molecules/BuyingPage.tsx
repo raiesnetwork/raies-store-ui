@@ -173,7 +173,7 @@ useEffect(()=>{
   const handileCoupon=async()=>{
 if(couponCode.trim()){
   setCouponBtnDesable(true)
-  const data=await postCouponApi(couponCode)
+  const data=await postCouponApi(couponCode,details)
   setCouponBtnDesable(false)
   if(data.error){
     setCouponCodeErr(data?.message)
