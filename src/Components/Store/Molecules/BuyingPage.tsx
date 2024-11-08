@@ -208,7 +208,10 @@ if(couponCode.trim()){
   }
   return (
     <>
-      <Header />
+     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
+<Header />
+<div style={{ flex: 1 }}>
       <div className="checkout-page">
         {/* Delivery Address Section */}
         <div className="section address-section">
@@ -394,12 +397,9 @@ if(couponCode.trim()){
       {isOpenselectAddressModal && (
         <AddressComponent opencreateAddressModal={OpenAddressModal} />
       )}
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
+      
 
+      </div>
       <StoreFooter/>
       </div>
     </>
