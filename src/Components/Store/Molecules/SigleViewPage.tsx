@@ -73,7 +73,11 @@ const SingleProductView: React.FC = () => {
 
   return (
     <>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
       <Header />
+      <div style={{ flex: 1 }}>
+
       {singleProductData._id ? (
         <>
           <div className="single-product-container">
@@ -322,12 +326,9 @@ const SingleProductView: React.FC = () => {
           </div>
         </>
       )}
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
+      
 
+      </div>
       <StoreFooter/>
       </div>
     </>
