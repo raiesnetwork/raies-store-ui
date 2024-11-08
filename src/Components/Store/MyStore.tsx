@@ -8,6 +8,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import "./Helpers/scss/mystore.scss";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import StoreFooter from "../Footer/Footer";
+
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 
@@ -28,12 +29,6 @@ export const MyStore: React.FC = () => {
   const [filter, setFilter] = useState<string>("All");
   const [pageNo, setPageNo] = useState<number>(1);
   const [itemsPerPage] = useState<number>(10);
-  // useEffect(()=>{
-  //   const storedDataRaw = localStorage.getItem('store-data');
-  //   const storedData = storedDataRaw ? JSON.parse(storedDataRaw) : null;
-  //       setStoreIcon(storedData)
-  // },[storeIconRefresh])
-  // console.log("sttt",storeIconRefresh);
 
   useEffect(() => {
     if (AllProducts.length > 0) {
@@ -79,20 +74,17 @@ export const MyStore: React.FC = () => {
     setPageNo(1);
   }, [filter, data]);
 
-  // Calculate the paginated data based on the current page and itemsPerPage
   const paginatedData = filteredData.slice(
     (pageNo - 1) * itemsPerPage,
     pageNo * itemsPerPage
   );
 
-  // Function to go to the next page
   const handleNextPage = () => {
     if (pageNo < Math.ceil(filteredData.length / itemsPerPage)) {
       setPageNo((prevPage) => prevPage + 1);
     }
   };
 
-  // Function to go to the previous page
   const handlePreviousPage = () => {
     if (pageNo > 1) {
       setPageNo((prevPage) => prevPage - 1);
@@ -101,14 +93,16 @@ export const MyStore: React.FC = () => {
 
   return (
     <>
+    {homeLoader ? (
+      <div className="mystore__spinner-container">
+        <ClipLoader size={50} color={"#123abc"} loading={homeLoader} />
+      </div>
+    ) : (
+    <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header />
-      {homeLoader ? (
-        <div  className="mystore__spinner-container">
-          <ClipLoader size={50} color={"#123abc"} loading={homeLoader} />
-        </div>
-      ) : (
-        <>
-          <div  className="mystore">
+      
+        <div style={{ flex: 1 }}>
+          <div className="mystore">
             <div className="myStore__banner">
               <img
                 src={
@@ -140,8 +134,6 @@ export const MyStore: React.FC = () => {
                 <div className="mystore__empty_msg">Store is empty</div>
               )}
             </div>
-
-            {/* Pagination Controls */}
             <div className="mystore__pagination">
               <button
                 style={{
@@ -174,15 +166,9 @@ export const MyStore: React.FC = () => {
               </button>
             </div>
           </div>
-          <div style={{
-        position:"fixed",
-        bottom:"-20px",
-        width:"100%"
-      }}>
-
-      <StoreFooter/>
-      </div>
-        </>
+        </div>
+      <StoreFooter />
+    </div>
       )}
     </>
   );
