@@ -139,7 +139,10 @@ const UserOrdersPage: React.FC = () => {
     filteredBarterOrders?.length === 0;
   return (
     <>
-      <Header />
+     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
+<Header />
+<div style={{ flex: 1 }}>
       <div className="myorder-page">
 
         <div className="myorder-page__header">
@@ -480,12 +483,9 @@ const UserOrdersPage: React.FC = () => {
               </div>
             )}
       </div>
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
+      
 
+      </div>
       <StoreFooter/>
       </div>
     </>
