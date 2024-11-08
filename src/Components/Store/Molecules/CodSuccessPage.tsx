@@ -18,7 +18,10 @@ const SuccessPage: React.FC = () => {
 
   return (
     <>
-      <Header />
+     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
+<Header />
+<div style={{ flex: 1 }}>
       <div className="success-page">
         <div className="success-page-content">
           <h1>Thank You for Your Purchase!</h1>
@@ -68,12 +71,9 @@ const SuccessPage: React.FC = () => {
           </div>
         </div>
       </div>
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
+      
 
+      </div>
       <StoreFooter/>
       </div>
     </>
