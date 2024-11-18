@@ -88,7 +88,7 @@ export const Login: React.FC = () => {
             <Header />
             <div className="login">
                 <div className="login__header">
-                 {`WELCOME TO ${storeData.storeName.toUpperCase()}`}
+                 {`WELCOME TO ${storeData?.storeName?.toUpperCase()}`}
                 </div>
                 <div className="login__header_login">
                     SIGN IN
