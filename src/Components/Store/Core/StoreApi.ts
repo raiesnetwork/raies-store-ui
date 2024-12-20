@@ -8,7 +8,7 @@ import {
   updateProfileInfo,
   userStoreCreate,
 } from "./Interfaces";
-
+import axios from 'axios';
 const axiosInstance = createAxiosInstance();
 
 // export const getAllProductApi = async (hostName?: string | null) => {
@@ -451,6 +451,29 @@ export const PostcouponApi = async (code?:string,productDetails?:any) => {
 export const getShiprocketToken = async () => {
   try {
     const { data } = await axiosInstance.get(`/store/shiprocket/token`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong plese try after sometime",
+      data: error,
+    };
+  }
+};
+
+export const getDeliveryCharge = async (productData:any,token:string) => {
+  
+
+  try {
+    const { data } = await axios.get( 'https://apiv2.shiprocket.in/v1/external/courier/serviceability/',
+     
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: productData,
+      }
+    );
     return data;
   } catch (error) {
     return {

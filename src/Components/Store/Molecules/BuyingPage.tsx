@@ -9,6 +9,7 @@ import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
 import StoreFooter from "../../Footer/Footer";
+import { getDeliveryCharge } from "../Core/StoreApi";
 
 const CheckoutPage: React.FC = () => {
   const {
@@ -21,7 +22,8 @@ const CheckoutPage: React.FC = () => {
     setIsOpenSelectAddressModal,
     createOrdr,
     FetchToCart,
-    postCouponApi
+    postCouponApi,
+    shiprocketToken
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("");
@@ -206,6 +208,63 @@ if(couponCode.trim()){
   setCouponCodeErr("Enter a valid coupon code")
 }
   }
+
+const [deliveryDetails,setDeliveryDetails]=useState<any>([])
+const getDeliveryCharges=async()=>{
+  const payload = {
+    pickup_postcode: details[0]?.productDetails?.pickupAddress?.Zip||'673504',
+    delivery_postcode: selectedAddress.pincode,
+    cod: 1, // 1 for COD, 0 for prepaid
+    weight: details[0]?.productDetails?.productWeight,
+    length: details[0]?.productDetails?.packageLength,
+    breadth: details[0]?.productDetails?.packageBreadth,
+    height: details[0]?.productDetails?.packageHeight,
+    width:details[0]?.productDetails?.packageWidth
+  };
+  try {
+    console.log(payload,shiprocketToken);
+    
+    const data=await getDeliveryCharge(payload,shiprocketToken)
+    const couriers = data.data.available_courier_companies;
+    setDeliveryDetails(couriers)
+    couriers.forEach((courier:any) => {
+      console.log(`Courier: ${courier.courier_name}`);
+      console.log(`Delivery Charge: ₹${parseFloat(courier.freight_charge) + parseFloat(courier.cod_charges)}`);
+      console.log(`Estimated Delivery Days: ${courier.estimated_delivery_days}`);
+      console.log(`Expected Delivery Date: ${courier.etd}`);
+      console.log(`Rating: ${courier.rating}`);
+      console.log('-----------------------------');
+    });
+} catch (error) {
+    console.log(error,'delivery charges err');
+    
+  }
+
+}
+
+
+
+
+  useEffect(()=>{
+
+    if (details&&selectedAddress) {
+      getDeliveryCharges()
+      console.log('delivery useeffect');
+      
+    }
+
+  },[details,selectedAddress])
+
+
+
+
+
+
+
+
+
+
+
   return (
     <>
      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -326,6 +385,36 @@ if(couponCode.trim()){
                     <hr />
                   </>
                 ))}
+            </div>
+          </div>
+        </div>
+ <div className="section product-review-section">
+          <div className="section-header">Available Delivery partners</div>
+          <div className="product-list">
+            <div
+              style={{
+                overflowY: "scroll",
+                width: "100%",
+                display: "flex",
+                flexDirection: "column",
+                flexWrap: "wrap",
+                height:"10%"
+              }}
+            >
+              
+              {deliveryDetails?.length > 0 &&
+  deliveryDetails.map((courier:any, index:number) => (
+    <div key={index}>
+      <hr />
+      <p>Courier: {courier.courier_name}</p>
+      <p>Delivery Charge: ₹{parseFloat(courier.freight_charge) + parseFloat(courier.cod_charges)}</p>
+      <p>Estimated Delivery Days: {courier.estimated_delivery_days}</p>
+      <p>Expected Delivery Date: {courier.etd}</p>
+      <p>Rating: {courier.rating}</p>
+      <hr />
+    </div>
+  ))}
+
             </div>
           </div>
         </div>
