@@ -13,6 +13,7 @@ import {
   FetchToCartApi,
   getAddressApi,
   getProfileInfoApi,
+  getShiprocketToken,
   getSingleProductDetailsApi,
   getStoreIconApi,
   // getAllProductApi,
@@ -282,6 +283,13 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   postCouponApi:async(code,details)=>{
     const data=await PostcouponApi(code,details)
     return data
+  },
+  shiprocketToken:"",
+  getShprocketToken:async()=>{
+    const {data}=await getShiprocketToken()
+  set(()=>({shiprocketToken:data?.token}))
+  console.log(data?.token);
+  
   }
 }));
 

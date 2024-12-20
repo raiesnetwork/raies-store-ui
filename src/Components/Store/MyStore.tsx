@@ -22,6 +22,7 @@ export const MyStore: React.FC = () => {
     latestProduct,
     setUserName,
     storeData,
+    getShprocketToken
   } = useMystoreStore((state) => state);
 
   const [data, setData] = useState<respProduct[]>([]);
@@ -41,6 +42,7 @@ export const MyStore: React.FC = () => {
     if (logedIn) {
       const name = localStorage.getItem("suname");
       setUserName(name);
+      getShprocketToken()
     }
   }, [logedIn]);
 

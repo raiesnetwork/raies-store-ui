@@ -447,3 +447,16 @@ export const PostcouponApi = async (code?:string,productDetails?:any) => {
     };
   }
 };
+
+export const getShiprocketToken = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/store/shiprocket/token`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong plese try after sometime",
+      data: error,
+    };
+  }
+};

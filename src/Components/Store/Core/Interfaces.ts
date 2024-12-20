@@ -108,6 +108,8 @@ storeIconRefresh:boolean
   verifyEmail:(mail:string)=>void
   getSingleProduct:(id?:string)=>void
   postCouponApi:(id?:string,details?:any)=>Promise<any>
+  shiprocketToken:string
+  getShprocketToken:()=>void
 }
 export interface createOrder{
   productDetails:[]          
