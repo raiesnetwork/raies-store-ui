@@ -23,7 +23,8 @@ const CheckoutPage: React.FC = () => {
     createOrdr,
     FetchToCart,
     postCouponApi,
-    shiprocketToken
+    shiprocketToken,
+    setSelectedAddress
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("online");
@@ -211,15 +212,26 @@ if(couponCode.trim()){
   }
 const [expetedDeliveryData,setExpectedDeliveryDate]=useState<any>()
 const getDeliveryCharges=async()=>{
+  const aggregatedDetails = details.reduce(
+    (agg: { weight: number; length: number; breadth: number; height: number; }, item: { productDetails: any; }) => {
+      const product = item.productDetails;
+      agg.weight += parseFloat(product.productWeight || 0);
+      agg.length = Math.max(agg.length, parseFloat(product.packageLength || 0));
+      agg.breadth = Math.max(agg.breadth, parseFloat(product.packageBreadth || 0));
+      agg.height = Math.max(agg.height, parseFloat(product.packageHeight || 0));
+      return agg;
+    },
+    { weight: 0, length: 0, breadth: 0, height: 0 }
+  );
+
   const payload = {
-    pickup_postcode: details[0]?.productDetails?.pickupAddress?.Zip||'673504',
+    pickup_postcode: details[0]?.productDetails?.pickupAddress?.Zip || '673504',
     delivery_postcode: selectedAddress.pincode,
-    cod: selectedPaymentMethod==='offline'?1:0, // 1 for COD, 0 for prepaid
-    weight: details[0]?.productDetails?.productWeight,
-    length: details[0]?.productDetails?.packageLength,
-    breadth: details[0]?.productDetails?.packageBreadth,
-    height: details[0]?.productDetails?.packageHeight,
-    width:details[0]?.productDetails?.packageWidth
+    cod: selectedPaymentMethod === 'offline' ? 1 : 0, // 1 for COD, 0 for prepaid
+    weight: aggregatedDetails.weight,
+    length: aggregatedDetails.length,
+    breadth: aggregatedDetails.breadth,
+    height: aggregatedDetails.height,
   };
   try {
    
@@ -268,7 +280,11 @@ console.log(deliveryDetails);
 
 
 
-
+useEffect(()=>{
+  if (addressData?.length>0) {
+    setSelectedAddress(addressData[0])
+  }
+},[addressData])
 
 
 
