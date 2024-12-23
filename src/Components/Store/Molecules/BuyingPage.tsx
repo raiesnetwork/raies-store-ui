@@ -26,7 +26,8 @@ const CheckoutPage: React.FC = () => {
     shiprocketToken
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<string>("");
+    useState<string>("online");
+    const [deliveryDetails,setDeliveryDetails]=useState<any>()
   const location = useLocation();
   const { details } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
@@ -72,13 +73,13 @@ useEffect(()=>{
         };
       });
 
-      const totalAmountWithDelivery = totalPrice + 80;
+      const totalAmountWithDelivery = totalPrice + deliveryDetails;
       if (selectedPaymentMethod === "offline") {
         const data = await createOrdr({
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
-          totalAmount: totalAmount+80,
+          totalAmount: totalAmount+deliveryDetails,
           couponData:couponAmount
         });
         setBtndesable(false);
@@ -103,11 +104,11 @@ useEffect(()=>{
           const { order } = await createRazorpayOrder(totalAmountWithDelivery);
 
           const options = {
-            key: "rzp_test_7TGBri3PsjHg77",
+            key: import.meta.env.VITE_APP_RAZOR_PAY,
             amount: order.amount,
             currency: "INR",
             name: "STORE CART PURCHASE",
-            description: "Fund for the campaign",
+            description: "",
             order_id: order.id,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handler: async (response: any) => {
@@ -118,7 +119,7 @@ useEffect(()=>{
                   addressId: selectedAddress._id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
-                  totalAmount: totalAmount+80,
+                  totalAmount: totalAmount+deliveryDetails,
                   couponData:couponAmount
 
                 };
@@ -208,13 +209,12 @@ if(couponCode.trim()){
   setCouponCodeErr("Enter a valid coupon code")
 }
   }
-
-const [deliveryDetails,setDeliveryDetails]=useState<any>([])
+const [expetedDeliveryData,setExpectedDeliveryDate]=useState<any>()
 const getDeliveryCharges=async()=>{
   const payload = {
     pickup_postcode: details[0]?.productDetails?.pickupAddress?.Zip||'673504',
     delivery_postcode: selectedAddress.pincode,
-    cod: 1, // 1 for COD, 0 for prepaid
+    cod: selectedPaymentMethod==='offline'?1:0, // 1 for COD, 0 for prepaid
     weight: details[0]?.productDetails?.productWeight,
     length: details[0]?.productDetails?.packageLength,
     breadth: details[0]?.productDetails?.packageBreadth,
@@ -222,19 +222,29 @@ const getDeliveryCharges=async()=>{
     width:details[0]?.productDetails?.packageWidth
   };
   try {
-    console.log(payload,shiprocketToken);
+   
     
     const data=await getDeliveryCharge(payload,shiprocketToken)
     const couriers = data.data.available_courier_companies;
-    setDeliveryDetails(couriers)
-    couriers.forEach((courier:any) => {
-      console.log(`Courier: ${courier.courier_name}`);
-      console.log(`Delivery Charge: ₹${parseFloat(courier.freight_charge) + parseFloat(courier.cod_charges)}`);
-      console.log(`Estimated Delivery Days: ${courier.estimated_delivery_days}`);
-      console.log(`Expected Delivery Date: ${courier.etd}`);
-      console.log(`Rating: ${courier.rating}`);
-      console.log('-----------------------------');
-    });
+    const getBestCourier = (couriers: any[]) => {
+      return couriers.reduce((best, current) => {
+        if (
+          (current.total_charge < best.total_charge && current.etd < best.etd) ||
+          current.recommendation_score > best.recommendation_score
+        ) {
+          return current;
+        }
+        return best;
+      }, couriers[0]);
+    };
+    const bestCourier = getBestCourier(couriers);
+    const freightCharge = parseFloat(bestCourier.freight_charge || 0);
+const codCharges = parseFloat(bestCourier.cod_charges || 0);
+const otherCharges = parseFloat(bestCourier.other_charges || 0);
+const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
+setExpectedDeliveryDate(bestCourier?.etd)
+    setDeliveryDetails(totalDeliveryCharge);
+    console.log("Selected Best Courier:", bestCourier);
 } catch (error) {
     console.log(error,'delivery charges err');
     
@@ -242,6 +252,7 @@ const getDeliveryCharges=async()=>{
 
 }
 
+console.log(deliveryDetails);
 
 
 
@@ -253,7 +264,7 @@ const getDeliveryCharges=async()=>{
       
     }
 
-  },[details,selectedAddress])
+  },[details,selectedAddress,selectedPaymentMethod])
 
 
 
@@ -388,36 +399,7 @@ const getDeliveryCharges=async()=>{
             </div>
           </div>
         </div>
- <div className="section product-review-section">
-          <div className="section-header">Available Delivery partners</div>
-          <div className="product-list">
-            <div
-              style={{
-                overflowY: "scroll",
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                flexWrap: "wrap",
-                height:"10%"
-              }}
-            >
-              
-              {deliveryDetails?.length > 0 &&
-  deliveryDetails.map((courier:any, index:number) => (
-    <div key={index}>
-      <hr />
-      <p>Courier: {courier.courier_name}</p>
-      <p>Delivery Charge: ₹{parseFloat(courier.freight_charge) + parseFloat(courier.cod_charges)}</p>
-      <p>Estimated Delivery Days: {courier.estimated_delivery_days}</p>
-      <p>Expected Delivery Date: {courier.etd}</p>
-      <p>Rating: {courier.rating}</p>
-      <hr />
-    </div>
-  ))}
 
-            </div>
-          </div>
-        </div>
         {/* coupon section */}
         <div className="section order-summary">
         <div className="section-header">Apply Coupon</div>
@@ -460,20 +442,23 @@ const getDeliveryCharges=async()=>{
         <div className="section order-summary">
           <>
             <div className="summary-row">
+              <span>Expected delivery:</span>
+              <span>{expetedDeliveryData}</span>
+            </div><div className="summary-row">
               <span>Items:</span>
               <span>₹{totalPrice}</span>
             </div>
             <div className="summary-row">
               <span>Delivery:</span>
-              <span>₹80.00</span>
+              <span>{deliveryDetails||0}</span>
             </div>
              <div className="summary-row">
               <span>Discount Coupon:</span>
-              <span>₹{couponAmount.amount}</span>
+              <span>{couponAmount.amount}</span>
             </div>
             <div className="summary-row">
               <span>Total:</span>
-              <span className="total-price">₹{totalAmount + 80}</span>
+              <span className="total-price">₹{totalAmount + deliveryDetails}</span>
             </div>
           </>
 
