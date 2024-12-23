@@ -126,7 +126,7 @@ const CheckoutPage: React.FC = () => {
           await FetchToCart();
           console.log(data);
           
-          navigate("/success", { state: { orderDetails: details ,orderId:data.data.orderId} });
+          navigate("/success", { state: { orderDetails: details ,orderId:data.data.orderData?.order_id} });
         }
       } else {
         setBtndesable(false);
