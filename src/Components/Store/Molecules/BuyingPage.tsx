@@ -24,27 +24,31 @@ const CheckoutPage: React.FC = () => {
     FetchToCart,
     postCouponApi,
     shiprocketToken,
-    setSelectedAddress
+    setSelectedAddress,
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("online");
-    const [deliveryDetails,setDeliveryDetails]=useState<any>()
+  const [deliveryDetails, setDeliveryDetails] = useState<any>();
   const location = useLocation();
   const { details } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
   // const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
-  const [couponAmount,setCouponAmount]=useState<{amount:number,type:string,couponId:string}>({amount:0,type:"",couponId:""})
+  const [couponAmount, setCouponAmount] = useState<{
+    amount: number;
+    type: string;
+    couponId: string;
+  }>({ amount: 0, type: "", couponId: "" });
 
   let totalPrice = details.reduce(
     (total: number, product: respStoreCart) =>
       total + Number(product.productDetails.price) * product.quantity,
     0
   );
-const [totalAmount,setTotalAmount]=useState(0)
-useEffect(()=>{
-  setTotalAmount(totalPrice)
-},[totalPrice])
+  const [totalAmount, setTotalAmount] = useState(0);
+  useEffect(() => {
+    setTotalAmount(totalPrice);
+  }, [totalPrice]);
   const [isOpenAddressModal, setAddressModal] = useState<boolean>(false);
   const OpenAddressModal = () => {
     setAddressModal(true);
@@ -63,7 +67,32 @@ useEffect(()=>{
   const handilPlaceOrder = async () => {
     if (selectedAddress._id.trim() && selectedPaymentMethod.trim()) {
       setBtndesable(true);
-      const productDetais = details.map((val: respStoreCart) => {
+      const diamentions = details.reduce((agg: {
+            weight: number;
+            length: number;
+            breadth: number;
+            height: number;
+          },
+          item: { productDetails: any } ) => {
+          const product = item.productDetails;
+          agg.weight += parseFloat(product.productWeight || 0);
+          agg.length = Math.max(
+            agg.length,
+            parseFloat(product.packageLength || 0)
+          );
+          agg.breadth = Math.max(
+            agg.breadth,
+            parseFloat(product.packageBreadth || 0)
+          );
+          agg.height = Math.max(
+            agg.height,
+            parseFloat(product.packageHeight || 0)
+          );
+          return agg;
+        },
+        { weight: 0, length: 0, breadth: 0, height: 0 }
+      );
+      const productDetais = details?.map((val: respStoreCart) => {
         return {
           _id: val?.productDetails?._id,
           quantity: val?.quantity,
@@ -71,6 +100,7 @@ useEffect(()=>{
           mainImage: val?.productDetails?.mainImage,
           cartId: val?._id,
           price: val?.productDetails?.price,
+          diamentions
         };
       });
 
@@ -80,8 +110,8 @@ useEffect(()=>{
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
-          totalAmount: totalAmount+deliveryDetails,
-          couponData:couponAmount
+          totalAmount: totalAmount + deliveryDetails,
+          couponData: couponAmount,
         });
         setBtndesable(false);
 
@@ -94,7 +124,9 @@ useEffect(()=>{
         } else {
           setBtndesable(false);
           await FetchToCart();
-          navigate("/success", { state: { orderDetails: details } });
+          console.log(data);
+          
+          navigate("/success", { state: { orderDetails: details ,orderId:data.data.orderId} });
         }
       } else {
         setBtndesable(false);
@@ -120,9 +152,8 @@ useEffect(()=>{
                   addressId: selectedAddress._id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
-                  totalAmount: totalAmount+deliveryDetails,
-                  couponData:couponAmount
-
+                  totalAmount: totalAmount + deliveryDetails,
+                  couponData: couponAmount,
                 };
                 await verifyRazorpayPayment(data);
 
@@ -160,7 +191,9 @@ useEffect(()=>{
           toast.error("Payment failed. Please try again.");
         }
         await FetchToCart();
-        navigate("/success", { state: { orderDetails: details } });
+        navigate("/success", { state: { orderDetails: details ,
+          // orderId:data.data.orderId
+        } });
       }
     } else {
       setBtndesable(false);
@@ -170,327 +203,331 @@ useEffect(()=>{
       );
     }
   };
-  const [couponCode,setCouponCode]=useState<string>("")
-  const [couponCodeErr,setCouponCodeErr]=useState<string>("")
-  const [CouponBtnDisable,setCouponBtnDesable]=useState<boolean>(false)
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [couponCodeErr, setCouponCodeErr] = useState<string>("");
+  const [CouponBtnDisable, setCouponBtnDesable] = useState<boolean>(false);
 
-  const handileCoupon=async()=>{
-if(couponCode.trim()){
-  setCouponBtnDesable(true)
-  const data=await postCouponApi(couponCode,details)
-  setCouponBtnDesable(false)
-  if(data.error){
-    setCouponCodeErr(data?.message)
-  }else{
-    if(data?.data?.type==="fixed"){
-      setCouponAmount({
-        amount:data?.data?.amount,
-        type:"fixed",
-        couponId:data?.data?.couponId
-      })
-      totalPrice = Math.max(0, totalPrice - (data?.data?.amount || 0));
-      setTotalAmount(totalPrice)
-    }else if(data?.data?.type==="percentage"){
-      totalPrice -= totalPrice*(data?.data?.amount / 100);
-      setTotalAmount(totalPrice)
-      setCouponAmount({
-        amount:data?.data?.amount,
-        type:"percentage",
-        couponId:data?.data?.couponId
-
-      })
-
-    }
-    setCouponCodeErr("")
-
-    toast.success("Coupon Apply Successfully")
-  }
-
-}else{
-  setCouponCodeErr("Enter a valid coupon code")
-}
-  }
-const [expetedDeliveryData,setExpectedDeliveryDate]=useState<any>()
-const getDeliveryCharges=async()=>{
-  const aggregatedDetails = details.reduce(
-    (agg: { weight: number; length: number; breadth: number; height: number; }, item: { productDetails: any; }) => {
-      const product = item.productDetails;
-      agg.weight += parseFloat(product.productWeight || 0);
-      agg.length = Math.max(agg.length, parseFloat(product.packageLength || 0));
-      agg.breadth = Math.max(agg.breadth, parseFloat(product.packageBreadth || 0));
-      agg.height = Math.max(agg.height, parseFloat(product.packageHeight || 0));
-      return agg;
-    },
-    { weight: 0, length: 0, breadth: 0, height: 0 }
-  );
-
-  const payload = {
-    pickup_postcode: details[0]?.productDetails?.pickupAddress?.Zip || '673504',
-    delivery_postcode: selectedAddress.pincode,
-    cod: selectedPaymentMethod === 'offline' ? 1 : 0, // 1 for COD, 0 for prepaid
-    weight: aggregatedDetails.weight,
-    length: aggregatedDetails.length,
-    breadth: aggregatedDetails.breadth,
-    height: aggregatedDetails.height,
-  };
-  try {
-   
-    
-    const data=await getDeliveryCharge(payload,shiprocketToken)
-    const couriers = data.data.available_courier_companies;
-    const getBestCourier = (couriers: any[]) => {
-      return couriers.reduce((best, current) => {
-        if (
-          (current.total_charge < best.total_charge && current.etd < best.etd) ||
-          current.recommendation_score > best.recommendation_score
-        ) {
-          return current;
+  const handileCoupon = async () => {
+    if (couponCode.trim()) {
+      setCouponBtnDesable(true);
+      const data = await postCouponApi(couponCode, details);
+      setCouponBtnDesable(false);
+      if (data.error) {
+        setCouponCodeErr(data?.message);
+      } else {
+        if (data?.data?.type === "fixed") {
+          setCouponAmount({
+            amount: data?.data?.amount,
+            type: "fixed",
+            couponId: data?.data?.couponId,
+          });
+          totalPrice = Math.max(0, totalPrice - (data?.data?.amount || 0));
+          setTotalAmount(totalPrice);
+        } else if (data?.data?.type === "percentage") {
+          totalPrice -= totalPrice * (data?.data?.amount / 100);
+          setTotalAmount(totalPrice);
+          setCouponAmount({
+            amount: data?.data?.amount,
+            type: "percentage",
+            couponId: data?.data?.couponId,
+          });
         }
-        return best;
-      }, couriers[0]);
-    };
-    const bestCourier = getBestCourier(couriers);
-    const freightCharge = parseFloat(bestCourier.freight_charge || 0);
-const codCharges = parseFloat(bestCourier.cod_charges || 0);
-const otherCharges = parseFloat(bestCourier.other_charges || 0);
-const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
-setExpectedDeliveryDate(bestCourier?.etd)
-    setDeliveryDetails(totalDeliveryCharge);
-    console.log("Selected Best Courier:", bestCourier);
-} catch (error) {
-    console.log(error,'delivery charges err');
-    
-  }
+        setCouponCodeErr("");
 
-}
-
-console.log(deliveryDetails);
-
-
-
-  useEffect(()=>{
-
-    if (details&&selectedAddress) {
-      getDeliveryCharges()
-      console.log('delivery useeffect');
-      
+        toast.success("Coupon Apply Successfully");
+      }
+    } else {
+      setCouponCodeErr("Enter a valid coupon code");
     }
+  };
+  const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
+  const getDeliveryCharges = async () => {
+    const aggregatedDetails = details.reduce(
+      (
+        agg: {
+          weight: number;
+          length: number;
+          breadth: number;
+          height: number;
+        },
+        item: { productDetails: any }
+      ) => {
+        const product = item.productDetails;
+        agg.weight += parseFloat(product.productWeight || 0);
+        agg.length = Math.max(
+          agg.length,
+          parseFloat(product.packageLength || 0)
+        );
+        agg.breadth = Math.max(
+          agg.breadth,
+          parseFloat(product.packageBreadth || 0)
+        );
+        agg.height = Math.max(
+          agg.height,
+          parseFloat(product.packageHeight || 0)
+        );
+        return agg;
+      },
+      { weight: 0, length: 0, breadth: 0, height: 0 }
+    );
 
-  },[details,selectedAddress,selectedPaymentMethod])
+    const payload = {
+      pickup_postcode:
+        details[0]?.productDetails?.pickupAddress?.Zip || "673504",
+      delivery_postcode: selectedAddress.pincode,
+      cod: selectedPaymentMethod === "offline" ? 1 : 0, // 1 for COD, 0 for prepaid
+      weight: aggregatedDetails.weight,
+      length: aggregatedDetails.length,
+      breadth: aggregatedDetails.breadth,
+      height: aggregatedDetails.height,
+    };
+    try {
+      const data = await getDeliveryCharge(payload, shiprocketToken);
+      const couriers = data.data.available_courier_companies;
+      const getBestCourier = (couriers: any[]) => {
+        return couriers.reduce((best, current) => {
+          if (
+            (current.total_charge < best.total_charge &&
+              current.etd < best.etd) ||
+            current.recommendation_score > best.recommendation_score
+          ) {
+            return current;
+          }
+          return best;
+        }, couriers[0]);
+      };
+      const bestCourier = getBestCourier(couriers);
+      const freightCharge = parseFloat(bestCourier.freight_charge || 0);
+      const codCharges = parseFloat(bestCourier.cod_charges || 0);
+      const otherCharges = parseFloat(bestCourier.other_charges || 0);
+      const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
+      setExpectedDeliveryDate(bestCourier?.etd);
+      setDeliveryDetails(totalDeliveryCharge);
+      console.log("Selected Best Courier:", data);
+    } catch (error) {
+      console.log(error, "delivery charges err");
+    }
+  };
 
+  console.log(deliveryDetails);
 
+  useEffect(() => {
+    if (details && selectedAddress) {
+      getDeliveryCharges();
+    }
+  }, [details, selectedAddress, selectedPaymentMethod]);
 
-useEffect(()=>{
-  if (addressData?.length>0) {
-    setSelectedAddress(addressData[0])
-  }
-},[addressData])
-
-
-
-
-
-
+  useEffect(() => {
+    if (addressData?.length > 0) {
+      setSelectedAddress(addressData[0]);
+    }
+  }, [addressData]);
 
   return (
     <>
-     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-
-<Header />
-<div style={{ flex: 1 }}>
-      <div className="checkout-page">
-        {/* Delivery Address Section */}
-        <div className="section address-section">
-          <div className="section-header">1. Delivery Address</div>
-          <div className="address-details">
-            {selectedAddress._id && (
-              <>
-                <div className="checkout-page-address-details">
-                  <p>
-                    <span>{selectedAddress.fullName}</span>
-                  </p>
-                  <p>{selectedAddress.fullAddress}</p>
-                  <p>
-                    {selectedAddress.landmark},{selectedAddress.pincode}
-                  </p>
-                  <p>{selectedAddress.mobileNumber}</p>
-                </div>
-                <button onClick={() => setIsOpenSelectAddressModal()}>
-                  Change
-                </button>
-              </>
-            )}
-            {!addressData?.length && !selectedAddress._id && (
-              <button onClick={setIsOpenSelectAddressModal}>
-                Add new Address
-              </button>
-            )}
-            {addressData?.length && !selectedAddress._id && (
-              <button onClick={setIsOpenSelectAddressModal}>
-                Select Address
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Payment Method Section */}
-        <div className="section payment-section">
-          <div className="section-header">2. Payment Method</div>
-          <div className="payment-methods">
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="online"
-                  checked={selectedPaymentMethod === "online"}
-                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                />
-                Online Payment
-              </label>
-              <label style={{ marginLeft: "20px" }}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="offline"
-                  checked={selectedPaymentMethod === "offline"}
-                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                />
-                Pay on Delivery (Cash)
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Product Review Section */}
-        <div className="section product-review-section">
-          <div className="section-header">3. Review Items and Delivery</div>
-          <div className="product-list">
-            <div
-              style={{
-                overflowY: "scroll",
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                flexWrap: "wrap",
-              }}
-            >
-              '
-              {details?.length &&
-                details?.map((product: respStoreCart) => (
+      <div
+        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        <Header />
+        <div style={{ flex: 1 }}>
+          <div className="checkout-page">
+            {/* Delivery Address Section */}
+            <div className="section address-section">
+              <div className="section-header">1. Delivery Address</div>
+              <div className="address-details">
+                {selectedAddress._id && (
                   <>
-                    <hr key={product._id} />
-
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: "15px",
-
-                        width: "100%",
-                      }}
-                    >
-                      <img
-                        style={{
-                          maxWidth: "100px",
-                          marginRight: "20px",
-                          marginBottom: "5px",
-                        }}
-                        src={product.productDetails.mainImage}
-                        alt={product.productDetails.productName}
-                      />
-                      <div className="product-details">
-                        <h4>{product.productDetails.productName}</h4>
-                        <p>Price: ₹{product.productDetails.price}.00</p>
-                        {/* <p>Delivery: {product.deliveryDate}</p> */}
-                      </div>
-                      <div className="quantity">
-                        <p>Qty: {product.quantity}</p>
-                      </div>
+                    <div className="checkout-page-address-details">
+                      <p>
+                        <span>{selectedAddress.fullName}</span>
+                      </p>
+                      <p>{selectedAddress.fullAddress}</p>
+                      <p>
+                        {selectedAddress.landmark},{selectedAddress.pincode}
+                      </p>
+                      <p>{selectedAddress.mobileNumber}</p>
                     </div>
-                    <hr />
+                    <button onClick={() => setIsOpenSelectAddressModal()}>
+                      Change
+                    </button>
                   </>
-                ))}
+                )}
+                {!addressData?.length && !selectedAddress._id && (
+                  <button onClick={setIsOpenSelectAddressModal}>
+                    Add new Address
+                  </button>
+                )}
+                {addressData?.length && !selectedAddress._id && (
+                  <button onClick={setIsOpenSelectAddressModal}>
+                    Select Address
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Payment Method Section */}
+            <div className="section payment-section">
+              <div className="section-header">2. Payment Method</div>
+              <div className="payment-methods">
+                <div>
+                  <label>
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="online"
+                      checked={selectedPaymentMethod === "online"}
+                      onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    />
+                    Online Payment
+                  </label>
+                  <label style={{ marginLeft: "20px" }}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="offline"
+                      checked={selectedPaymentMethod === "offline"}
+                      onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    />
+                    Pay on Delivery (Cash)
+                  </label>
+                </div>
+              </div>
+            </div>
+
+            {/* Product Review Section */}
+            <div className="section product-review-section">
+              <div className="section-header">3. Review Items and Delivery</div>
+              <div className="product-list">
+                <div
+                  style={{
+                    overflowY: "scroll",
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  '
+                  {details?.length &&
+                    details?.map((product: respStoreCart) => (
+                      <>
+                        <hr key={product._id} />
+
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "15px",
+
+                            width: "100%",
+                          }}
+                        >
+                          <img
+                            style={{
+                              maxWidth: "100px",
+                              marginRight: "20px",
+                              marginBottom: "5px",
+                            }}
+                            src={product.productDetails.mainImage}
+                            alt={product.productDetails.productName}
+                          />
+                          <div className="product-details">
+                            <h4>{product.productDetails.productName}</h4>
+                            <p>Price: ₹{product.productDetails.price}.00</p>
+                            {/* <p>Delivery: {product.deliveryDate}</p> */}
+                          </div>
+                          <div className="quantity">
+                            <p>Qty: {product.quantity}</p>
+                          </div>
+                        </div>
+                        <hr />
+                      </>
+                    ))}
+                </div>
+              </div>
+            </div>
+
+            {/* coupon section */}
+            <div className="section order-summary">
+              <div className="section-header">Apply Coupon</div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                <input
+                  style={{
+                    width: "85%",
+                    height: "35px",
+                    borderRadius: "5px",
+                    outline: "none",
+                    border: "1px solid",
+                  }}
+                  value={couponCode}
+                  placeholder="Enter coupon code"
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+                <button
+                  style={{
+                    width: "15%",
+                  }}
+                  onClick={handileCoupon}
+                >
+                  {CouponBtnDisable ? "Applying..." : "Apply"}
+                </button>
+              </div>
+              <div
+                style={{
+                  color: "red",
+                }}
+              >
+                {couponCodeErr}
+              </div>
+            </div>
+            {/* Order Summary Section */}
+            <div className="section order-summary">
+              <>
+                <div className="summary-row">
+                  <span>Expected delivery:</span>
+                  <span>{expetedDeliveryData}</span>
+                </div>
+                <div className="summary-row">
+                  <span>Items:</span>
+                  <span>₹{totalPrice}</span>
+                </div>
+                <div className="summary-row">
+                  <span>Delivery:</span>
+                  <span>{deliveryDetails || 0}</span>
+                </div>
+                <div className="summary-row">
+                  <span>Discount Coupon:</span>
+                  <span>{couponAmount.amount}</span>
+                </div>
+                <div className="summary-row">
+                  <span>Total:</span>
+                  <span className="total-price">
+                    ₹{totalAmount + deliveryDetails}
+                  </span>
+                </div>
+              </>
+
+              <button disabled={btnDisable} onClick={handilPlaceOrder}>
+                {btnDisable ? "Loading..." : " Place Your Order"}
+              </button>
             </div>
           </div>
+          {isOpenAddressModal && (
+            <AddressModal closeModal={closeAddressModal} />
+          )}
+          {isOpenselectAddressModal && (
+            <AddressComponent opencreateAddressModal={OpenAddressModal} />
+          )}
         </div>
-
-        {/* coupon section */}
-        <div className="section order-summary">
-        <div className="section-header">Apply Coupon</div>
-       <div style={{
-        display:"flex",
-        alignItems:"center",
-        justifyContent:"center",
-        gap:"10px"
-
-       }}>
-       <input style={{
-        width:"85%",
-        height:"35px",
-        borderRadius:"5px",
-        outline:"none",
-        border:"1px solid"
-
-       }} 
-       value={couponCode}
-       placeholder="Enter coupon code"
-       onChange={(e)=>setCouponCode(e.target.value)}
-       />
-       <button style={{
-        width:"15%"
-       }}
-       onClick={handileCoupon}
-       >
-        {
-          CouponBtnDisable?"Applying...":"Apply"
-        }
-        
-       </button>
-       
-       </div>
-<div style={{
-  color:"red"
-}}>{couponCodeErr}</div>
-        </div>
-        {/* Order Summary Section */}
-        <div className="section order-summary">
-          <>
-            <div className="summary-row">
-              <span>Expected delivery:</span>
-              <span>{expetedDeliveryData}</span>
-            </div><div className="summary-row">
-              <span>Items:</span>
-              <span>₹{totalPrice}</span>
-            </div>
-            <div className="summary-row">
-              <span>Delivery:</span>
-              <span>{deliveryDetails||0}</span>
-            </div>
-             <div className="summary-row">
-              <span>Discount Coupon:</span>
-              <span>{couponAmount.amount}</span>
-            </div>
-            <div className="summary-row">
-              <span>Total:</span>
-              <span className="total-price">₹{totalAmount + deliveryDetails}</span>
-            </div>
-          </>
-
-          <button disabled={btnDisable} onClick={handilPlaceOrder}>
-            {btnDisable ? "Loading..." : " Place Your Order"}
-          </button>
-        </div>
-      </div>
-      {isOpenAddressModal && <AddressModal closeModal={closeAddressModal} />}
-      {isOpenselectAddressModal && (
-        <AddressComponent opencreateAddressModal={OpenAddressModal} />
-      )}
-      
-
-      </div>
-      <StoreFooter/>
+        <StoreFooter />
       </div>
     </>
   );

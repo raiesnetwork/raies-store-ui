@@ -8,7 +8,7 @@ import { GiShoppingBag } from "react-icons/gi";
 import StoreFooter from "../../Footer/Footer";
 const SuccessPage: React.FC = () => {
   const location = useLocation();
-  const { orderDetails } = location.state || {};
+  const { orderDetails,orderId } = location.state || {};
   const [data, setData] = useState(orderDetails);
   useEffect(() => {
     if (orderDetails) {
@@ -37,7 +37,7 @@ const SuccessPage: React.FC = () => {
                 <hr key={val._id} />
 
                 <p>
-                  <strong>Order Number:</strong> {val._id}
+                  <strong>Order Id:</strong> {orderId}
                 </p>
                 <p>
                   <strong>Product Name:</strong>{" "}

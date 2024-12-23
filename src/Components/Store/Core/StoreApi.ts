@@ -8,7 +8,7 @@ import {
   updateProfileInfo,
   userStoreCreate,
 } from "./Interfaces";
-import axios from 'axios';
+import axios from "axios";
 const axiosInstance = createAxiosInstance();
 
 // export const getAllProductApi = async (hostName?: string | null) => {
@@ -422,10 +422,11 @@ export const passwordChangeApi = async (
   }
 };
 
-
-export const getSingleProductDetailsApi = async (id?:string) => {
+export const getSingleProductDetailsApi = async (id?: string) => {
   try {
-    const { data } = await axiosInstance.get(`/userstore/auth/singleProducts/${id}`);
+    const { data } = await axiosInstance.get(
+      `/userstore/auth/singleProducts/${id}`
+    );
     return data;
   } catch (error) {
     return {
@@ -435,9 +436,12 @@ export const getSingleProductDetailsApi = async (id?:string) => {
     };
   }
 };
-export const PostcouponApi = async (code?:string,productDetails?:any) => {
+export const PostcouponApi = async (code?: string, productDetails?: any) => {
   try {
-    const { data } = await axiosInstance.post(`/storcoupon/apply`,{code,productDetails});
+    const { data } = await axiosInstance.post(`/storcoupon/apply`, {
+      code,
+      productDetails,
+    });
     return data;
   } catch (error) {
     return {
@@ -460,13 +464,12 @@ export const getShiprocketToken = async () => {
     };
   }
 };
-
-export const getDeliveryCharge = async (productData:any,token:string) => {
-  
-
+// shprocket api calls
+export const getDeliveryCharge = async (productData: any, token: string) => {
   try {
-    const { data } = await axios.get( 'https://apiv2.shiprocket.in/v1/external/courier/serviceability/',
-     
+    const { data } = await axios.get(
+      "https://apiv2.shiprocket.in/v1/external/courier/serviceability/",
+
       {
         headers: {
           Authorization: `Bearer ${token}`,
@@ -483,3 +486,4 @@ export const getDeliveryCharge = async (productData:any,token:string) => {
     };
   }
 };
+
