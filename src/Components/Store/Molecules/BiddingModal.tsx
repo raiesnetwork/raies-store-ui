@@ -24,11 +24,13 @@ const BiddingModal: React.FC <props>= ({product}) => {
     setAddressSuparator,
     shiprocketToken
   } = useMystoreStore((state) => state);
+  const [CourierId, setCourierId] = useState<string>('');
 
   const [formData, setFormData] = useState({
     addressId: selectedAddress._id,
     biddingAmount: "",
     productId: singleProductData._id,
+    CourierId
   });
   useEffect(() => {
     getAddress();
@@ -36,12 +38,13 @@ const BiddingModal: React.FC <props>= ({product}) => {
   }, []);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [btnDisable, setDisable] = useState<boolean>(false);
-
+  
   useEffect(() => {
     setFormData({
       addressId: selectedAddress._id,
       biddingAmount: "",
       productId: singleProductData._id,
+      CourierId
     });
     setErrors({});
   }, [isOpenBiddingModal, singleProductData, selectedAddress]);
@@ -128,7 +131,6 @@ const BiddingModal: React.FC <props>= ({product}) => {
   };
 
   const [deliveryDetails, setDeliveryDetails] = useState<any>();
-  const [CourierId, setCourierId] = useState<string>('');
   const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
   const getDeliveryCharges = async () => {
     

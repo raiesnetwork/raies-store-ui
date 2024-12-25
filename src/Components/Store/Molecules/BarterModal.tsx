@@ -3,8 +3,12 @@ import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import { fileToBase64 } from "../../../Utils/Base64";
 import { useNavigate } from "react-router-dom";
-
-const BarterModal: React.FC = () => {
+import { respProduct } from "../Core/Interfaces";
+import { getDeliveryCharge } from "../Core/StoreApi";
+type props={
+  product:respProduct
+}
+const BarterModal: React.FC<props> = ({product}) => {
   const {
     setaddressSupparatorBarter,
     selectedAddress,
@@ -16,7 +20,9 @@ const BarterModal: React.FC = () => {
     singleProductData,
     setOpenBarterModal,
     isOpenBarteModal,
+    shiprocketToken
   } = useMystoreStore((state) => state);
+  const [CourierId, setCourierId] = useState<string>('');
 
   const [formData, setFormData] = useState({
     addressId: selectedAddress._id,
@@ -147,6 +153,59 @@ const BarterModal: React.FC = () => {
     setIsOpenSelectAddressModal();
     setOpenBarterModal();
   };
+
+
+
+  const [deliveryDetails, setDeliveryDetails] = useState<any>();
+  const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
+  const getDeliveryCharges = async () => {
+    
+    const payload = {
+      pickup_postcode:product.pickupAddress.Zip||'673503',
+        
+      delivery_postcode: selectedAddress.pincode,
+      cod: 1, // 1 for COD, 0 for prepaid
+      weight: product.productWeight,
+      length: product.packageLength,
+      breadth: product.packageBreadth,
+      height: product.packageHeight,
+    };
+    try {
+      const data = await getDeliveryCharge(payload, shiprocketToken);
+      const couriers = data.data.available_courier_companies;
+      const getBestCourier = (couriers: any[]) => {
+        return couriers.reduce((best, current) => {
+          if (
+            (current.total_charge < best.total_charge &&
+              current.etd < best.etd) ||
+            current.recommendation_score > best.recommendation_score
+          ) {
+            return current;
+          }
+          return best;
+        }, couriers[0]);
+      };
+      const bestCourier = getBestCourier(couriers);
+      const freightCharge = parseFloat(bestCourier.freight_charge || 0);
+      const codCharges = parseFloat(bestCourier.cod_charges || 0);
+      const otherCharges = parseFloat(bestCourier.other_charges || 0);
+      const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
+      setExpectedDeliveryDate(bestCourier?.etd);
+      setDeliveryDetails(totalDeliveryCharge);
+      console.log("Selected Best Courier:", bestCourier.id);
+      setCourierId(bestCourier?.id)
+    } catch (error) {
+      console.log(error, "delivery charges err");
+    }
+  };
+
+
+  useEffect(() => {
+    if (product && selectedAddress) {
+      getDeliveryCharges();
+    }
+  }, [product, selectedAddress]);
+ 
   return (
     <>
       <div
@@ -258,6 +317,21 @@ const BarterModal: React.FC = () => {
                     <div className="invalid-feedback">{errors.quantity}</div>
                   )}
                 </div> */}
+                 <div style={{display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between"
+                }}>
+                  <span>Expected delivery:</span>
+                  <span>{expetedDeliveryData}</span>
+                </div>
+                
+                <div style={{display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between"
+                }}>
+                  <span>Delivery charge:</span>
+                  <span>{deliveryDetails || 0}</span>
+                </div>
                 <button
                   type="submit"
                   className="btn btn-primary"

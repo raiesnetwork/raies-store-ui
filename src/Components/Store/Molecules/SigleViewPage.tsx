@@ -316,7 +316,7 @@ const SingleProductView: React.FC = () => {
             <AddressComponentModal opencreateAddressModal={OpenAddressModal} />
           )}
 
-          {isOpenBarteModal && <BarterModal />}
+          {isOpenBarteModal && <BarterModal product={singleProductData} />}
           {isOpenBiddingModal && <BiddingModal product={singleProductData} />}
         </>
       ) : (
