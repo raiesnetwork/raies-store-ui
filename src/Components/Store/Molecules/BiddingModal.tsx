@@ -3,9 +3,14 @@ import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import "../Helpers/scss/BiddingModal.scss";
 import { useNavigate } from "react-router-dom";
+import { getDeliveryCharge } from "../Core/StoreApi";
+import { respProduct } from "../Core/Interfaces";
 // import { KTSVG } from "../../../../_metronic/helpers";
 
-const BiddingModal: React.FC = () => {
+type props={
+  product:respProduct
+}
+const BiddingModal: React.FC <props>= ({product}) => {
   const {
     singleProductData,
     createBiddingOrder,
@@ -17,6 +22,7 @@ const BiddingModal: React.FC = () => {
     OpenAddressModal,
     setIsOpenSelectAddressModal,
     setAddressSuparator,
+    shiprocketToken
   } = useMystoreStore((state) => state);
 
   const [formData, setFormData] = useState({
@@ -120,6 +126,58 @@ const BiddingModal: React.FC = () => {
     setIsOpenSelectAddressModal();
     setOpenBiddingModal();
   };
+
+  const [deliveryDetails, setDeliveryDetails] = useState<any>();
+  const [CourierId, setCourierId] = useState<string>('');
+  const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
+  const getDeliveryCharges = async () => {
+    
+    const payload = {
+      pickup_postcode:product.pickupAddress.Zip||'673503',
+        
+      delivery_postcode: selectedAddress.pincode,
+      cod: 1, // 1 for COD, 0 for prepaid
+      weight: product.productWeight,
+      length: product.packageLength,
+      breadth: product.packageBreadth,
+      height: product.packageHeight,
+    };
+    try {
+      const data = await getDeliveryCharge(payload, shiprocketToken);
+      const couriers = data.data.available_courier_companies;
+      const getBestCourier = (couriers: any[]) => {
+        return couriers.reduce((best, current) => {
+          if (
+            (current.total_charge < best.total_charge &&
+              current.etd < best.etd) ||
+            current.recommendation_score > best.recommendation_score
+          ) {
+            return current;
+          }
+          return best;
+        }, couriers[0]);
+      };
+      const bestCourier = getBestCourier(couriers);
+      const freightCharge = parseFloat(bestCourier.freight_charge || 0);
+      const codCharges = parseFloat(bestCourier.cod_charges || 0);
+      const otherCharges = parseFloat(bestCourier.other_charges || 0);
+      const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
+      setExpectedDeliveryDate(bestCourier?.etd);
+      setDeliveryDetails(totalDeliveryCharge);
+      console.log("Selected Best Courier:", bestCourier.id);
+      setCourierId(bestCourier?.id)
+    } catch (error) {
+      console.log(error, "delivery charges err");
+    }
+  };
+
+
+  useEffect(() => {
+    if (product && selectedAddress) {
+      getDeliveryCharges();
+    }
+  }, [product, selectedAddress]);
+ 
   return (
     <>
       <div
@@ -214,7 +272,21 @@ const BiddingModal: React.FC = () => {
                     </div>
                   )}
                 </div>
-
+                <div style={{display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between"
+                }}>
+                  <span>Expected delivery:</span>
+                  <span>{expetedDeliveryData}</span>
+                </div>
+                
+                <div style={{display:"flex",
+                  alignItems:"center",
+                  justifyContent:"space-between"
+                }}>
+                  <span>Delivery charge:</span>
+                  <span>{deliveryDetails || 0}</span>
+                </div>
                 <button
                   type="submit"
                   className="btn btn-primary"

@@ -21,6 +21,13 @@ export interface respProduct {
   minBidPriceCurrency: string;
   maxBidPriceCurrency: string;
   barterProductName: string;
+  pickupAddress:any
+  productWeight:string;
+  productWeightType:string
+  packageLength:string
+   packageWidth:string
+    packageHeight:string
+     packageBreadth:string
 }
 export interface barterOrder{
   addressId:string

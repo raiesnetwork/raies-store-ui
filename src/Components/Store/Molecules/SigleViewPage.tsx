@@ -317,7 +317,7 @@ const SingleProductView: React.FC = () => {
           )}
 
           {isOpenBarteModal && <BarterModal />}
-          {isOpenBiddingModal && <BiddingModal />}
+          {isOpenBiddingModal && <BiddingModal product={singleProductData} />}
         </>
       ) : (
         <>

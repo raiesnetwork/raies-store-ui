@@ -66,6 +66,13 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     minBidPriceCurrency: "",
     maxBidPriceCurrency: "",
     barterProductName: "",
+    packageBreadth:"",
+    packageHeight:"",
+    packageLength:"",
+    packageWidth:"",
+    pickupAddress:{},
+    productWeight:"",
+    productWeightType:""
   },
   updateSingleProductData: (data) => {
     set(() => ({ singleProductData: data }));
