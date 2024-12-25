@@ -29,6 +29,7 @@ const BarterModal: React.FC<props> = ({product}) => {
     productImage: "",
     productId: singleProductData._id,
     // quantity:"1"
+    CourierId
   });
   useEffect(() => {
     getAddress();
@@ -46,6 +47,7 @@ const BarterModal: React.FC<props> = ({product}) => {
       productImage: "",
       productId: singleProductData._id,
       // quantity:"1"
+      CourierId
     });
     setErrors({});
   }, [isOpenBarteModal, singleProductData, selectedAddress]);
