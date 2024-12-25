@@ -29,6 +29,7 @@ const CheckoutPage: React.FC = () => {
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("online");
   const [deliveryDetails, setDeliveryDetails] = useState<any>();
+  const [CourierId, setCourierId] = useState<string>('');
   const location = useLocation();
   const { details } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
@@ -112,6 +113,7 @@ const CheckoutPage: React.FC = () => {
           productDetails: productDetais,
           totalAmount: totalAmount + deliveryDetails,
           couponData: couponAmount,
+          CourierId
         });
         setBtndesable(false);
 
@@ -303,7 +305,8 @@ const CheckoutPage: React.FC = () => {
       const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
       setExpectedDeliveryDate(bestCourier?.etd);
       setDeliveryDetails(totalDeliveryCharge);
-      console.log("Selected Best Courier:", data);
+      console.log("Selected Best Courier:", bestCourier.id);
+      setCourierId(bestCourier?.id)
     } catch (error) {
       console.log(error, "delivery charges err");
     }

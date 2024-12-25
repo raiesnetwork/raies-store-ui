@@ -16,6 +16,7 @@ interface AddressData {
   city: string;
   state: string;
   country: string;
+  email: string;
 }
 
 interface AddressErrors {
@@ -27,6 +28,7 @@ interface AddressErrors {
   fullAddress?: string;
   landmark?: string;
   pincode?: string;
+  email?: string;
   
 }
 
@@ -44,8 +46,9 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
     landmark: "",
     pincode: "",
     city:"",
-    country:"",
-    state:""
+    country:"IN",
+    state:"",
+    email:"",
   });
   const [addressErrors, setAddressErrors] = useState<AddressErrors>({});
   const countries = Country.getAllCountries();
@@ -88,6 +91,12 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
     }
     if (!addressData.fullAddress.trim())
       newErrors.fullAddress = "Full address is required.";
+    if (
+      !addressData.email.trim() ||
+      !/^[\w.%+-]+@[A-Za-z0-9.-]+\.[A-Za-z]{2,}$/.test(addressData.email.trim())
+    ) {
+      newErrors.email = "Valid email is required.";
+    }
     if (!addressData.pincode.trim() || !/^\d{6}$/.test(addressData.pincode))
       newErrors.pincode = "Valid 6-digit pincode is required.";
     if (!addressData.country) newErrors.country = "Country is required.";
@@ -191,6 +200,21 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
     )}
   </div>
 
+  <div className="form-group">
+    <label htmlFor="fullAddress">Email</label>
+    <input
+      id="email"
+      name="email"
+      type="email"
+      value={addressData.email}
+      onChange={handleChange}
+      className={`form-control`}
+      
+    />
+    {addressErrors.email && (
+      <div className="invalid-feedback">{addressErrors.email}</div>
+    )}
+  </div>
   <div className="form-group">
     <label htmlFor="fullAddress">Full Address</label>
     <textarea

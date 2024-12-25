@@ -117,6 +117,7 @@ export interface createOrder{
     paymentMethod :string
     addressId  :string,
     couponData?:any
+    CourierId:string
     
 }
 export interface updateProfileInfo{
