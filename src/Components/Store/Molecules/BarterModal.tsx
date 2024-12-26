@@ -29,7 +29,7 @@ const BarterModal: React.FC<props> = ({product}) => {
     productImage: "",
     productId: singleProductData._id,
     // quantity:"1"
-    CourierId
+    CourierId:""
   });
   useEffect(() => {
     getAddress();
@@ -47,10 +47,10 @@ const BarterModal: React.FC<props> = ({product}) => {
       productImage: "",
       productId: singleProductData._id,
       // quantity:"1"
-      CourierId
+      CourierId:CourierId
     });
     setErrors({});
-  }, [isOpenBarteModal, singleProductData, selectedAddress]);
+  }, [isOpenBarteModal, singleProductData, selectedAddress,CourierId]);
 
   const validateForm = () => {
     const newErrors: { [key: string]: string } = {};
@@ -59,6 +59,8 @@ const BarterModal: React.FC<props> = ({product}) => {
       newErrors.addressId = "Address is Required.";
     if (!formData.productImage.trim())
       newErrors.productImage = "Product image is required.";
+     if (!formData.CourierId.trim())
+      newErrors.productImage = "CourierId is required.";
     // const qnty=Number(formData.quantity)
     // if (!formData.quantity.trim()) {
     //   newErrors.quantity = "Quantity is required.";
@@ -75,6 +77,8 @@ const BarterModal: React.FC<props> = ({product}) => {
   const handleSubmit = async (e: React.FormEvent) => {
     setDisable(true);
     e.preventDefault();
+    console.log(CourierId,'idd');
+    
     if (validateForm()) {
       try {
         const data = await createBarterOrder(formData);
@@ -195,7 +199,7 @@ const BarterModal: React.FC<props> = ({product}) => {
       setExpectedDeliveryDate(bestCourier?.etd);
       setDeliveryDetails(totalDeliveryCharge);
       console.log("Selected Best Courier:", bestCourier.id);
-      setCourierId(bestCourier?.id)
+      setCourierId(bestCourier?.id.toString())
     } catch (error) {
       console.log(error, "delivery charges err");
     }

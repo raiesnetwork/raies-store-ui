@@ -47,7 +47,7 @@ const BiddingModal: React.FC <props>= ({product}) => {
       CourierId
     });
     setErrors({});
-  }, [isOpenBiddingModal, singleProductData, selectedAddress]);
+  }, [isOpenBiddingModal, singleProductData, selectedAddress,CourierId]);
 
   const handleChange = (
     e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
@@ -167,7 +167,7 @@ const BiddingModal: React.FC <props>= ({product}) => {
       setExpectedDeliveryDate(bestCourier?.etd);
       setDeliveryDetails(totalDeliveryCharge);
       console.log("Selected Best Courier:", bestCourier.id);
-      setCourierId(bestCourier?.id)
+      setCourierId(bestCourier?.id?.toString())
     } catch (error) {
       console.log(error, "delivery charges err");
     }
