@@ -106,7 +106,7 @@ const BiddingModal: React.FC <props>= ({product}) => {
           navigate("/success", {
             state: {
               orderDetails: [
-                { id: "", quantity: 1, productDetails: singleProductData },
+                { id: "", quantity: 1, productDetails: singleProductData,orderId:CourierId },
               ],
             },
           });
