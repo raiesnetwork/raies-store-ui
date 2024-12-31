@@ -29,7 +29,8 @@ const BarterModal: React.FC<props> = ({product}) => {
     productImage: "",
     productId: singleProductData._id,
     // quantity:"1"
-    CourierId:""
+    CourierId:"",
+    deliveryCharge:0
   });
   useEffect(() => {
     getAddress();
@@ -41,13 +42,15 @@ const BarterModal: React.FC<props> = ({product}) => {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any, prefer-const
   let ProductImageRef: any = useRef(null);
 
+  const [deliveryDetails, setDeliveryDetails] = useState<any>();
   useEffect(() => {
     setFormData({
       addressId: selectedAddress._id,
       productImage: "",
       productId: singleProductData._id,
       // quantity:"1"
-      CourierId:CourierId
+      CourierId:CourierId,
+      deliveryCharge:deliveryDetails
     });
     setErrors({});
   }, [isOpenBarteModal, singleProductData, selectedAddress,CourierId]);
@@ -162,7 +165,6 @@ const BarterModal: React.FC<props> = ({product}) => {
 
 
 
-  const [deliveryDetails, setDeliveryDetails] = useState<any>();
   const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
   const getDeliveryCharges = async () => {
     

@@ -30,7 +30,8 @@ const BiddingModal: React.FC <props>= ({product}) => {
     addressId: selectedAddress._id,
     biddingAmount: "",
     productId: singleProductData._id,
-    CourierId
+    CourierId,
+    deliveryCharge:0
   });
   useEffect(() => {
     getAddress();
@@ -38,13 +39,16 @@ const BiddingModal: React.FC <props>= ({product}) => {
   }, []);
   const [errors, setErrors] = useState<{ [key: string]: string }>({});
   const [btnDisable, setDisable] = useState<boolean>(false);
+  const [deliveryDetails, setDeliveryDetails] = useState<any>();
   
   useEffect(() => {
     setFormData({
       addressId: selectedAddress._id,
       biddingAmount: "",
       productId: singleProductData._id,
-      CourierId
+      CourierId,
+      deliveryCharge:deliveryDetails
+
     });
     setErrors({});
   }, [isOpenBiddingModal, singleProductData, selectedAddress,CourierId]);
@@ -130,7 +134,6 @@ const BiddingModal: React.FC <props>= ({product}) => {
     setOpenBiddingModal();
   };
 
-  const [deliveryDetails, setDeliveryDetails] = useState<any>();
   const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
   const getDeliveryCharges = async () => {
     
