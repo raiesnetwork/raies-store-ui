@@ -262,20 +262,23 @@ const ProfilePage: React.FC = () => {
                       >
                         Personal Info.
                       </li>
+                      {
+                        profileData?.role === "Admin" &&
                        <li
-                        style={
-                          pageSelector === "Plans & billings"
-                            ? {
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid black",
-                              }
-                            : {}
+                       style={
+                         pageSelector === "Plans & billings"
+                         ? {
+                           backgroundColor: "white",
+                           color: "black",
+                           border: "1px solid black",
+                          }
+                          : {}
                         }
                         onClick={() => setPageSelector("Plans & billings")}
-                      >
+                        >
                        Plans & billings
                       </li>
+                      }
                       <li
                         style={
                           pageSelector === "password"
@@ -956,7 +959,8 @@ const ProfilePage: React.FC = () => {
                   ) : (
                     pageSelector === "coupon" ? (
                       <CouponCardList coupon={profileData.coupon} />
-                    ):pageSelector==='Plans & billings'&&
+                    ):pageSelector==='Plans & billings'&&profileData?.role === "Admin" &&
+                    
                     <PlansAndBiillings/>
                   )}
                 </main>
