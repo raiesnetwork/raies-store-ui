@@ -464,6 +464,52 @@ export const getShiprocketToken = async () => {
     };
   }
 };
+
+
+
+
+
+
+
+export const getInvoicesApi = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/store/invoice`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
+export const postInvoicesApi = async (response:any, invoiceId:string, amount:number) => {
+  try {
+    const { data } = await axiosInstance.post(`/store/invoice`,{response, invoiceId, amount});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
+
+export const postDownlodReceiptApi = async (id:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/store/downloadreceipt`,{id});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
+
+
+
+
+
 // shprocket api calls
 export const getDeliveryCharge = async (productData: any, token: string) => {
   try {

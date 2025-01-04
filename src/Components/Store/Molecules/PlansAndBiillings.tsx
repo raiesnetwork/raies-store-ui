@@ -1,7 +1,7 @@
-import React from "react";
 import "../Helpers/scss/planandbills.css";
 import { GiQueenCrown } from "react-icons/gi";
 import { BsFillPatchCheckFill } from "react-icons/bs"
+import { InvioceTable } from "./InvoiceTable";
 
 const PlansAndBiillings = () => {
   return (
@@ -38,6 +38,8 @@ const PlansAndBiillings = () => {
           </div>
         </div>
       </div>
+
+      <InvioceTable/>
     </div>
   );
 };

@@ -117,6 +117,14 @@ storeIconRefresh:boolean
   postCouponApi:(id?:string,details?:any)=>Promise<any>
   shiprocketToken:string
   getShprocketToken:()=>void
+  storeInvoices: storeInvoice[];
+  storeInvoiceData: storeInvoice;
+  setInvoiceData: (data: storeInvoice) => void;
+  postInvoicePayment: (response:any, invoiceId:string, amount:number) => Promise<ApiResponce>;
+  postDownloadReceipt: (id:string) => Promise<ApiResponce>;
+  getInvoice: () => void;
+
+
 }
 export interface createOrder{
   productDetails:[]          
@@ -201,4 +209,27 @@ export interface respStoreAddress {
   fullAddress: string;
   landmark: string;
   pincode: string;
+}
+
+export interface storeInvoice {
+  _id: string;
+  subscription: {
+    cardholderName: string;
+    storeName: string;
+    region: string;
+    state: string;
+    city: string;
+    UserDetails: {
+      mobile: string;
+      profile: {
+        name: string;
+      };
+    };
+  };
+  amount: string;
+  status: string;
+  createdAt: string;
+  dueDate: string;
+  invoiceNumber: string;
+  
 }

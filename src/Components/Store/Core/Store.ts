@@ -12,6 +12,7 @@ import {
   DeleteCartApi,
   FetchToCartApi,
   getAddressApi,
+  getInvoicesApi,
   getProfileInfoApi,
   getShiprocketToken,
   getSingleProductDetailsApi,
@@ -22,6 +23,8 @@ import {
   loginUserApi,
   loginWithPasswordApi,
   PostcouponApi,
+  postDownlodReceiptApi,
+  postInvoicesApi,
   registrationVerify,
   updateCartApi,
   updateProfileInfoApi,
@@ -297,7 +300,75 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   set(()=>({shiprocketToken:data?.token}))
   console.log(data?.token);
   
-  }
+  },
+
+
+
+  storeInvoices: [
+    {
+      amount: "",
+      createdAt: "",
+      dueDate: "",
+      _id: "",
+      invoiceNumber: "",
+      status: "",
+  
+      subscription: {
+        cardholderName: "",
+        city: "",
+        region: "",
+        state: "",
+        storeName: "",
+        UserDetails:{
+          mobile:"",
+          profile:{
+            name:""
+          }
+        }
+      },
+      
+    }
+  ],
+  getInvoice:async()=>{
+  const data=await getInvoicesApi()
+  set(()=>({storeInvoices:data?.data}))
+  },
+  storeInvoiceData:{
+    amount: "",
+    createdAt: "",
+    dueDate: "",
+    _id: "",
+    invoiceNumber: "",
+    status: "",
+  
+    subscription: {
+      cardholderName: "",
+      city: "",
+      region: "",
+      state: "",
+      storeName: "",
+      UserDetails:{
+        mobile:"",
+        profile:{
+          name:""
+        }
+      }
+    },
+   
+  },
+  setInvoiceData:(data)=> {
+    set(()=>({storeInvoiceData:data}))
+  
+  },
+  postInvoicePayment:async(response, invoiceId, amount)=> {
+  const data =await postInvoicesApi(response, invoiceId, amount)
+  return data
+  },
+  postDownloadReceipt:async(id)=>{
+    const data=await postDownlodReceiptApi(id)
+    return data
+  },
+
 }));
 
 export default useMystoreStore;
