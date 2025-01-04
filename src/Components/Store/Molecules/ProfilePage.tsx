@@ -11,7 +11,8 @@ import OtpVerify from "./OTPmodal";
 import { passwordChangeApi } from "../Core/StoreApi";
 import StoreFooter from "../../Footer/Footer";
 import CouponCardList from "./CouponView";
-type pages = "info" | "password" |"coupon";
+import PlansAndBiillings from "./PlansAndBiillings";
+type pages = "info" | "password" | "coupon"|"Plans & billings";
 const ProfilePage: React.FC = () => {
   const {
     isOTPmodalVisible,
@@ -36,7 +37,7 @@ const ProfilePage: React.FC = () => {
     subscriptionId: profileData.subscriptionId,
   });
   console.log(profileData);
-  
+
   useEffect(() => {
     if (profileData) {
       setFormData(profileData);
@@ -200,738 +201,784 @@ const ProfilePage: React.FC = () => {
     }
   };
 
-  
   return (
     <>
-     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-
-<Header />
-<div style={{ flex: 1 }}>
-      {!loader ? (
-        <>
-          <div className="profile-page">
-            <aside className="sidebar">
-              <div className="profile-pic">
-                <div style={{display:"flex",alignItems:"center",gap:"10px"}}>
-
-                {formData.profileImage ? (
-                  <img src={formData.profileImage} alt="Profile" />
-                ) : (
-                  <FiUser className="header__profile_icon" />
-                )}
-                {
-                  profileData?.role==="Admin"&&
-<a 
-  href={`${import.meta.env.VITE_APP_REACT_URL}/mystore`} 
-  target="_blank" 
-  rel="noopener noreferrer"
->
-  Go to Dashboard
-</a>                }
-                </div>
-
-                <h3>
-                  Hello{" "}
-                  <span style={{ color: "blue" }}>
-                    {profileData?.fullName}
-                    {profileData?.role === "Admin"
-                      ? ` (${profileData?.role})`
-                      : ""}
-                  </span>
-                </h3>
-              </div>
-              <nav>
-                <ul>
-                  <li
-                    style={
-                      pageSelector === "info"
-                        ? {
-                           
-                            backgroundColor: "white",
-                            color:"black",
-                            border:"1px solid black"
-                          }
-                        : {}
-                    }
-                    onClick={() => setPageSelector("info")}
-                  >
-                    Personal Info.
-                  </li>
-                  <li
-                    style={
-                      pageSelector === "password"
-                        ? {
-                          backgroundColor: "white",
-                            color:"black",
-                                border:"1px solid black"
-                          }
-                        : {}
-                    }
-                    onClick={() => setPageSelector("password")}
-                  >
-                    Change Password
-                  </li>
-                  <li
-                    style={
-                      pageSelector === "coupon"
-                        ? {
-                          backgroundColor: "white",
-                            color:"black",
-                                border:"1px solid black"
-                          }
-                        : {}
-                    }
-                    onClick={() => setPageSelector("coupon")}
-                  >
-                    Coupons
-                  </li>
-                  <Link
-                    style={{
-                      textDecoration: "none",
-                      color: "black",
-                    }}
-                    to="/orders"
-                  >
-                    <li>My Orders</li>
-                  </Link>
-                </ul>
-              </nav>
-            </aside>
-
-            <main className="main-content">
-              {pageSelector === "info" ? (
-                <section className="profile-info">
-                  <form className="profile-form">
+      <div
+        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        <Header />
+        <div style={{ flex: 1 }}>
+          {!loader ? (
+            <>
+              <div className="profile-page">
+                <aside className="sidebar">
+                  <div className="profile-pic">
                     <div
-                      className="form-group"
                       style={{
-                        cursor: nameSaveBtnVisible ? "auto" : "not-allowed",
-                        padding: "10px",
-                        borderRadius: "5px",
+                        display: "flex",
+                        alignItems: "center",
+                        gap: "10px",
                       }}
                     >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <label>
-                          {profileData.role === "Admin"
-                            ? "Admin Information"
-                            : "Personal Information"}
-                        </label>
-
-                        {nameSaveBtnVisible ? (
-                          <div
-                            onClick={() =>
-                              setnameSaveBtnVisible(!nameSaveBtnVisible)
-                            }
-                            style={{ color: "blue", cursor: "pointer" }}
-                          >
-                            {" "}
-                            &nbsp;Cancel
-                          </div>
-                        ) : (
-                          <div>
-                            &nbsp;
-                            <CiEdit
-                              onClick={() =>
-                                setnameSaveBtnVisible(!nameSaveBtnVisible)
-                              }
-                              size={22}
-                              color="blue"
-                              cursor={"pointer"}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          opacity: nameSaveBtnVisible ? "1" : "0.5",
-                          pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                        }}
-                      >
-                        <input
-                          type="text"
-                          name="fullName"
-                          placeholder="Change Name"
-                          value={formData.fullName}
-                          onChange={handleChange}
-                          style={{ height: "10px", width: "80%" }}
-                        />
-
-                        <button
-                          onClick={handilNameSave}
-                          disabled={!nameSaveBtnVisible}
-                          style={{
-                            height: "100%",
-                            width: "20%",
-                            opacity: nameSaveBtnVisible ? "1" : "0",
-                            cursor: nameSaveBtnVisible ? "pointer" : "auto",
-                          }}
-                          type="button"
-                          className="btn btn-primary"
-                        >
-                          Save
-                        </button>
-                      </div>
-                      {/* gender */}
-                      {profileData?.role !== "Admin" ? (
-                        <div
-                          style={{
-                            marginTop: "5px",
-                            opacity: nameSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                          }}
-                        >
-                          <label
-                            style={{
-                              fontWeight: "normal",
-                              marginBottom: "5px",
-                            }}
-                          >
-                            Gender
-                          </label>
-                          <div className="gender-inputs">
-                            <input
-                              type="radio"
-                              name="gender"
-                              value="male"
-                              checked={formData.gender === "male"}
-                              onChange={handleChange}
-                            />{" "}
-                            Male
-                            <input
-                              type="radio"
-                              name="gender"
-                              value="female"
-                              checked={formData.gender === "female"}
-                              onChange={handleChange}
-                            />{" "}
-                            Female
-                          </div>
-                        </div>
+                      {formData.profileImage ? (
+                        <img src={formData.profileImage} alt="Profile" />
                       ) : (
-                        <>
-                          <div
-                            style={{
-                              marginTop: "5px",
-                              opacity: nameSaveBtnVisible ? "1" : "0.5",
-                              pointerEvents: nameSaveBtnVisible
-                                ? "auto"
-                                : "none",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Store Name
-                            </label>
-                            <input
-                              type="text"
-                              name="storeName"
-                              value={formData.storeName}
-                              style={{ width: "65%" }}
-                              onChange={handleChange}
-                            />{" "}
-                          </div>
-                          <div
-                            style={{
-                              marginTop: "5px",
-                              opacity: nameSaveBtnVisible ? "1" : "0.5",
-                              pointerEvents: nameSaveBtnVisible
-                                ? "auto"
-                                : "none",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              WareHouse Address
-                            </label>
-                            <input
-                              type="text"
-                              name="wareHouseAddress"
-                              value={formData.wareHouseAddress}
-                              style={{ width: "65%" }}
-                              onChange={handleChange}
-                            />{" "}
-                          </div>
-                          <div
-                            style={{
-                              marginTop: "5px",
-                              opacity: nameSaveBtnVisible ? "1" : "0.5",
-                              pointerEvents: nameSaveBtnVisible
-                                ? "auto"
-                                : "none",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              WareHouse Contact Number
-                            </label>
-                            <input
-                              type="text"
-                              name="wareHouseContactNumber"
-                              value={formData.wareHouseContactNumber}
-                              style={{ width: "65%" }}
-                              onChange={handleChange}
-                            />{" "}
-                          </div>
-
-                          <div
-                            style={{
-                              marginTop: "5px",
-                              opacity: nameSaveBtnVisible ? "1" : "0.5",
-                              pointerEvents: nameSaveBtnVisible
-                                ? "auto"
-                                : "none",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Warehouse Owner Name
-                            </label>
-                            <input
-                              type="text"
-                              name="wareHouseOwnerName"
-                              value={formData.wareHouseOwnerName}
-                              style={{ width: "65%" }}
-                              onChange={handleChange}
-                            />{" "}
-                          </div>
-                          <div
-                            style={{
-                              marginTop: "5px",
-                              opacity: nameSaveBtnVisible ? "1" : "0.5",
-                              pointerEvents: nameSaveBtnVisible
-                                ? "auto"
-                                : "none",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              storeIcon
-                            </label>
-                            <img
-                              style={{ width: "70px", height: "70px" }}
-                              src={formData.storeIcon ? formData.storeIcon : ""}
-                            />
-                            <br />
-                            <input
-                              type="file"
-                              name="storeIcon"
-                              style={{ width: "65%" }}
-                              onChange={handleImageChange}
-                            />{" "}
-                          </div>
-                          <div
-                            style={{
-                              marginTop: "5px",
-                              opacity: nameSaveBtnVisible ? "1" : "0.5",
-                              pointerEvents: nameSaveBtnVisible
-                                ? "auto"
-                                : "none",
-                            }}
-                          >
-                            <label
-                              style={{
-                                fontWeight: "normal",
-                                marginBottom: "5px",
-                              }}
-                            >
-                              Store Banner
-                            </label>
-                            <img
-                              style={{ width: "70px", height: "70px" }}
-                              src={
-                                formData.storeBanner ? formData.storeBanner : ""
-                              }
-                            />
-                            <br />
-                            <input
-                              type="file"
-                              name="storeBanner"
-                              style={{ width: "65%" }}
-                              onChange={handleImageChange}
-                            />{" "}
-                          </div>
-                        </>
+                        <FiUser className="header__profile_icon" />
                       )}
-                      {/*user profile pic */}
-                      <div
-                        style={{
-                          marginTop: "15px",
-                          opacity: nameSaveBtnVisible ? "1" : "0.5",
-                          pointerEvents: nameSaveBtnVisible ? "auto" : "none",
-                        }}
-                      >
-                        <label
-                          style={{ fontWeight: "normal", marginBottom: "5px" }}
+                      {profileData?.role === "Admin" && (
+                        <a
+                          href={`${import.meta.env.VITE_APP_REACT_URL}/mystore`}
+                          target="_blank"
+                          rel="noopener noreferrer"
                         >
-                          Profile Image
-                        </label>
-                        <img
-                          src={formData.profileImage}
-                          style={{ width: "70px", height: "70px" }}
-                        />
-                        <div className="gender-inputs">
-                          <input
-                            type="file"
-                            name="profileImage"
-                            accept="image/*"
-                            onChange={handleImageChange}
-                          />
-                        </div>
-                      </div>
+                          Go to Dashboard
+                        </a>
+                      )}
                     </div>
-                    {/* email Section */}
-                    <div
-                      className="form-group"
-                      style={{
-                        cursor: emailSaveBtnVisible ? "auto" : "not-allowed",
-                        padding: "10px",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <label>Email</label>
 
-                        {emailSaveBtnVisible ? (
-                          <div
-                            onClick={() =>
-                              setEmailSaveBtnVisible(!emailSaveBtnVisible)
-                            }
-                            style={{ color: "blue", cursor: "pointer" }}
-                          >
-                            {" "}
-                            &nbsp;Cancel
-                          </div>
-                        ) : (
-                          <div>
-                            &nbsp;
-                            <CiEdit
-                              onClick={() =>
-                                setEmailSaveBtnVisible(!emailSaveBtnVisible)
+                    <h3>
+                      Hello{" "}
+                      <span style={{ color: "blue" }}>
+                        {profileData?.fullName}
+                        {profileData?.role === "Admin"
+                          ? ` (${profileData?.role})`
+                          : ""}
+                      </span>
+                    </h3>
+                  </div>
+                  <nav>
+                    <ul>
+                      <li
+                        style={
+                          pageSelector === "info"
+                            ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
                               }
-                              size={22}
-                              color="blue"
-                              cursor={"pointer"}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          opacity: emailSaveBtnVisible ? "1" : "0.5",
-                          pointerEvents: emailSaveBtnVisible ? "auto" : "none",
-                        }}
+                            : {}
+                        }
+                        onClick={() => setPageSelector("info")}
                       >
-                        <input
-                          type="text"
-                          name="email"
-                          value={formData.email}
-                          onChange={handleChange}
-                          style={{ height: "10px", width: "80%" }}
-                        />
-
-                        <button
-                          onClick={() => setIsOtpModalVisible(formData.email)}
-                          disabled={!emailSaveBtnVisible}
-                          style={{
-                            height: "100%",
-                            width: "20%",
-                            opacity: emailSaveBtnVisible ? "1" : "0",
-                            cursor: emailSaveBtnVisible ? "pointer" : "auto",
-                          }}
-                          type="button"
-                          className="btn btn-primary"
-                        >
-                          Save
-                        </button>
-                      </div>
-                    </div>
-
-                    {/* mobile Number Section */}
-                    <div
-                      className="form-group"
-                      style={{
-                        cursor: mobileSaveBtnVisible ? "auto" : "not-allowed",
-                        padding: "10px",
-                        borderRadius: "5px",
-                      }}
-                    >
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                        }}
-                      >
-                        <label>Mobile Number</label>
-
-                        {mobileSaveBtnVisible ? (
-                          <div
-                            onClick={() =>
-                              setMobileSaveBtnVisible(!mobileSaveBtnVisible)
-                            }
-                            style={{ color: "blue", cursor: "pointer" }}
-                          >
-                            {" "}
-                            &nbsp;Cancel
-                          </div>
-                        ) : (
-                          <div>
-                            &nbsp;
-                            <CiEdit
-                              onClick={() =>
-                                setMobileSaveBtnVisible(!mobileSaveBtnVisible)
+                        Personal Info.
+                      </li>
+                       <li
+                        style={
+                          pageSelector === "Plans & billings"
+                            ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
                               }
-                              size={22}
-                              color="blue"
-                              cursor={"pointer"}
-                            />
-                          </div>
-                        )}
-                      </div>
-
-                      <div
-                        style={{
-                          display: "flex",
-                          alignItems: "center",
-                          opacity: mobileSaveBtnVisible ? "1" : "0.5",
-                          pointerEvents: mobileSaveBtnVisible ? "auto" : "none",
-                        }}
+                            : {}
+                        }
+                        onClick={() => setPageSelector("Plans & billings")}
                       >
-                        <input
-                          type="text"
-                          name="mobileNumber"
-                          value={formData.mobileNumber}
-                          onChange={handleChange}
-                          style={{ height: "10px", width: "80%" }}
-                        />
-
-                        <button
-                          onClick={() =>
-                            setIsOtpModalVisible(formData.mobileNumber)
-                          }
-                          disabled={!mobileSaveBtnVisible}
-                          style={{
-                            height: "100%",
-                            width: "20%",
-                            opacity: mobileSaveBtnVisible ? "1" : "0",
-                            cursor: mobileSaveBtnVisible ? "pointer" : "auto",
-                          }}
-                          type="button"
-                          className="btn btn-primary"
-                        >
-                          Save
-                        </button>
-                      </div>
-                    </div>
-                  </form>
-                </section>
-              ) :pageSelector==="password"? (
-                //   Password section
-                <>
-                  <section className="profile-info">
-                    <form className="profile-form">
-                      <div
-                        className="form-group"
-                        style={{
-                          cursor: passwordSaveBtnVisible
-                            ? "auto"
-                            : "not-allowed",
-                          padding: "10px",
-                          borderRadius: "5px",
-                        }}
+                       Plans & billings
+                      </li>
+                      <li
+                        style={
+                          pageSelector === "password"
+                            ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
+                              }
+                            : {}
+                        }
+                        onClick={() => setPageSelector("password")}
                       >
+                        Change Password
+                      </li>
+                      <li
+                        style={
+                          pageSelector === "coupon"
+                            ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
+                              }
+                            : {}
+                        }
+                        onClick={() => setPageSelector("coupon")}
+                      >
+                        Coupons
+                      </li>
+                      <Link
+                        style={{
+                          textDecoration: "none",
+                          color: "black",
+                        }}
+                        to="/orders"
+                      >
+                        <li>My Orders</li>
+                      </Link>
+                    </ul>
+                  </nav>
+                </aside>
+
+                <main className="main-content">
+                  {pageSelector === "info" ? (
+                    <section className="profile-info">
+                      <form className="profile-form">
                         <div
+                          className="form-group"
                           style={{
-                            display: "flex",
-                            alignItems: "center",
+                            cursor: nameSaveBtnVisible ? "auto" : "not-allowed",
+                            padding: "10px",
+                            borderRadius: "5px",
                           }}
                         >
-                          <label>Change Password</label>
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <label>
+                              {profileData.role === "Admin"
+                                ? "Admin Information"
+                                : "Personal Information"}
+                            </label>
 
-                          {passwordSaveBtnVisible ? (
-                            <div
-                              onClick={() =>
-                                setpasswordSaveBtnVisible(
-                                  !passwordSaveBtnVisible
-                                )
-                              }
-                              style={{ color: "blue", cursor: "pointer" }}
+                            {nameSaveBtnVisible ? (
+                              <div
+                                onClick={() =>
+                                  setnameSaveBtnVisible(!nameSaveBtnVisible)
+                                }
+                                style={{ color: "blue", cursor: "pointer" }}
+                              >
+                                {" "}
+                                &nbsp;Cancel
+                              </div>
+                            ) : (
+                              <div>
+                                &nbsp;
+                                <CiEdit
+                                  onClick={() =>
+                                    setnameSaveBtnVisible(!nameSaveBtnVisible)
+                                  }
+                                  size={22}
+                                  color="blue"
+                                  cursor={"pointer"}
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <input
+                              type="text"
+                              name="fullName"
+                              placeholder="Change Name"
+                              value={formData.fullName}
+                              onChange={handleChange}
+                              style={{ height: "10px", width: "80%" }}
+                            />
+
+                            <button
+                              onClick={handilNameSave}
+                              disabled={!nameSaveBtnVisible}
+                              style={{
+                                height: "100%",
+                                width: "20%",
+                                opacity: nameSaveBtnVisible ? "1" : "0",
+                                cursor: nameSaveBtnVisible ? "pointer" : "auto",
+                              }}
+                              type="button"
+                              className="btn btn-primary"
                             >
-                              {" "}
-                              &nbsp;Cancel
+                              Save
+                            </button>
+                          </div>
+                          {/* gender */}
+                          {profileData?.role !== "Admin" ? (
+                            <div
+                              style={{
+                                marginTop: "5px",
+                                opacity: nameSaveBtnVisible ? "1" : "0.5",
+                                pointerEvents: nameSaveBtnVisible
+                                  ? "auto"
+                                  : "none",
+                              }}
+                            >
+                              <label
+                                style={{
+                                  fontWeight: "normal",
+                                  marginBottom: "5px",
+                                }}
+                              >
+                                Gender
+                              </label>
+                              <div className="gender-inputs">
+                                <input
+                                  type="radio"
+                                  name="gender"
+                                  value="male"
+                                  checked={formData.gender === "male"}
+                                  onChange={handleChange}
+                                />{" "}
+                                Male
+                                <input
+                                  type="radio"
+                                  name="gender"
+                                  value="female"
+                                  checked={formData.gender === "female"}
+                                  onChange={handleChange}
+                                />{" "}
+                                Female
+                              </div>
                             </div>
                           ) : (
-                            <div>
-                              &nbsp;
-                              <CiEdit
-                                onClick={() =>
-                                  setpasswordSaveBtnVisible(
-                                    !passwordSaveBtnVisible
-                                  )
-                                }
-                                size={22}
-                                color="blue"
-                                cursor={"pointer"}
+                            <>
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  opacity: nameSaveBtnVisible ? "1" : "0.5",
+                                  pointerEvents: nameSaveBtnVisible
+                                    ? "auto"
+                                    : "none",
+                                }}
+                              >
+                                <label
+                                  style={{
+                                    fontWeight: "normal",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Store Name
+                                </label>
+                                <input
+                                  type="text"
+                                  name="storeName"
+                                  value={formData.storeName}
+                                  style={{ width: "65%" }}
+                                  onChange={handleChange}
+                                />{" "}
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  opacity: nameSaveBtnVisible ? "1" : "0.5",
+                                  pointerEvents: nameSaveBtnVisible
+                                    ? "auto"
+                                    : "none",
+                                }}
+                              >
+                                <label
+                                  style={{
+                                    fontWeight: "normal",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  WareHouse Address
+                                </label>
+                                <input
+                                  type="text"
+                                  name="wareHouseAddress"
+                                  value={formData.wareHouseAddress}
+                                  style={{ width: "65%" }}
+                                  onChange={handleChange}
+                                />{" "}
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  opacity: nameSaveBtnVisible ? "1" : "0.5",
+                                  pointerEvents: nameSaveBtnVisible
+                                    ? "auto"
+                                    : "none",
+                                }}
+                              >
+                                <label
+                                  style={{
+                                    fontWeight: "normal",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  WareHouse Contact Number
+                                </label>
+                                <input
+                                  type="text"
+                                  name="wareHouseContactNumber"
+                                  value={formData.wareHouseContactNumber}
+                                  style={{ width: "65%" }}
+                                  onChange={handleChange}
+                                />{" "}
+                              </div>
+
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  opacity: nameSaveBtnVisible ? "1" : "0.5",
+                                  pointerEvents: nameSaveBtnVisible
+                                    ? "auto"
+                                    : "none",
+                                }}
+                              >
+                                <label
+                                  style={{
+                                    fontWeight: "normal",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Warehouse Owner Name
+                                </label>
+                                <input
+                                  type="text"
+                                  name="wareHouseOwnerName"
+                                  value={formData.wareHouseOwnerName}
+                                  style={{ width: "65%" }}
+                                  onChange={handleChange}
+                                />{" "}
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  opacity: nameSaveBtnVisible ? "1" : "0.5",
+                                  pointerEvents: nameSaveBtnVisible
+                                    ? "auto"
+                                    : "none",
+                                }}
+                              >
+                                <label
+                                  style={{
+                                    fontWeight: "normal",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  storeIcon
+                                </label>
+                                <img
+                                  style={{ width: "70px", height: "70px" }}
+                                  src={
+                                    formData.storeIcon ? formData.storeIcon : ""
+                                  }
+                                />
+                                <br />
+                                <input
+                                  type="file"
+                                  name="storeIcon"
+                                  style={{ width: "65%" }}
+                                  onChange={handleImageChange}
+                                />{" "}
+                              </div>
+                              <div
+                                style={{
+                                  marginTop: "5px",
+                                  opacity: nameSaveBtnVisible ? "1" : "0.5",
+                                  pointerEvents: nameSaveBtnVisible
+                                    ? "auto"
+                                    : "none",
+                                }}
+                              >
+                                <label
+                                  style={{
+                                    fontWeight: "normal",
+                                    marginBottom: "5px",
+                                  }}
+                                >
+                                  Store Banner
+                                </label>
+                                <img
+                                  style={{ width: "70px", height: "70px" }}
+                                  src={
+                                    formData.storeBanner
+                                      ? formData.storeBanner
+                                      : ""
+                                  }
+                                />
+                                <br />
+                                <input
+                                  type="file"
+                                  name="storeBanner"
+                                  style={{ width: "65%" }}
+                                  onChange={handleImageChange}
+                                />{" "}
+                              </div>
+                            </>
+                          )}
+                          {/*user profile pic */}
+                          <div
+                            style={{
+                              marginTop: "15px",
+                              opacity: nameSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: nameSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <label
+                              style={{
+                                fontWeight: "normal",
+                                marginBottom: "5px",
+                              }}
+                            >
+                              Profile Image
+                            </label>
+                            <img
+                              src={formData.profileImage}
+                              style={{ width: "70px", height: "70px" }}
+                            />
+                            <div className="gender-inputs">
+                              <input
+                                type="file"
+                                name="profileImage"
+                                accept="image/*"
+                                onChange={handleImageChange}
                               />
                             </div>
-                          )}
+                          </div>
                         </div>
-
+                        {/* email Section */}
                         <div
+                          className="form-group"
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            opacity: passwordSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: passwordSaveBtnVisible
+                            cursor: emailSaveBtnVisible
                               ? "auto"
-                              : "none",
+                              : "not-allowed",
+                            padding: "10px",
+                            borderRadius: "5px",
                           }}
                         >
-                          {/* current password */}
-                          <input
-                            type="text"
-                            name="currentPassword"
-                            placeholder="Current password"
-                            value={passwordForm.currentPassword}
-                            onChange={passwordHandilChange}
-                            style={{ height: "10px", width: "80%" }}
-                          />
-
-                          <button
-                            onClick={handilePasswordSubmit}
-                            disabled={!passwordSaveBtnVisible}
+                          <div
                             style={{
-                              height: "100%",
-                              width: "20%",
-                              opacity: passwordSaveBtnVisible ? "1" : "0",
-                              cursor: passwordSaveBtnVisible
-                                ? "pointer"
-                                : "auto",
+                              display: "flex",
+                              alignItems: "center",
                             }}
-                            type="button"
-                            className="btn btn-primary"
                           >
-                            Save
-                          </button>
+                            <label>Email</label>
+
+                            {emailSaveBtnVisible ? (
+                              <div
+                                onClick={() =>
+                                  setEmailSaveBtnVisible(!emailSaveBtnVisible)
+                                }
+                                style={{ color: "blue", cursor: "pointer" }}
+                              >
+                                {" "}
+                                &nbsp;Cancel
+                              </div>
+                            ) : (
+                              <div>
+                                &nbsp;
+                                <CiEdit
+                                  onClick={() =>
+                                    setEmailSaveBtnVisible(!emailSaveBtnVisible)
+                                  }
+                                  size={22}
+                                  color="blue"
+                                  cursor={"pointer"}
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              opacity: emailSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: emailSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <input
+                              type="text"
+                              name="email"
+                              value={formData.email}
+                              onChange={handleChange}
+                              style={{ height: "10px", width: "80%" }}
+                            />
+
+                            <button
+                              onClick={() =>
+                                setIsOtpModalVisible(formData.email)
+                              }
+                              disabled={!emailSaveBtnVisible}
+                              style={{
+                                height: "100%",
+                                width: "20%",
+                                opacity: emailSaveBtnVisible ? "1" : "0",
+                                cursor: emailSaveBtnVisible
+                                  ? "pointer"
+                                  : "auto",
+                              }}
+                              type="button"
+                              className="btn btn-primary"
+                            >
+                              Save
+                            </button>
+                          </div>
                         </div>
+
+                        {/* mobile Number Section */}
                         <div
+                          className="form-group"
                           style={{
-                            display: "flex",
-                            alignItems: "center",
-                            opacity: passwordSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: passwordSaveBtnVisible
+                            cursor: mobileSaveBtnVisible
                               ? "auto"
-                              : "none",
+                              : "not-allowed",
+                            padding: "10px",
+                            borderRadius: "5px",
                           }}
                         >
-                          {/* new password */}
-                          <input
-                            type="text"
-                            name="newPassword"
-                            placeholder="New Password"
-                            value={passwordForm.newPassword}
-                            onChange={passwordHandilChange}
-                            style={{ height: "10px", width: "66%" }}
-                          />
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                            }}
+                          >
+                            <label>Mobile Number</label>
+
+                            {mobileSaveBtnVisible ? (
+                              <div
+                                onClick={() =>
+                                  setMobileSaveBtnVisible(!mobileSaveBtnVisible)
+                                }
+                                style={{ color: "blue", cursor: "pointer" }}
+                              >
+                                {" "}
+                                &nbsp;Cancel
+                              </div>
+                            ) : (
+                              <div>
+                                &nbsp;
+                                <CiEdit
+                                  onClick={() =>
+                                    setMobileSaveBtnVisible(
+                                      !mobileSaveBtnVisible
+                                    )
+                                  }
+                                  size={22}
+                                  color="blue"
+                                  cursor={"pointer"}
+                                />
+                              </div>
+                            )}
+                          </div>
+
+                          <div
+                            style={{
+                              display: "flex",
+                              alignItems: "center",
+                              opacity: mobileSaveBtnVisible ? "1" : "0.5",
+                              pointerEvents: mobileSaveBtnVisible
+                                ? "auto"
+                                : "none",
+                            }}
+                          >
+                            <input
+                              type="text"
+                              name="mobileNumber"
+                              value={formData.mobileNumber}
+                              onChange={handleChange}
+                              style={{ height: "10px", width: "80%" }}
+                            />
+
+                            <button
+                              onClick={() =>
+                                setIsOtpModalVisible(formData.mobileNumber)
+                              }
+                              disabled={!mobileSaveBtnVisible}
+                              style={{
+                                height: "100%",
+                                width: "20%",
+                                opacity: mobileSaveBtnVisible ? "1" : "0",
+                                cursor: mobileSaveBtnVisible
+                                  ? "pointer"
+                                  : "auto",
+                              }}
+                              type="button"
+                              className="btn btn-primary"
+                            >
+                              Save
+                            </button>
+                          </div>
                         </div>
-                        <div
-                          style={{
-                            display: "flex",
-                            alignItems: "center",
-                            opacity: passwordSaveBtnVisible ? "1" : "0.5",
-                            pointerEvents: passwordSaveBtnVisible
-                              ? "auto"
-                              : "none",
-                            marginTop: "10px",
-                          }}
-                        >
-                          {/* confirm password */}
-                          <input
-                            type="text"
-                            name="confirmPassword"
-                            placeholder="confirm Password"
-                            value={passwordForm.confirmPassword}
-                            onChange={passwordHandilChange}
-                            style={{ height: "10px", width: "66%" }}
-                          />
-                        </div>
-                        <p
-                          style={{
-                            fontWeight: "10px",
-                            color: "red",
-                            maxWidth: "65%",
-                            textAlign: "center",
-                            fontSize: "normal",
-                          }}
-                        >
-                          {error}
-                        </p>
-                      </div>
-                    </form>
-                  </section>
-                </>
-              ): pageSelector==="coupon"&&(
-                <CouponCardList coupon={profileData.coupon} />
-              )}
-            </main>
-          </div>
-        </>
-      ) : (
-        <>
-          <div
-            style={{
-              height: "100vh",
-              alignItems: "center",
-              justifyContent: "center",
-              width: "100%",
-            }}
-          >
-            <p style={{ textAlign: "center" }}>Loading...</p>
-          </div>
+                      </form>
+                    </section>
+                  ) : pageSelector === "password" ? (
+                    //   Password section
+                    <>
+                      <section className="profile-info">
+                        <form className="profile-form">
+                          <div
+                            className="form-group"
+                            style={{
+                              cursor: passwordSaveBtnVisible
+                                ? "auto"
+                                : "not-allowed",
+                              padding: "10px",
+                              borderRadius: "5px",
+                            }}
+                          >
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                              }}
+                            >
+                              <label>Change Password</label>
 
+                              {passwordSaveBtnVisible ? (
+                                <div
+                                  onClick={() =>
+                                    setpasswordSaveBtnVisible(
+                                      !passwordSaveBtnVisible
+                                    )
+                                  }
+                                  style={{ color: "blue", cursor: "pointer" }}
+                                >
+                                  {" "}
+                                  &nbsp;Cancel
+                                </div>
+                              ) : (
+                                <div>
+                                  &nbsp;
+                                  <CiEdit
+                                    onClick={() =>
+                                      setpasswordSaveBtnVisible(
+                                        !passwordSaveBtnVisible
+                                      )
+                                    }
+                                    size={22}
+                                    color="blue"
+                                    cursor={"pointer"}
+                                  />
+                                </div>
+                              )}
+                            </div>
 
-        </>
-      )}
-      {isOTPmodalVisible && <OtpVerify />}
-      
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                opacity: passwordSaveBtnVisible ? "1" : "0.5",
+                                pointerEvents: passwordSaveBtnVisible
+                                  ? "auto"
+                                  : "none",
+                              }}
+                            >
+                              {/* current password */}
+                              <input
+                                type="text"
+                                name="currentPassword"
+                                placeholder="Current password"
+                                value={passwordForm.currentPassword}
+                                onChange={passwordHandilChange}
+                                style={{ height: "10px", width: "80%" }}
+                              />
 
-      </div>
-      <StoreFooter/>
+                              <button
+                                onClick={handilePasswordSubmit}
+                                disabled={!passwordSaveBtnVisible}
+                                style={{
+                                  height: "100%",
+                                  width: "20%",
+                                  opacity: passwordSaveBtnVisible ? "1" : "0",
+                                  cursor: passwordSaveBtnVisible
+                                    ? "pointer"
+                                    : "auto",
+                                }}
+                                type="button"
+                                className="btn btn-primary"
+                              >
+                                Save
+                              </button>
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                opacity: passwordSaveBtnVisible ? "1" : "0.5",
+                                pointerEvents: passwordSaveBtnVisible
+                                  ? "auto"
+                                  : "none",
+                              }}
+                            >
+                              {/* new password */}
+                              <input
+                                type="text"
+                                name="newPassword"
+                                placeholder="New Password"
+                                value={passwordForm.newPassword}
+                                onChange={passwordHandilChange}
+                                style={{ height: "10px", width: "66%" }}
+                              />
+                            </div>
+                            <div
+                              style={{
+                                display: "flex",
+                                alignItems: "center",
+                                opacity: passwordSaveBtnVisible ? "1" : "0.5",
+                                pointerEvents: passwordSaveBtnVisible
+                                  ? "auto"
+                                  : "none",
+                                marginTop: "10px",
+                              }}
+                            >
+                              {/* confirm password */}
+                              <input
+                                type="text"
+                                name="confirmPassword"
+                                placeholder="confirm Password"
+                                value={passwordForm.confirmPassword}
+                                onChange={passwordHandilChange}
+                                style={{ height: "10px", width: "66%" }}
+                              />
+                            </div>
+                            <p
+                              style={{
+                                fontWeight: "10px",
+                                color: "red",
+                                maxWidth: "65%",
+                                textAlign: "center",
+                                fontSize: "normal",
+                              }}
+                            >
+                              {error}
+                            </p>
+                          </div>
+                        </form>
+                      </section>
+                    </>
+                  ) : (
+                    pageSelector === "coupon" ? (
+                      <CouponCardList coupon={profileData.coupon} />
+                    ):pageSelector==='Plans & billings'&&
+                    <PlansAndBiillings/>
+                  )}
+                </main>
+              </div>
+            </>
+          ) : (
+            <>
+              <div
+                style={{
+                  height: "100vh",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  width: "100%",
+                }}
+              >
+                <p style={{ textAlign: "center" }}>Loading...</p>
+              </div>
+            </>
+          )}
+          {isOTPmodalVisible && <OtpVerify />}
+        </div>
+        <StoreFooter />
       </div>
     </>
   );

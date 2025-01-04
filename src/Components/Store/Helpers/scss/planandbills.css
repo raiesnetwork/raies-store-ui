@@ -1,0 +1,133 @@
+.pricing-plan-selector-container {
+    display: flex;
+    gap: 26px;
+    margin: 70px 0px;
+}
+
+.landing-page-plans-container {
+    display: flex;
+    align-items: center;
+    flex-direction: column;
+}
+
+.plans-row-container {
+    display: flex;
+    flex-wrap: wrap;
+    padding: 10px;
+    justify-content: center;
+    gap: 30px;
+}
+
+.pricing-plan {
+    border: 1px solid grey;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+    border-bottom-right-radius: 5px;
+    border-bottom-left-radius: 5px;
+    width: 300px;
+    height: 500px;
+}
+
+.pricing-plan-type {
+    font-size: 22px;
+    font-family: "Potta One", system-ui;
+    font-style: normal;
+    font-weight: 400;
+
+}
+
+.pricing-plan-type-des {
+    font-size: 15px;
+    font-family: "Potta One", system-ui;
+    font-style: normal;
+    font-weight: 200;
+    margin-bottom: 15px;
+
+}
+
+.pricing-plan-amount-currency {
+    font-size: 18px;
+    font-family: "Potta One", system-ui;
+    font-style: normal;
+    font-weight: 400;
+}
+
+.pricing-plan-amount {
+    font-size: 35px;
+    font-family: "Potta One", system-ui;
+    font-style: normal;
+    font-weight: 300;
+}
+
+.pricing-plan-details-container {
+    margin: 10px 15px;
+    height: 94%;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.pricing-plan-top-color-sec {
+    background-color: blueviolet;
+    height: 10px;
+    border-top-right-radius: 10px;
+    border-top-left-radius: 10px;
+}
+
+.pricing-plan-amount-container {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+    font-size: 17px;
+    font-family: "Potta One", system-ui;
+    margin-bottom: 10px;
+}
+
+.plan-purchase-btn {
+    width: 100%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background: blueviolet;
+    padding: 12px;
+    border-radius: 5px;
+    font-size: 15px;
+    font-weight: 900;
+    gap: 10px;
+    align-self: center;
+}
+
+.plan-icludes {
+    font-size: 14px;
+    margin-bottom: 10px;
+}
+
+.plan-purchase-btn-icon {
+    color: white;
+    font-size: 18px;
+}
+
+.plan-iclude-item-container {
+    display: flex;
+    gap: 10px;
+    flex-direction: column;
+    margin-bottom: 30px;
+}
+
+.plan-include-item {
+    display: flex;
+    gap: 10px;
+    align-items: center;
+}
+
+.inlude-item-check {
+    color: #4CAF50;
+    font-size: 20px;
+}
+
+.pricing-plan-option {
+    font-size: 20px;
+    font-weight: 400;
+    padding: 10px 33px;
+}
+
