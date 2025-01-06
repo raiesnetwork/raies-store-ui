@@ -39,11 +39,11 @@ const InvoiceDetails: React.FC = () => {
     const { order } = await createRazorpayOrder(parseFloat(storeInvoiceData?.amount) + 80.93);
 
     const options = {
-      key: import.meta.env.VITE_APP_RAZORPAY_LIVE,
+      key: import.meta.env.VITE_APP_RAZOR_PAY,
       amount: parseFloat(storeInvoiceData?.amount) + 80.93,
       currency: "INR",
-      name: storeInvoiceData.subscription.UserDetails.profile.name,
-      description: "Fund for the campaign",
+      name: storeInvoiceData?.subscription?.UserDetails?.profile?.name,
+      description: "My store payment",
       order_id: order?.id,
       handler: async (response: any) => {
         try {

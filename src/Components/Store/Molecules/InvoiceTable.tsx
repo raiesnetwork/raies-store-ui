@@ -1,4 +1,4 @@
-import React from "react";
+import React, { useEffect } from "react";
 import { Country } from "country-state-city";
 import Swal from "sweetalert2";
 import { TbFileDownload} from "react-icons/tb";
@@ -14,6 +14,11 @@ const InvioceTable: React.FC = () => {
     getInvoice,createRazorpayOrder } = useMystoreStore(
     (s) => s
   );
+  useEffect(()=>{
+    getInvoice()
+
+},[])
+
   const handileSingleInvoiceData = (data: storeInvoice) => {
     setInvoiceData(data);
   };
@@ -24,11 +29,11 @@ const InvioceTable: React.FC = () => {
     );
 
     const options = {
-      key: import.meta.env.VITE_APP_RAZORPAY_LIVE,
+      key: import.meta.env.VITE_APP_RAZOR_PAY,
       amount: parseFloat(data?.amount) + 80.93,
       currency: "INR",
-      name: data.subscription.UserDetails.profile.name,
-      description: "Fund for the campaign",
+      name: data?.subscription?.UserDetails?.profile?.name,
+      description: "My store Payment",
       order_id: order?.id,
       handler: async (response: any) => {
         try {
@@ -197,7 +202,7 @@ const InvioceTable: React.FC = () => {
                         title="view"
                         className="btn btn-icon btn-bg-light btn-active-color-primary btn-sm me-1"
                       >
-<BsEye size={20}/>                  
+<BsEye size={17}/>                  
     </button>
                     </td>
                   </tr>
