@@ -95,6 +95,7 @@
     font-weight: 900;
     gap: 10px;
     align-self: center;
+    cursor: pointer;
 }
 
 .plan-icludes {

@@ -260,7 +260,7 @@ const ProfilePage: React.FC = () => {
                         }
                         onClick={() => setPageSelector("info")}
                       >
-                        Personal Info.
+                     { profileData?.role === "Admin"?"Store Info": 'Personal Info.'}
                       </li>
                       {
                         profileData?.role === "Admin" &&

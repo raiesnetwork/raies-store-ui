@@ -369,7 +369,10 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     const data=await postDownlodReceiptApi(id)
     return data
   },
-
+  isOpenPlanModal:false,
+  setOpenPlanModal:()=>{
+    set((s)=>({isOpenPlanModal:!s.isOpenPlanModal}))
+  }
 }));
 
 export default useMystoreStore;

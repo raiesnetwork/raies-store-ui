@@ -123,6 +123,8 @@ storeIconRefresh:boolean
   postInvoicePayment: (response:any, invoiceId:string, amount:number) => Promise<ApiResponce>;
   postDownloadReceipt: (id:string) => Promise<ApiResponce>;
   getInvoice: () => void;
+  isOpenPlanModal:boolean,
+  setOpenPlanModal:() => void;
 
 
 }
