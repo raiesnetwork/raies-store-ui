@@ -29,6 +29,33 @@ const createAxiosInstance = () => {
   );
 
   return instance;
+};const createAxiosInstanceForProduct = () => {
+  const instance = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  // Add a request interceptor
+  instance.interceptors.request.use(
+    (config) => {
+      const rawToken = localStorage.getItem('store_t');
+      const token = rawToken ? JSON.parse(rawToken) : null;
+
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      // Handle request errors
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
 
-export { createAxiosInstance };
+export { createAxiosInstance ,createAxiosInstanceForProduct};

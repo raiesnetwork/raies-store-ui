@@ -1,4 +1,4 @@
-import { createAxiosInstance } from "../../../Utils/Axios";
+import { createAxiosInstance, createAxiosInstanceForProduct } from "../../../Utils/Axios";
 import {
   barterOrder,
   biddingOrder,
@@ -10,6 +10,7 @@ import {
 } from "./Interfaces";
 import axios from "axios";
 const axiosInstance = createAxiosInstance();
+const axiosInstance2 = createAxiosInstanceForProduct();
 
 // export const getAllProductApi = async (hostName?: string | null) => {
 //   try {
@@ -176,7 +177,7 @@ export const latestProductApi = async (
   name: string
 ) => {
   try {
-    const { data } = await axiosInstance.get(
+    const { data } = await axiosInstance2.get(
       `/userstore/auth/latest/${hostName}`,
       { params: { name: name } }
     );
@@ -315,7 +316,7 @@ export const createBiddingOrderApi = async (datas: biddingOrder) => {
 
 export const getStoreIconApi = async (hostName: string | null) => {
   try {
-    const { data } = await axiosInstance.get(
+    const { data } = await axiosInstance2.get(
       `/userstore/auth/nameandicon/${hostName}`
     );
     return data;
@@ -424,7 +425,7 @@ export const passwordChangeApi = async (
 
 export const getSingleProductDetailsApi = async (id?: string) => {
   try {
-    const { data } = await axiosInstance.get(
+    const { data } = await axiosInstance2.get(
       `/userstore/auth/singleProducts/${id}`
     );
     return data;

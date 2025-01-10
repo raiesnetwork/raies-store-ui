@@ -1,7 +1,7 @@
 import React, { createContext, ReactNode, useContext, useEffect, useLayoutEffect, useState } from "react";
 import useMystoreStore from "../Store/Core/Store";
 import { getSubdomain } from "../../Utils/Subdomain";
-
+import axios from 'axios'
 interface AuthContextType {
   user: any; 
   login: (userData: any) => void;
@@ -39,19 +39,31 @@ export const AuthProvaider: React.FC<{ children: ReactNode }> = ({
       }
     }
   }, []);
+  useEffect(()=>{
+const apihelper=async()=>{
+const {data}=await axios.get(`${import.meta.env.VITE_APP_API_URL}/userstore/auth/createtoken/${hostName}`)
+const apiHelper = async () => {
+  try {
+    await getStoreIconAndName(hostName);
+  } catch (error) {
+  } finally {
+    setStoreIconLoader(false); 
+  }
+};
+apiHelper();
+console.log(data);
+
+localStorage.setItem(`store_t`, JSON.stringify(data?.token));
+
+
+}
+    apihelper()
+  },[hostName])
   useEffect(() => {
-    const apiHelper = async () => {
-      try {
-        await getStoreIconAndName(hostName);
-      } catch (error) {
-      } finally {
-        setStoreIconLoader(false); 
-      }
-    };
-    apiHelper();
+    
   }, [getStoreIconAndName, hostName]);
-  const login = async(userData: any) => {
-   await localStorage.setItem("users", JSON.stringify(userData));
+  const login =(userData: any) => {
+    localStorage.setItem("users", JSON.stringify(userData));
     setUser(userData);
     setisAuthenticated(true)
 
