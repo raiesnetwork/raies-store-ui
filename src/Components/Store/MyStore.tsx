@@ -8,6 +8,7 @@ import ClipLoader from "react-spinners/ClipLoader";
 import "./Helpers/scss/mystore.scss";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import StoreFooter from "../Footer/Footer";
+import { useAuth } from "../Auth/AuthContext";
 
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
@@ -18,13 +19,13 @@ export const MyStore: React.FC = () => {
     AllProducts,
     setHomeLoader,
     homeLoader,
-    logedIn,
+    
     latestProduct,
     setUserName,
     storeData,
     getShprocketToken
   } = useMystoreStore((state) => state);
-
+const {isAuthenticated}=useAuth()||{}
   const [data, setData] = useState<respProduct[]>([]);
   const [filteredData, setFilteredData] = useState<respProduct[]>([]);
   const [filter, setFilter] = useState<string>("All");
@@ -39,12 +40,12 @@ export const MyStore: React.FC = () => {
   }, [AllProducts]);
 
   useEffect(() => {
-    if (logedIn) {
+    if (isAuthenticated) {
       const name = localStorage.getItem("suname");
       setUserName(name);
       getShprocketToken()
     }
-  }, [logedIn]);
+  }, [isAuthenticated]);
 
   useEffect(() => {
     const fetchProducts = async () => {

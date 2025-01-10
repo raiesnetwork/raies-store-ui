@@ -372,6 +372,9 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   isOpenPlanModal:false,
   setOpenPlanModal:()=>{
     set((s)=>({isOpenPlanModal:!s.isOpenPlanModal}))
+  },storeIconsLoader:true,
+  setStoreIconLoader:(data)=>{
+    set(()=>({storeIconsLoader:data}))
   }
 }));
 

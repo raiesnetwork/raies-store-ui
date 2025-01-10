@@ -125,6 +125,9 @@ storeIconRefresh:boolean
   getInvoice: () => void;
   isOpenPlanModal:boolean,
   setOpenPlanModal:() => void;
+  storeIconsLoader:boolean
+  setStoreIconLoader  :(d:boolean) => void;
+
 
 
 }
