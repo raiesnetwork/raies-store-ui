@@ -12,6 +12,7 @@ import { passwordChangeApi } from "../Core/StoreApi";
 import StoreFooter from "../../Footer/Footer";
 import CouponCardList from "./CouponView";
 import PlansAndBiillings from "./PlansAndBiillings";
+import Loader from "../../Loader/Loader";
 type pages = "info" | "password" | "coupon"|"Plans & billings";
 const ProfilePage: React.FC = () => {
   const {
@@ -976,7 +977,8 @@ const ProfilePage: React.FC = () => {
                   width: "100%",
                 }}
               >
-                <p style={{ textAlign: "center" }}>Loading...</p>
+                      <Loader/>
+
               </div>
             </>
           )}

@@ -3,7 +3,6 @@ import "../Helpers/scss/Orders.scss";
 import Header from "./Header";
 import useMystoreStore from "../Core/Store";
 import { toast } from "react-toastify";
-import { LineWave } from "react-loader-spinner";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { Link } from "react-router-dom";
 import { MdVerified } from "react-icons/md";
@@ -13,6 +12,7 @@ import { BiSolidError } from "react-icons/bi";
 import { FaTimesCircle } from "react-icons/fa";
 import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
 import StoreFooter from "../../Footer/Footer";
+import Loader from "../../Loader/Loader";
 
 interface resp {
   id: string;
@@ -75,7 +75,7 @@ const UserOrdersPage: React.FC = () => {
     const apiHelper = async () => {
       setLoading(true); // Start loading
       const data = await getUserOrder(subdomain);
-      console.log('data', data)
+      console.log("data", data);
       if (data.error) {
         toast.error(
           "We're sorry, but we couldn't fetch your orders. Please check your connection and try again."
@@ -90,7 +90,6 @@ const UserOrdersPage: React.FC = () => {
     apiHelper();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
 
   const [currentSlideIndex, setCurrentSlideIndex] = useState<{
     [orderId: string]: number;
@@ -109,7 +108,6 @@ const UserOrdersPage: React.FC = () => {
       [orderId]: prevState[orderId] < maxIndex ? prevState[orderId] + 1 : 0,
     }));
   };
-
 
   const filteredOrders = () => {
     if (filter === "all") {
@@ -139,54 +137,51 @@ const UserOrdersPage: React.FC = () => {
     filteredBarterOrders?.length === 0;
   return (
     <>
-     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-
-<Header />
-<div style={{ flex: 1 }}>
-      <div className="myorder-page">
-
-        <div className="myorder-page__header">
-          <div className="myorder-page__heading" >
-            My Orders
-          </div>
-        </div>
-
-        <div
-          className="myorder-page__filter-container"
-
-        >
-          <select value={filter} onChange={(e) => setFilter(e.target.value)}>
-            <option value="all">ALL</option>
-            <option value="normal">ORDER</option>
-            <option value="bid">BID</option>
-            <option value="barter">EXCHANGE</option>
-          </select>
-        </div>
-        {loading ? (
-          <div
-            style={{
-              display: "flex",
-              justifyContent: "center",
-              alignItems: "center",
-              height: "200px",
-            }}
-          >
-            <LineWave />
-          </div>
-        ) :
-          noOrders ? (
-            <div className="myorder-page__no-orders">
-              <h2>No Orders Found</h2>
-              <p>
-                You have not placed any orders yet. Start browsing our products
-                and place an order now!
-              </p>
-              <Link to="/" className="myorder-page__shop-link">
-                Go to Shop
-              </Link>
+      <div
+        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        <Header />
+        <div style={{ flex: 1 }}>
+          <div className="myorder-page">
+            <div className="myorder-page__header">
+              <div className="myorder-page__heading">My Orders</div>
             </div>
-          ) :
-            (
+
+            <div className="myorder-page__filter-container">
+              <select
+                value={filter}
+                onChange={(e) => setFilter(e.target.value)}
+              >
+                <option value="all">ALL</option>
+                <option value="normal">ORDER</option>
+                <option value="bid">BID</option>
+                <option value="barter">EXCHANGE</option>
+              </select>
+            </div>
+            {loading ? (
+              <div
+                style={{
+                  display: "flex",
+                  justifyContent: "center",
+                  alignItems: "center",
+                  height: "200px",
+                }}
+              >
+                     <Loader/>
+
+              </div>
+            ) : noOrders ? (
+              <div className="myorder-page__no-orders">
+                <h2>No Orders Found</h2>
+                <p>
+                  You have not placed any orders yet. Start browsing our
+                  products and place an order now!
+                </p>
+                <Link to="/" className="myorder-page__shop-link">
+                  Go to Shop
+                </Link>
+              </div>
+            ) : (
               <div className="orders-list">
                 {filteredOrderList.map((order: any) => {
                   const currentIndex = currentSlideIndex[order._id] || 0;
@@ -194,112 +189,117 @@ const UserOrdersPage: React.FC = () => {
                   const currentProduct = order.productDetails[currentIndex];
 
                   return (
-                    <div key={order.id} className="myorder-page__card-container">
-                  
-                        {/* Slider Section */}
-                        <div className="myorder-page__card-name-sec">
-
-                          <img
-                            className="myorder-page__card-img"
-                            src={currentProduct?.mainImage}
-                            alt={currentProduct?.productName}
-                          />
-                          {order.productDetails.length > 1 && (
-                            <div className="myorder-page__slider-btn-sec">
-                              <button
-                                className="myorder-page__slider-arrow"
-                                onClick={() => handlePrev(order?._id, maxIndex)}
-                              >
-                                <FaChevronLeft />
-                              </button>
-                              <button
-                                className="myorder-page__slider-arrow"
-                                onClick={() => handleNext(order?._id, maxIndex)}
-                              >
-                                <FaChevronRight />
-                              </button>
-                            </div>
-                          )
-                          }
-                          <hr className="myorder-page__line" />
-                          <div className="myorder-page__card-name-details">
-                            <div className="myorder-page__card-name">
-                              {currentProduct.productName}
-                            </div>
-                            <div className="myorder-page__order-methode">
-                              {order.paymentMethod === "offline"
-                                ? "Cash on Delivery"
-                                : "Online"}
-                            </div>
+                    <div
+                      key={order.id}
+                      className="myorder-page__card-container"
+                    >
+                      {/* Slider Section */}
+                      <div className="myorder-page__card-name-sec">
+                        <img
+                          className="myorder-page__card-img"
+                          src={currentProduct?.mainImage}
+                          alt={currentProduct?.productName}
+                        />
+                        {order.productDetails.length > 1 && (
+                          <div className="myorder-page__slider-btn-sec">
+                            <button
+                              className="myorder-page__slider-arrow"
+                              onClick={() => handlePrev(order?._id, maxIndex)}
+                            >
+                              <FaChevronLeft />
+                            </button>
+                            <button
+                              className="myorder-page__slider-arrow"
+                              onClick={() => handleNext(order?._id, maxIndex)}
+                            >
+                              <FaChevronRight />
+                            </button>
+                          </div>
+                        )}
+                        <hr className="myorder-page__line" />
+                        <div className="myorder-page__card-name-details">
+                          <div className="myorder-page__card-name">
+                            {currentProduct.productName}
+                          </div>
+                          <div className="myorder-page__order-methode">
+                            {order.paymentMethod === "offline"
+                              ? "Cash on Delivery"
+                              : "Online"}
                           </div>
                         </div>
+                      </div>
 
                       {/* Product Info */}
 
                       <Link
-                      style={{ textDecoration: "none", color: "auto" }}
-                      to="/orderdetails"
-                      state={{ orderData: order, type: "normal" }}
-                    >
-                      {/* Order Details */}
-                      <div className="myorder-page__order-details-sec">
-                        <div className="myorder-page__order-amount-sec">
-                          {order.paymentMethod === "offline" ? (
-                            <>
-                              {order.totalAmount === 0 ? (
-                                <div className="myorder-page__order-amount">₹80</div>
-                              ) : (
+                        style={{ textDecoration: "none", color: "auto" }}
+                        to="/orderdetails"
+                        state={{ orderData: order, type: "normal" }}
+                      >
+                        {/* Order Details */}
+                        <div className="myorder-page__order-details-sec">
+                          <div className="myorder-page__order-amount-sec">
+                            {order.paymentMethod === "offline" ? (
+                              <>
+                                {order.totalAmount === 0 ? (
+                                  <div className="myorder-page__order-amount">
+                                    ₹80
+                                  </div>
+                                ) : (
+                                  <div className="myorder-page__order-amount">
+                                    {`₹${order.totalAmount}`}
+                                  </div>
+                                )}
+                                <div className="myorder-page__payment-status">
+                                  Payment Due{" "}
+                                  <CgDanger className="myorder-page__order-amount-warning" />
+                                </div>
+                              </>
+                            ) : (
+                              <>
                                 <div className="myorder-page__order-amount">
                                   {`₹${order.totalAmount}`}
                                 </div>
-                              )}
-                              <div className="myorder-page__payment-status">
-                                Payment Due{" "}
-                                <CgDanger className="myorder-page__order-amount-warning" />
-                              </div>
-                            </>
-                          ) : (
-                            <>
-                              <div className="myorder-page__order-amount">
-                                {`₹${order.totalAmount}`}
-                              </div>
-                              <div className="myorder-page__payment-status">
-                                Paid{" "}
-                                <MdVerified className="myorder-page__order-amount-tick" />
-                              </div>
-                            </>
-                          )}
-                        </div>
+                                <div className="myorder-page__payment-status">
+                                  Paid{" "}
+                                  <MdVerified className="myorder-page__order-amount-tick" />
+                                </div>
+                              </>
+                            )}
+                          </div>
 
-                        <div className="myorder-page__delivery-status">
-                          <div className="myorder-page__delivery-head">Delivery</div>
-                          <div
-                            className={
-                              order.status === "Order Confirmed"
-                                ? "myorder-page__status-processed"
-                                : order.status === "shipped"
+                          <div className="myorder-page__delivery-status">
+                            <div className="myorder-page__delivery-head">
+                              Delivery
+                            </div>
+                            <div
+                              className={
+                                order.status === "Order Confirmed"
+                                  ? "myorder-page__status-processed"
+                                  : order.status === "shipped"
                                   ? "myorder-page__status-preparing"
                                   : order.status === "Shipped"
-                                    ? "myorder-page__status-shipped"
-                                    : order.status === "Delivered"
-                                      ? "myorder-page__status-delivered"
-                                      : "myorder-page__status-cancelled"
-                            }
-                          >
-                            {order.status}
+                                  ? "myorder-page__status-shipped"
+                                  : order.status === "Delivered"
+                                  ? "myorder-page__status-delivered"
+                                  : "myorder-page__status-cancelled"
+                              }
+                            >
+                              {order.status}
+                            </div>
                           </div>
                         </div>
-                      </div>
                       </Link>
-
                     </div>
                   );
                 })}
 
-
                 {filteredBidOrders?.length > 0 &&
                   filteredBidOrders.map((order: respBid) => (
-                    <div key={order.id} className="myorder-page__card-container">
+                    <div
+                      key={order.id}
+                      className="myorder-page__card-container"
+                    >
                       <Link
                         style={{ textDecoration: "none", color: "auto" }}
                         to="/orderdetails"
@@ -320,7 +320,9 @@ const UserOrdersPage: React.FC = () => {
                             <div className="myorder-page__card-name">
                               {order.productDetails.productName}
                             </div>
-                            <div className="myorder-page__order-methode">AUCTION</div>
+                            <div className="myorder-page__order-methode">
+                              AUCTION
+                            </div>
                           </div>
                         </div>
                       </Link>
@@ -330,11 +332,10 @@ const UserOrdersPage: React.FC = () => {
 
                         <div className="myorder-page__order-amount-sec">
                           <div className="myorder-page__bid-amount">
-
                             ₹{order.biddingAmount}{" "}
                           </div>
                           <div className="myorder-page__bid-verified">
-                            {order.status === 'Accepted' ? (
+                            {order.status === "Accepted" ? (
                               <>
                                 {order.status}
                                 <MdVerified className="myorder-page__order-amount-tick" />
@@ -356,7 +357,6 @@ const UserOrdersPage: React.FC = () => {
                               </>
                             )}
                           </div>
-
                         </div>
                         <div className="myorder-page__delivery-status">
                           <div className="myorder-page__delivery-head">
@@ -366,37 +366,39 @@ const UserOrdersPage: React.FC = () => {
                             className={
                               order?.deliveryStatus === "Order Processed"
                                 ? "myorder-page__status-processed"
-                                : order?.deliveryStatus === "Preparing for Shipment"
-                                  ? "myorder-page__status-preparing"
-                                  : order?.deliveryStatus === "Shipped"
-                                    ? "myorder-page__status-shipped"
-                                    : order?.deliveryStatus === "Out for Delivery"
-                                      ? "myorder-page__status-outfordelivery"
-                                      : order?.deliveryStatus === "Delivered"
-                                        ? "myorder-page__status-delivered"
-                                        : order?.deliveryStatus === "Order Canceled"
-                                          ? "myorder-page__status-canceled"
-                                          : "myorder-page__status-other"
+                                : order?.deliveryStatus ===
+                                  "Preparing for Shipment"
+                                ? "myorder-page__status-preparing"
+                                : order?.deliveryStatus === "Shipped"
+                                ? "myorder-page__status-shipped"
+                                : order?.deliveryStatus === "Out for Delivery"
+                                ? "myorder-page__status-outfordelivery"
+                                : order?.deliveryStatus === "Delivered"
+                                ? "myorder-page__status-delivered"
+                                : order?.deliveryStatus === "Order Canceled"
+                                ? "myorder-page__status-canceled"
+                                : "myorder-page__status-other"
                             }
                           >
                             {order?.deliveryStatus}
                           </div>
-
-
                         </div>
-
                       </div>
                     </div>
                   ))}
 
-
-
-
                 {filteredBarterOrders.length > 0 &&
                   filteredBarterOrders.map((order: respBarter) => (
-                    <Link style={{ textDecoration: "none", color: "auto" }} key={order.id} to='/orderdetails' state={{ orderData: order }}>
-
-                      <div key={order.id} className="myorder-page__card-container">
+                    <Link
+                      style={{ textDecoration: "none", color: "auto" }}
+                      key={order.id}
+                      to="/orderdetails"
+                      state={{ orderData: order }}
+                    >
+                      <div
+                        key={order.id}
+                        className="myorder-page__card-container"
+                      >
                         <Link
                           style={{ textDecoration: "none", color: "auto" }}
                           to="/orderdetails"
@@ -417,7 +419,9 @@ const UserOrdersPage: React.FC = () => {
                               <div className="myorder-page__card-name">
                                 {order.productDetails.productName}
                               </div>
-                              <div className="myorder-page__order-methode">EXCHANGE</div>
+                              <div className="myorder-page__order-methode">
+                                EXCHANGE
+                              </div>
                             </div>
                           </div>
                         </Link>
@@ -426,12 +430,9 @@ const UserOrdersPage: React.FC = () => {
                           {/* Conditionally render the bid amount */}
 
                           <div className="myorder-page__order-amount-sec">
-                            <div className="myorder-page__bid-amount">
-
-                              SHOE
-                            </div>
+                            <div className="myorder-page__bid-amount">SHOE</div>
                             <div className="myorder-page__bid-verified">
-                              {order.status === 'Accepted' ? (
+                              {order.status === "Accepted" ? (
                                 <>
                                   {order.status}
                                   <MdVerified className="myorder-page__order-amount-tick" />
@@ -443,11 +444,11 @@ const UserOrdersPage: React.FC = () => {
                                 </>
                               ) : (
                                 <>
-                                  {order.status}<RxLapTimer className="myorder-page__bid-review-icon" />
+                                  {order.status}
+                                  <RxLapTimer className="myorder-page__bid-review-icon" />
                                 </>
                               )}
                             </div>
-
                           </div>
                           <div className="myorder-page__delivery-status">
                             <div className="myorder-page__delivery-head">
@@ -457,36 +458,32 @@ const UserOrdersPage: React.FC = () => {
                               className={
                                 order?.deliveryStatus === "Order Processed"
                                   ? "myorder-page__status-processed"
-                                  : order?.deliveryStatus === "Preparing for Shipment"
-                                    ? "myorder-page__status-preparing"
-                                    : order?.deliveryStatus === "Shipped"
-                                      ? "myorder-page__status-shipped"
-                                      : order?.deliveryStatus === "Out for Delivery"
-                                        ? "myorder-page__status-outfordelivery"
-                                        : order?.deliveryStatus === "Delivered"
-                                          ? "myorder-page__status-delivered"
-                                          : order?.deliveryStatus === "Order Canceled"
-                                            ? "myorder-page__status-canceled"
-                                            : "myorder-page__status-other"
+                                  : order?.deliveryStatus ===
+                                    "Preparing for Shipment"
+                                  ? "myorder-page__status-preparing"
+                                  : order?.deliveryStatus === "Shipped"
+                                  ? "myorder-page__status-shipped"
+                                  : order?.deliveryStatus === "Out for Delivery"
+                                  ? "myorder-page__status-outfordelivery"
+                                  : order?.deliveryStatus === "Delivered"
+                                  ? "myorder-page__status-delivered"
+                                  : order?.deliveryStatus === "Order Canceled"
+                                  ? "myorder-page__status-canceled"
+                                  : "myorder-page__status-other"
                               }
                             >
                               {order?.deliveryStatus}
                             </div>
-
-
                           </div>
-
                         </div>
                       </div>
                     </Link>
                   ))}
               </div>
             )}
-      </div>
-      
-
-      </div>
-      <StoreFooter/>
+          </div>
+        </div>
+        <StoreFooter />
       </div>
     </>
   );

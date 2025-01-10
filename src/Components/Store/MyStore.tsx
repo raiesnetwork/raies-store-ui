@@ -4,11 +4,11 @@ import { respProduct } from "./Core/Interfaces";
 import ProductViewCard from "./Molecules/ProductCard";
 import Header from "./Molecules/Header";
 import { getSubdomain } from "../../Utils/Subdomain";
-import ClipLoader from "react-spinners/ClipLoader";
 import "./Helpers/scss/mystore.scss";
 import { GrFormPrevious, GrFormNext } from "react-icons/gr";
 import StoreFooter from "../Footer/Footer";
 import { useAuth } from "../Auth/AuthContext";
+import Loader from "../Loader/Loader";
 
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
@@ -97,9 +97,8 @@ const {isAuthenticated}=useAuth()||{}
   return (
     <>
     {homeLoader ? (
-      <div className="mystore__spinner-container">
-        <ClipLoader size={50} color={"#123abc"} loading={homeLoader} />
-      </div>
+            <Loader/>
+
     ) : (
     <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
       <Header />
