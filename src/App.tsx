@@ -23,8 +23,8 @@ import Loader from "./Components/Loader/Loader";
 function App() {
   
   const { storeIconsLoader } = useMystoreStore((s) => s);
-let a=true
-  if (a) {
+
+  if (storeIconsLoader) {
     // Show loader while data is being fetched
     return (
       <Loader/>
