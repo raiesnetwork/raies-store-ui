@@ -12,6 +12,8 @@ import { FaShoppingCart } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
 import StoreFooter from "../../Footer/Footer";
+import { useAuth } from "../../Auth/AuthContext";
+import Loader from "../../Loader/Loader";
 const SingleProductView: React.FC = () => {
   const {id}=useParams()
   
@@ -23,7 +25,7 @@ const SingleProductView: React.FC = () => {
     isOpenselectAddressModal,
     OpenAddressModal,
     isOpenAddressModal,
-    logedIn,
+   
     FetchToCart,
     AddToCart,
     isOpenBarteModal,
@@ -46,9 +48,9 @@ const SingleProductView: React.FC = () => {
   const [year, month, day] = singleProductData?.endDate.split("-");
   const lastDate = `${day}-${month}-${year}`;
   const [disable, setDisable] = useState<boolean>(false);
-
+const {isAuthenticated}=useAuth()||{}
   const handileCart = async (id: string, count: number, userId: string) => {
-    if (logedIn) {
+    if (isAuthenticated) {
       setDisable(true);
       const data = await AddToCart(id, count, userId);
       setDisable(false);
@@ -321,9 +323,7 @@ const SingleProductView: React.FC = () => {
         </>
       ) : (
         <>
-          <div style={{ textAlign: "center" }}>
-            Loading...
-          </div>
+          <Loader/>
         </>
       )}
       
