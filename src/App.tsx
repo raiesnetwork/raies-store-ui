@@ -6,9 +6,7 @@ import {
 } from "react-router-dom";
 import Auth from "./Components/Auth/Auth";
 import { MyStore } from "./Components/Store/MyStore";
-import { useEffect, useState } from "react";
 import useMystoreStore from "./Components/Store/Core/Store";
-import { getSubdomain } from "./Utils/Subdomain";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
 import "./App.scss";

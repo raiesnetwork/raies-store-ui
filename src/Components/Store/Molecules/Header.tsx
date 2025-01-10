@@ -26,7 +26,7 @@ const Header: React.FC = () => {
     storeData,
     // cartData
   } = useMystoreStore((state) => state);
-  const {logout,isAuthenticated,user}=useAuth()||{}
+  const {logout,user}=useAuth()||{}
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   let navigate = useNavigate();
   const [search, setSearch] = useState<string>("");

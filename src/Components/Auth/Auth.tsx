@@ -1,18 +1,15 @@
 
 
 
-import React, { useEffect } from "react";
-import useAuth from "./Core/Store";
-import useMystoreStore from "../Store/Core/Store";
+import React from "react";
+
 import { Navigate, Route, Routes } from "react-router-dom";
 import StoreCart from "../Store/Molecules/Cart";
 import ProductBuyingPage from "../Store/Molecules/BuyingPage";
 import SuccessPage from "../Store/Molecules/CodSuccessPage";
 import UserOrdersPage from "../Store/Molecules/Orders";
 import SingleProductView from "../Store/Molecules/SigleViewPage";
-import { Login } from "./Login/Login";
-import { Register } from "./Register/Register";
-import { OtpPage } from "./Otp/Otp";
+
 import ProfilePage from "../Store/Molecules/ProfilePage";
 import OrderDetails from "../Store/Molecules/OrderDetails";
 import RefundAndCancellationPolicy from "../Footer/RefundAndCancellationPolicy";
