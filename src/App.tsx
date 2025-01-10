@@ -16,26 +16,18 @@ import { Login } from "./Components/Auth/Login/Login";
 import { Register } from "./Components/Auth/Register/Register";
 import { OtpPage } from "./Components/Auth/Otp/Otp";
 import RefundAndCancellationPolicy from "./Components/Footer/RefundAndCancellationPolicy";
+import Loader from "./Components/Loader/Loader";
 
 
 
 function App() {
   
   const { storeIconsLoader } = useMystoreStore((s) => s);
-
-  if (storeIconsLoader) {
+let a=true
+  if (a) {
     // Show loader while data is being fetched
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <div className="loader">Loading...</div>
-      </div>
+      <Loader/>
     );
   }
   const { isAuthenticated } = useAuth() || {};
