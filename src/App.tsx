@@ -18,7 +18,7 @@ import { OtpPage } from "./Components/Auth/Otp/Otp";
 import RefundAndCancellationPolicy from "./Components/Footer/RefundAndCancellationPolicy";
 import Loader from "./Components/Loader/Loader";
 
-
+import './main.css'
 
 function App() {
   

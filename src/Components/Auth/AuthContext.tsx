@@ -43,14 +43,14 @@ export const AuthProvaider: React.FC<{ children: ReactNode }> = ({
 const apihelper=async()=>{
 const {data}=await axios.get(`${import.meta.env.VITE_APP_API_URL}/userstore/auth/createtoken/${hostName}`)
 const apiHelper = async () => {
-  try {
-    await getStoreIconAndName(hostName);
-  } catch (error) {
-  } finally {
-    setStoreIconLoader(false); 
-  }
-};
-apiHelper();
+      try {
+        await getStoreIconAndName(hostName);
+      } catch (error) {
+      } finally {
+        setStoreIconLoader(false); 
+      }
+    };
+    apiHelper();
 console.log(data);
 
 localStorage.setItem(`store_t`, JSON.stringify(data?.token));
