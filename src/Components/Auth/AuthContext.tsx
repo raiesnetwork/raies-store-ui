@@ -51,7 +51,6 @@ const apiHelper = async () => {
       }
     };
     apiHelper();
-console.log(data);
 
 localStorage.setItem(`store_t`, JSON.stringify(data?.token));
 

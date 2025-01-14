@@ -20,7 +20,7 @@ const SingleProductView: React.FC = () => {
   const {
     addressSupparator,
     addressSupparatorBarter,
-    setaddressSupparatorBarter,
+    // setaddressSupparatorBarter,
     setAddressSuparator,
     isOpenselectAddressModal,
     OpenAddressModal,
@@ -201,7 +201,7 @@ const {isAuthenticated}=useAuth()||{}
                 <div className="purchase-btns">
                   {singleProductData.priceOption === "barter" && (
                     <>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setOpenBarterModal();
                           setaddressSupparatorBarter(true);
@@ -210,7 +210,27 @@ const {isAuthenticated}=useAuth()||{}
                         {" "}
                         <LiaExchangeAltSolid />
                         Exchange
-                      </button>
+                      </button> */}
+                      <Link
+                          style={{ textDecoration: "none" }}
+                          to="/buy"
+                          state={{
+                            details: [
+                              {
+                                id: singleProductData._id,
+                                quantity: 1,
+                                productDetails: singleProductData,
+                              },
+                            ],
+                            type: "single",
+                            proType:'barter'
+                          }}
+                        >
+                          <button>
+                          <LiaExchangeAltSolid />
+                          Exchange
+                          </button>
+                        </Link>
                     </>
                   )}
                   {singleProductData.priceOption === "free" &&

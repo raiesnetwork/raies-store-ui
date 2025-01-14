@@ -10,6 +10,7 @@ import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
 import StoreFooter from "../../Footer/Footer";
 import { getDeliveryCharge } from "../Core/StoreApi";
+import { fileToBase64 } from "../../../Utils/Base64";
 
 const CheckoutPage: React.FC = () => {
   const {
@@ -25,13 +26,14 @@ const CheckoutPage: React.FC = () => {
     postCouponApi,
     shiprocketToken,
     setSelectedAddress,
+    createBarterOrder
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("online");
   const [deliveryDetails, setDeliveryDetails] = useState<any>();
   const [CourierId, setCourierId] = useState<string>('');
   const location = useLocation();
-  const { details } = location.state || {};
+  const { details,proType } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
   // const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -66,6 +68,7 @@ const CheckoutPage: React.FC = () => {
   }, [refresh]);
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
+
     if (selectedAddress._id.trim() && selectedPaymentMethod.trim()) {
       setBtndesable(true);
       const diamentions = details.reduce((agg: {
@@ -326,6 +329,90 @@ const CheckoutPage: React.FC = () => {
     }
   }, [addressData]);
 
+ const [formData, setFormData] = useState({
+    addressId: selectedAddress._id,
+    productImage: "",
+    productId: details[0]?.productDetails?._id,
+    // quantity:"1"
+    CourierId:"",
+    deliveryCharge:0
+  });
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Only image files are allowed");
+        return;
+      }
+
+      if (file.size > 1 * 1024 * 1024) {
+        toast.error("Image must be 1MB or less");
+        return;
+      }
+
+      const base64 = await fileToBase64(file);
+      setFormData({
+        ...formData,
+        productImage: base64,
+      });
+      toast.error(null);
+    }
+  };
+  useEffect(()=>{
+if (proType==='barter') {
+  setFormData((prev)=>{
+    return{
+      addressId:selectedAddress._id,
+      CourierId:CourierId,
+      deliveryCharge:deliveryDetails,
+      productId:details[0]?.productDetails?._id,
+    productImage:prev?.productImage
+    }
+  })
+}
+  },[proType,selectedAddress,deliveryDetails,CourierId])
+  const handleBarderSubmit = async (e: React.FormEvent) => {
+   
+    e.preventDefault();
+    
+    if (formData.productImage.trim()&&selectedAddress._id.trim()) {
+      try {
+        const data = await createBarterOrder(formData);
+
+        if (data.error) {
+          
+          return toast.error(
+            "We're sorry, but there was a problem creating your barter order. Please try again in a few minutes."
+          );
+        } else {
+          if (data.data === "exceed") {
+            return toast.error(
+              "This product is currently unavailable. Please check back later for restock updates!"
+            );
+          } else {
+           
+            navigate("/success", {
+              state: {
+                orderDetails: [
+                  { id: "", quantity: 1, productDetails: details ,orderId:CourierId},
+                ],
+              },
+            });
+          }
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {
+        toast.error(
+          "We couldn't submit your form due to an error. Please check your information and try again."
+        );
+      }
+    }else{
+      toast.error(
+        "Please select an exchange image and provide the delivery address."
+      );
+      
+    }
+  };
   return (
     <>
       <div
@@ -370,8 +457,28 @@ const CheckoutPage: React.FC = () => {
 
             {/* Payment Method Section */}
             <div className="section payment-section">
-              <div className="section-header">2. Payment Method</div>
+              <div className="section-header">
+                {
+                  proType==='barter'?
+                  '2. Select Barter Product image':
+                  proType==='bid'?
+                  '2. Enter Bid Amount':
+                  '2. Payment Method'
+                }
+                </div>
               <div className="payment-methods">
+                {
+                  proType==='barter'?
+                  <input
+                    type="file"
+                    id="productImage"
+                    name="productImage"
+                    // ref={ProductImageRef}
+                    onChange={handleImageUpload}
+                    // className={`form-control ${
+                    //   errors.productImage ? "is-invalid" : ""
+                    // }`}
+                  />:proType==='bid'?"":
                 <div>
                   <label>
                     <input
@@ -380,7 +487,7 @@ const CheckoutPage: React.FC = () => {
                       value="online"
                       checked={selectedPaymentMethod === "online"}
                       onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                    />
+                      />
                     Online Payment
                   </label>
                   <label style={{ marginLeft: "20px" }}>
@@ -390,10 +497,11 @@ const CheckoutPage: React.FC = () => {
                       value="offline"
                       checked={selectedPaymentMethod === "offline"}
                       onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                    />
+                      />
                     Pay on Delivery (Cash)
                   </label>
                 </div>
+                    }
               </div>
             </div>
 
@@ -450,8 +558,8 @@ const CheckoutPage: React.FC = () => {
                 </div>
               </div>
             </div>
-
             {/* coupon section */}
+{!proType&&
             <div className="section order-summary">
               <div className="section-header">Apply Coupon</div>
               <div
@@ -491,6 +599,7 @@ const CheckoutPage: React.FC = () => {
                 {couponCodeErr}
               </div>
             </div>
+            }
             {/* Order Summary Section */}
             <div className="section order-summary">
               <>
@@ -518,7 +627,7 @@ const CheckoutPage: React.FC = () => {
                 </div>
               </>
 
-              <button disabled={btnDisable} onClick={handilPlaceOrder}>
+              <button disabled={btnDisable} onClick={proType==='barter'?handleBarderSubmit:handilPlaceOrder}>
                 {btnDisable ? "Loading..." : " Place Your Order"}
               </button>
             </div>
