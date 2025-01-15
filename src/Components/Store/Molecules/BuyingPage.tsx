@@ -46,7 +46,8 @@ const CheckoutPage: React.FC = () => {
 
   let totalPrice = details.reduce(
     (total: number, product: respStoreCart) =>
-      total + Number(product.productDetails.price) * product.quantity,
+      product.productDetails.priceOption !=='free'?
+      total + Number(product.productDetails.price) * product.quantity:0,
     0
   );
   const [totalAmount, setTotalAmount] = useState(0);

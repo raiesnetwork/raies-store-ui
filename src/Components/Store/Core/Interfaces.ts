@@ -189,6 +189,8 @@ export interface myStoreCart {
   maxBidPriceCurrency: string;
   minBidPriceCurrency: string;
   price: string;
+  priceOption?: string;
+
 }
 export interface respStoreCart {
   _id: string;
