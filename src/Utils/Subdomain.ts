@@ -8,6 +8,6 @@ export function getSubdomain(hostname: string) {
       return parts.slice(0, parts.length - 2).join(".");
     }
       
-    // return null; 
-    return "srs"
+    return null; 
+    // return "srs"
   }
