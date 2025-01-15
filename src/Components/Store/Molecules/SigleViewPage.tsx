@@ -21,7 +21,7 @@ const SingleProductView: React.FC = () => {
     addressSupparator,
     addressSupparatorBarter,
     // setaddressSupparatorBarter,
-    setAddressSuparator,
+    // setAddressSuparator,
     isOpenselectAddressModal,
     OpenAddressModal,
     isOpenAddressModal,
@@ -309,14 +309,34 @@ const {isAuthenticated}=useAuth()||{}
                     )}
                   {singleProductData.priceOption === "bidding" && (
                     <>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setOpenBiddingModal();
                           setAddressSuparator(true);
                         }}
                       >
                         Start Auction
-                      </button>
+                      </button> */}
+                      <Link
+                          style={{ textDecoration: "none" }}
+                          to="/buy"
+                          state={{
+                            details: [
+                              {
+                                id: singleProductData._id,
+                                quantity: 1,
+                                productDetails: singleProductData,
+                              },
+                            ],
+                            type: "single",
+                            proType:'bid'
+                          }}
+                        >
+                          <button>
+                          <LiaExchangeAltSolid />
+                          Start Auction
+                          </button>
+                        </Link>
                     </>
                   )}
                 </div>

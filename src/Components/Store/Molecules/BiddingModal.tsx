@@ -105,8 +105,6 @@ const BiddingModal: React.FC <props>= ({product}) => {
               "This product is currently unavailable. Please check back later for restock updates!"
             );
           }
-
-          setOpenBiddingModal();
           navigate("/success", {
             state: {
               orderDetails: [

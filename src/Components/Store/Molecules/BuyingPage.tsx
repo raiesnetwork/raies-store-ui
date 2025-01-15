@@ -26,6 +26,7 @@ const CheckoutPage: React.FC = () => {
     postCouponApi,
     shiprocketToken,
     setSelectedAddress,
+    createBiddingOrder,
     createBarterOrder
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
@@ -335,7 +336,8 @@ const CheckoutPage: React.FC = () => {
     productId: details[0]?.productDetails?._id,
     // quantity:"1"
     CourierId:"",
-    deliveryCharge:0
+    deliveryCharge:0,
+    biddingAmount: "0",
   });
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
     const file = e.target.files?.[0];
@@ -366,16 +368,32 @@ if (proType==='barter') {
       CourierId:CourierId,
       deliveryCharge:deliveryDetails,
       productId:details[0]?.productDetails?._id,
-    productImage:prev?.productImage
+    productImage:prev?.productImage,
+    biddingAmount:""
+    }
+  })
+}else if(proType==='bid'){
+  setFormData((prev)=>{
+    return{
+      addressId:selectedAddress._id,
+      CourierId:CourierId,
+      deliveryCharge:deliveryDetails,
+      productId:details[0]?.productDetails?._id,
+    productImage:prev?.productImage,
+    biddingAmount:prev?.biddingAmount
     }
   })
 }
   },[proType,selectedAddress,deliveryDetails,CourierId])
+
   const handleBarderSubmit = async (e: React.FormEvent) => {
    
     e.preventDefault();
     
     if (formData.productImage.trim()&&selectedAddress._id.trim()) {
+      if (CourierId.trim()&&!deliveryDetails) {
+       return toast.error('We cant fetch delivery details plese try after some time.')
+      }
       try {
         const data = await createBarterOrder(formData);
 
@@ -391,13 +409,8 @@ if (proType==='barter') {
             );
           } else {
            
-            navigate("/success", {
-              state: {
-                orderDetails: [
-                  { id: "", quantity: 1, productDetails: details ,orderId:CourierId},
-                ],
-              },
-            });
+            navigate("/success", { state: { orderDetails: details ,orderId:""} });
+
           }
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
@@ -409,6 +422,57 @@ if (proType==='barter') {
     }else{
       toast.error(
         "Please select an exchange image and provide the delivery address."
+      );
+      
+    }
+  };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleBidSubmit = async (e: React.FormEvent) => {
+    
+    e.preventDefault();
+    if (formData?.biddingAmount.trim()) {
+      if ( formData?.biddingAmount < details[0]?.productDetails.minBidPrice ||
+        formData?.biddingAmount > details[0]?.productDetails.maxBidPrice) {
+          toast.error(`Bid amount must in bitween ${details[0]?.productDetails.minBidPrice}-${details[0]?.productDetails.maxBidPrice}`)
+        return
+      }
+      if (!CourierId.trim()&&!deliveryDetails) {
+        return toast.error('We cant fetch delivery details plese try after some time.')
+       }
+      try {
+        const data = await createBiddingOrder(formData);
+        if (data.error) {
+         
+          return toast.error(
+            "We're sorry, but there was a problem creating your bid order. Please try again in a few minutes."
+          );
+        } else {
+          if (data.data === "exceed") {
+            return toast.error(
+              "This product is currently unavailable. Please check back later for restock updates!"
+            );
+          }
+          navigate("/success", { state: { orderDetails: details ,orderId:""} });
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+       
+        toast.error(
+          "We couldn't submit your form due to an error. Please check your information and try again."
+        );
+      }
+    }else{
+      toast.error(
+        "Please enter bid  amount and provide the delivery address."
       );
       
     }
@@ -478,7 +542,18 @@ if (proType==='barter') {
                     // className={`form-control ${
                     //   errors.productImage ? "is-invalid" : ""
                     // }`}
-                  />:proType==='bid'?"":
+                  />:proType==='bid'?
+                  <input
+                  type="number"
+                  id="biddingAmount"
+                  value={formData.biddingAmount}
+                  name="biddingAmount"
+                  onChange={handleChange}
+                  // className={`form-control ${
+                  //   errors.biddingAmount ? "is-invalid" : ""
+                  // }`}
+                />
+                  :
                 <div>
                   <label>
                     <input
@@ -607,27 +682,32 @@ if (proType==='barter') {
                   <span>Expected delivery:</span>
                   <span>{expetedDeliveryData}</span>
                 </div>
-                <div className="summary-row">
+                {!proType&&
+                  <div className="summary-row">
                   <span>Items:</span>
                   <span>₹{totalPrice}</span>
-                </div>
+                </div>}
                 <div className="summary-row">
                   <span>Delivery:</span>
                   <span>{deliveryDetails || 0}</span>
                 </div>
-                <div className="summary-row">
+                {!proType&&
+                  <div className="summary-row">
                   <span>Discount Coupon:</span>
                   <span>{couponAmount.amount}</span>
-                </div>
+                </div>}
                 <div className="summary-row">
                   <span>Total:</span>
                   <span className="total-price">
-                    ₹{totalAmount + deliveryDetails}
+                    ₹{proType==='bid'?parseFloat(formData?.biddingAmount)??0+ deliveryDetails??0: totalAmount + deliveryDetails}
                   </span>
                 </div>
               </>
 
-              <button disabled={btnDisable} onClick={proType==='barter'?handleBarderSubmit:handilPlaceOrder}>
+              <button disabled={btnDisable} onClick={proType==='barter'?
+              handleBarderSubmit:
+                proType==='bid'?handleBidSubmit:
+                handilPlaceOrder}>
                 {btnDisable ? "Loading..." : " Place Your Order"}
               </button>
             </div>
