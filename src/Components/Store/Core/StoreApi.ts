@@ -284,6 +284,17 @@ export const getUserOrderApi = async (subdomain: string | null) => {
       data: error,
     };
   }
+};export const getInventoryApi = async (subdomain: string | null) => {
+  try {
+    const { data } = await axiosInstance.get(`/storuser/inventory/${subdomain}`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+      data: error,
+    };
+  }
 };
 export const createBarterOrderApi = async (datas: barterOrder) => {
   try {

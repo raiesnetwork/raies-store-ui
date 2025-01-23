@@ -295,6 +295,8 @@ const CheckoutPage: React.FC = () => {
   };
   const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
   const getDeliveryCharges = async () => {
+    console.log(details,'aggg');
+    
     const aggregatedDetails = details.reduce(
       (
         agg: {
