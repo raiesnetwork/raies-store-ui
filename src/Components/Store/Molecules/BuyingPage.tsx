@@ -786,7 +786,7 @@ const CheckoutPage: React.FC = () => {
                 <div className="summary-row">
                   <span>Total:</span>
                   <span className="total-price">
-                    ₹{proType === 'bid' ? parseFloat(formData?.biddingAmount) ?? 0 + deliveryDetails ?? 0 : totalAmount + deliveryDetails}
+                    ₹{proType === 'bid' ? parseFloat(formData?.biddingAmount) ?? 0 + deliveryDetails ?? 0 : totalAmount + deliveryDetails||0}
                   </span>
                 </div>
               </>
