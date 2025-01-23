@@ -203,6 +203,8 @@ export interface userStoreCreate {
   otp: string;
   hostname: string|null;
   password:string
+  userType:string
+  paymentType:string
 }
 export interface respStoreAddress {
   _id: string;

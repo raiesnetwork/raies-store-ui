@@ -17,7 +17,9 @@ export const OtpPage: React.FC = () => {
     const registration = location.state?.registration || false;
     const username = location.state?.username || "";
     const password = location.state?.password || "";
-
+    const paymentType = location.state?.paymentType || "";
+    const userType = location.state?.userType || "";
+     
     const handleOtpSubmit = async () => {
         const enteredOtp = otp.join(""); // Combine the array into a single string
 
@@ -31,7 +33,9 @@ export const OtpPage: React.FC = () => {
                     mobileNumber,
                     otp: enteredOtp,
                     hostname: subdomain,
-                    password
+                    password,
+                    userType,
+                    paymentType
                 });
 
                 if (response.error) {
