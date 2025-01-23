@@ -27,14 +27,16 @@ const CheckoutPage: React.FC = () => {
     shiprocketToken,
     setSelectedAddress,
     createBiddingOrder,
-    createBarterOrder
+    createBarterOrder,
+    profileData,
+    getProfileInfo
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("online");
   const [deliveryDetails, setDeliveryDetails] = useState<any>();
   const [CourierId, setCourierId] = useState<string>('');
   const location = useLocation();
-  const { details,proType } = location.state || {};
+  const { details, proType } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
   // const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
@@ -44,16 +46,22 @@ const CheckoutPage: React.FC = () => {
     couponId: string;
   }>({ amount: 0, type: "", couponId: "" });
 
-  let totalPrice = details.reduce(
+  let totalPrice = details?.reduce(
     (total: number, product: respStoreCart) =>
-      product.productDetails.priceOption !=='free'?
-      total + Number(product.productDetails.price) * product.quantity:0,
+      product.productDetails.priceOption !== 'free' ?
+        total + Number(product.productDetails.price) * product.quantity : 0,
     0
   );
   const [totalAmount, setTotalAmount] = useState(0);
+
   useEffect(() => {
+    console.log("total", totalPrice)
+
     setTotalAmount(totalPrice);
+
   }, [totalPrice]);
+
+
   const [isOpenAddressModal, setAddressModal] = useState<boolean>(false);
   const OpenAddressModal = () => {
     setAddressModal(true);
@@ -68,34 +76,43 @@ const CheckoutPage: React.FC = () => {
     apiHelper();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [refresh]);
+  useEffect(() => {
+    const apiHelper = async () => {
+      await getProfileInfo();
+    };
+    apiHelper();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, []);
+
+  console.log("profile", profileData)
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
 
     if (selectedAddress._id.trim() && selectedPaymentMethod.trim()) {
       setBtndesable(true);
       const diamentions = details.reduce((agg: {
-            weight: number;
-            length: number;
-            breadth: number;
-            height: number;
-          },
-          item: { productDetails: any } ) => {
-          const product = item.productDetails;
-          agg.weight += parseFloat(product.productWeight || 0);
-          agg.length = Math.max(
-            agg.length,
-            parseFloat(product.packageLength || 0)
-          );
-          agg.breadth = Math.max(
-            agg.breadth,
-            parseFloat(product.packageBreadth || 0)
-          );
-          agg.height = Math.max(
-            agg.height,
-            parseFloat(product.packageHeight || 0)
-          );
-          return agg;
-        },
+        weight: number;
+        length: number;
+        breadth: number;
+        height: number;
+      },
+        item: { productDetails: any }) => {
+        const product = item.productDetails;
+        agg.weight += parseFloat(product.productWeight || 0);
+        agg.length = Math.max(
+          agg.length,
+          parseFloat(product.packageLength || 0)
+        );
+        agg.breadth = Math.max(
+          agg.breadth,
+          parseFloat(product.packageBreadth || 0)
+        );
+        agg.height = Math.max(
+          agg.height,
+          parseFloat(product.packageHeight || 0)
+        );
+        return agg;
+      },
         { weight: 0, length: 0, breadth: 0, height: 0 }
       );
       const productDetais = details?.map((val: respStoreCart) => {
@@ -132,10 +149,35 @@ const CheckoutPage: React.FC = () => {
           setBtndesable(false);
           await FetchToCart();
           console.log(data);
-          
-          navigate("/success", { state: { orderDetails: details ,orderId:data.data.orderData?.order_id} });
+
+          navigate("/success", { state: { orderDetails: details, orderId: data.data.orderData?.order_id } });
         }
-      } else {
+      } else if (selectedPaymentMethod === "credit") {
+        // Credit payment flow
+        const data = await createOrdr({
+          addressId: selectedAddress._id,
+          paymentMethod: selectedPaymentMethod,
+          productDetails: productDetais,
+          totalAmount: totalAmountWithDelivery,
+          couponData: couponAmount,
+          CourierId,
+        });
+
+        setBtndesable(false);
+
+        if (data.error) {
+          return toast.error("We couldn't create your credit order. Please try again.");
+        } else {
+          await FetchToCart();
+          console.log(data);
+
+          navigate("/credit-success", {
+            state: { orderDetails: details, orderId: data.data.orderData?.order_id },
+          });
+        }
+      }
+      else {
+
         setBtndesable(false);
 
         try {
@@ -198,9 +240,12 @@ const CheckoutPage: React.FC = () => {
           toast.error("Payment failed. Please try again.");
         }
         await FetchToCart();
-        navigate("/success", { state: { orderDetails: details ,
-          // orderId:data.data.orderId
-        } });
+        navigate("/success", {
+          state: {
+            orderDetails: details,
+            // orderId:data.data.orderId
+          }
+        });
       }
     } else {
       setBtndesable(false);
@@ -229,6 +274,7 @@ const CheckoutPage: React.FC = () => {
             couponId: data?.data?.couponId,
           });
           totalPrice = Math.max(0, totalPrice - (data?.data?.amount || 0));
+
           setTotalAmount(totalPrice);
         } else if (data?.data?.type === "percentage") {
           totalPrice -= totalPrice * (data?.data?.amount / 100);
@@ -331,13 +377,13 @@ const CheckoutPage: React.FC = () => {
     }
   }, [addressData]);
 
- const [formData, setFormData] = useState({
+  const [formData, setFormData] = useState({
     addressId: selectedAddress._id,
     productImage: "",
     productId: details[0]?.productDetails?._id,
     // quantity:"1"
-    CourierId:"",
-    deliveryCharge:0,
+    CourierId: "",
+    deliveryCharge: 0,
     biddingAmount: "0",
   });
   const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
@@ -361,45 +407,45 @@ const CheckoutPage: React.FC = () => {
       toast.error(null);
     }
   };
-  useEffect(()=>{
-if (proType==='barter') {
-  setFormData((prev)=>{
-    return{
-      addressId:selectedAddress._id,
-      CourierId:CourierId,
-      deliveryCharge:deliveryDetails,
-      productId:details[0]?.productDetails?._id,
-    productImage:prev?.productImage,
-    biddingAmount:""
+  useEffect(() => {
+    if (proType === 'barter') {
+      setFormData((prev) => {
+        return {
+          addressId: selectedAddress._id,
+          CourierId: CourierId,
+          deliveryCharge: deliveryDetails,
+          productId: details[0]?.productDetails?._id,
+          productImage: prev?.productImage,
+          biddingAmount: ""
+        }
+      })
+    } else if (proType === 'bid') {
+      setFormData((prev) => {
+        return {
+          addressId: selectedAddress._id,
+          CourierId: CourierId,
+          deliveryCharge: deliveryDetails,
+          productId: details[0]?.productDetails?._id,
+          productImage: prev?.productImage,
+          biddingAmount: prev?.biddingAmount
+        }
+      })
     }
-  })
-}else if(proType==='bid'){
-  setFormData((prev)=>{
-    return{
-      addressId:selectedAddress._id,
-      CourierId:CourierId,
-      deliveryCharge:deliveryDetails,
-      productId:details[0]?.productDetails?._id,
-    productImage:prev?.productImage,
-    biddingAmount:prev?.biddingAmount
-    }
-  })
-}
-  },[proType,selectedAddress,deliveryDetails,CourierId])
+  }, [proType, selectedAddress, deliveryDetails, CourierId])
 
   const handleBarderSubmit = async (e: React.FormEvent) => {
-   
+
     e.preventDefault();
-    
-    if (formData.productImage.trim()&&selectedAddress._id.trim()) {
-      if (CourierId.trim()&&!deliveryDetails) {
-       return toast.error('We cant fetch delivery details plese try after some time.')
+
+    if (formData.productImage.trim() && selectedAddress._id.trim()) {
+      if (CourierId.trim() && !deliveryDetails) {
+        return toast.error('We cant fetch delivery details plese try after some time.')
       }
       try {
         const data = await createBarterOrder(formData);
 
         if (data.error) {
-          
+
           return toast.error(
             "We're sorry, but there was a problem creating your barter order. Please try again in a few minutes."
           );
@@ -409,8 +455,8 @@ if (proType==='barter') {
               "This product is currently unavailable. Please check back later for restock updates!"
             );
           } else {
-           
-            navigate("/success", { state: { orderDetails: details ,orderId:""} });
+
+            navigate("/success", { state: { orderDetails: details, orderId: "" } });
 
           }
         }
@@ -420,11 +466,11 @@ if (proType==='barter') {
           "We couldn't submit your form due to an error. Please check your information and try again."
         );
       }
-    }else{
+    } else {
       toast.error(
         "Please select an exchange image and provide the delivery address."
       );
-      
+
     }
   };
   const handleChange = (
@@ -438,21 +484,21 @@ if (proType==='barter') {
   };
 
   const handleBidSubmit = async (e: React.FormEvent) => {
-    
+
     e.preventDefault();
     if (formData?.biddingAmount.trim()) {
-      if ( formData?.biddingAmount < details[0]?.productDetails.minBidPrice ||
+      if (formData?.biddingAmount < details[0]?.productDetails.minBidPrice ||
         formData?.biddingAmount > details[0]?.productDetails.maxBidPrice) {
-          toast.error(`Bid amount must in bitween ${details[0]?.productDetails.minBidPrice}-${details[0]?.productDetails.maxBidPrice}`)
+        toast.error(`Bid amount must in bitween ${details[0]?.productDetails.minBidPrice}-${details[0]?.productDetails.maxBidPrice}`)
         return
       }
-      if (!CourierId.trim()&&!deliveryDetails) {
+      if (!CourierId.trim() && !deliveryDetails) {
         return toast.error('We cant fetch delivery details plese try after some time.')
-       }
+      }
       try {
         const data = await createBiddingOrder(formData);
         if (data.error) {
-         
+
           return toast.error(
             "We're sorry, but there was a problem creating your bid order. Please try again in a few minutes."
           );
@@ -462,20 +508,20 @@ if (proType==='barter') {
               "This product is currently unavailable. Please check back later for restock updates!"
             );
           }
-          navigate("/success", { state: { orderDetails: details ,orderId:""} });
+          navigate("/success", { state: { orderDetails: details, orderId: "" } });
         }
         // eslint-disable-next-line @typescript-eslint/no-unused-vars
       } catch (error) {
-       
+
         toast.error(
           "We couldn't submit your form due to an error. Please check your information and try again."
         );
       }
-    }else{
+    } else {
       toast.error(
         "Please enter bid  amount and provide the delivery address."
       );
-      
+
     }
   };
   return (
@@ -521,65 +567,103 @@ if (proType==='barter') {
             </div>
 
             {/* Payment Method Section */}
+            {/* Payment Method Section */}
             <div className="section payment-section">
               <div className="section-header">
-                {
-                  proType==='barter'?
-                  '2. Select Barter Product image':
-                  proType==='bid'?
-                  '2. Enter Bid Amount':
-                  '2. Payment Method'
-                }
-                </div>
+                {proType === "barter"
+                  ? "2. Select Barter Product Image"
+                  : proType === "bid"
+                    ? "2. Enter Bid Amount"
+                    : "2. Payment Method"}
+              </div>
               <div className="payment-methods">
-                {
-                  proType==='barter'?
+                {proType === "barter" ? (
                   <input
                     type="file"
                     id="productImage"
                     name="productImage"
-                    // ref={ProductImageRef}
                     onChange={handleImageUpload}
-                    // className={`form-control ${
-                    //   errors.productImage ? "is-invalid" : ""
-                    // }`}
-                  />:proType==='bid'?
+                  />
+                ) : proType === "bid" ? (
                   <input
-                  type="number"
-                  id="biddingAmount"
-                  value={formData.biddingAmount}
-                  name="biddingAmount"
-                  onChange={handleChange}
-                  // className={`form-control ${
-                  //   errors.biddingAmount ? "is-invalid" : ""
-                  // }`}
-                />
-                  :
-                <div>
-                  <label>
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="online"
-                      checked={selectedPaymentMethod === "online"}
-                      onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                    type="number"
+                    id="biddingAmount"
+                    value={formData.biddingAmount}
+                    name="biddingAmount"
+                    onChange={handleChange}
+                  />
+                ) : (
+                  <div>
+                    {/* Online Payment Option */}
+                    <label>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="online"
+                        checked={selectedPaymentMethod === "online"}
+                        onChange={(e) => setSelectedPaymentMethod(e.target.value)}
                       />
-                    Online Payment
-                  </label>
-                  <label style={{ marginLeft: "20px" }}>
-                    <input
-                      type="radio"
-                      name="payment"
-                      value="offline"
-                      checked={selectedPaymentMethod === "offline"}
-                      onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                      Online Payment
+                    </label>
+
+                    {/* Pay on Delivery Option */}
+                    <label style={{ marginLeft: "20px" }}>
+                      <input
+                        type="radio"
+                        name="payment"
+                        value="offline"
+                        checked={selectedPaymentMethod === "offline"}
+                        onChange={(e) => setSelectedPaymentMethod(e.target.value)}
                       />
-                    Pay on Delivery (Cash)
-                  </label>
-                </div>
-                    }
+                      Pay on Delivery (Cash)
+                    </label>
+
+                    {/* Credit Option (Conditional Rendering) */}
+                    {profileData?.dealerView && profileData?.paymentType === "Credit" && (
+                      <>
+                        <label style={{ marginLeft: "20px" }}>
+                          <input
+                            type="radio"
+                            name="payment"
+                            value="credit"
+                            checked={selectedPaymentMethod === "credit"}
+                            onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                          />
+                          Purchase on Credit
+                        </label>
+
+                        {/* Note for Credit Payment */}
+                        {selectedPaymentMethod === "credit" && (
+                          <div
+                            style={{
+                              marginTop: "10px",
+                              backgroundColor: "#f9f9f9",
+                              padding: "10px",
+                              borderRadius: "5px",
+                              border: "1px solid #ccc",
+                            }}
+                          >
+                            <p
+                              style={{
+                                fontSize: "14px",
+                                color: "#555",
+                                lineHeight: "1.5",
+                              }}
+                            >
+                              Note :  You are purchasing this product on credit. An invoice will be
+                              generated and available in the "Invoice Section" of your
+                              profile. Please ensure timely payment to avoid additional
+                              charges.
+                            </p>
+                          </div>
+                        )}
+                      </>
+                    )}
+                  </div>
+                )}
               </div>
             </div>
+
 
             {/* Product Review Section */}
             <div className="section product-review-section">
@@ -635,46 +719,46 @@ if (proType==='barter') {
               </div>
             </div>
             {/* coupon section */}
-{!proType&&
-            <div className="section order-summary">
-              <div className="section-header">Apply Coupon</div>
-              <div
-                style={{
-                  display: "flex",
-                  alignItems: "center",
-                  justifyContent: "center",
-                  gap: "10px",
-                }}
-              >
-                <input
+            {!proType &&
+              <div className="section order-summary">
+                <div className="section-header">Apply Coupon</div>
+                <div
                   style={{
-                    width: "85%",
-                    height: "35px",
-                    borderRadius: "5px",
-                    outline: "none",
-                    border: "1px solid",
+                    display: "flex",
+                    alignItems: "center",
+                    justifyContent: "center",
+                    gap: "10px",
                   }}
-                  value={couponCode}
-                  placeholder="Enter coupon code"
-                  onChange={(e) => setCouponCode(e.target.value)}
-                />
-                <button
-                  style={{
-                    width: "15%",
-                  }}
-                  onClick={handileCoupon}
                 >
-                  {CouponBtnDisable ? "Applying..." : "Apply"}
-                </button>
+                  <input
+                    style={{
+                      width: "85%",
+                      height: "35px",
+                      borderRadius: "5px",
+                      outline: "none",
+                      border: "1px solid",
+                    }}
+                    value={couponCode}
+                    placeholder="Enter coupon code"
+                    onChange={(e) => setCouponCode(e.target.value)}
+                  />
+                  <button
+                    style={{
+                      width: "15%",
+                    }}
+                    onClick={handileCoupon}
+                  >
+                    {CouponBtnDisable ? "Applying..." : "Apply"}
+                  </button>
+                </div>
+                <div
+                  style={{
+                    color: "red",
+                  }}
+                >
+                  {couponCodeErr}
+                </div>
               </div>
-              <div
-                style={{
-                  color: "red",
-                }}
-              >
-                {couponCodeErr}
-              </div>
-            </div>
             }
             {/* Order Summary Section */}
             <div className="section order-summary">
@@ -683,33 +767,43 @@ if (proType==='barter') {
                   <span>Expected delivery:</span>
                   <span>{expetedDeliveryData}</span>
                 </div>
-                {!proType&&
+                {!proType &&
                   <div className="summary-row">
-                  <span>Items:</span>
-                  <span>₹{totalPrice}</span>
-                </div>}
+                    <span>Items:</span>
+                    <span>₹{totalPrice}</span>
+                  </div>}
                 <div className="summary-row">
                   <span>Delivery:</span>
                   <span>{deliveryDetails || 0}</span>
                 </div>
-                {!proType&&
+                {!proType &&
                   <div className="summary-row">
-                  <span>Discount Coupon:</span>
-                  <span>{couponAmount.amount}</span>
-                </div>}
+                    <span>Discount Coupon:</span>
+                    <span>{couponAmount.amount}</span>
+                  </div>}
                 <div className="summary-row">
                   <span>Total:</span>
                   <span className="total-price">
-                    ₹{proType==='bid'?parseFloat(formData?.biddingAmount)??0+ deliveryDetails??0: totalAmount + deliveryDetails}
+                    ₹{proType === 'bid' ? parseFloat(formData?.biddingAmount) ?? 0 + deliveryDetails ?? 0 : totalAmount + deliveryDetails}
                   </span>
                 </div>
               </>
 
-              <button disabled={btnDisable} onClick={proType==='barter'?
-              handleBarderSubmit:
-                proType==='bid'?handleBidSubmit:
-                handilPlaceOrder}>
-                {btnDisable ? "Loading..." : " Place Your Order"}
+              <button
+                disabled={btnDisable}
+                onClick={
+                  proType === "barter"
+                    ? handleBarderSubmit
+                    : proType === "bid"
+                      ? handleBidSubmit
+                      : handilPlaceOrder
+                }
+              >
+                {btnDisable
+                  ? "Loading..."
+                  : selectedPaymentMethod === "credit"
+                    ? "Purchase on Credit"
+                    : "Place Your Order"}
               </button>
             </div>
           </div>

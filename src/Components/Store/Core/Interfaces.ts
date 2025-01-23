@@ -157,8 +157,11 @@ export interface updateProfileInfo{
   storeIcon?:string
   storeBanner?:string
   subscriptionId?:string
-  coupon?:any,
+  coupon?:any;
   plan?:string
+  paymentType?:string;
+  dealerView?:boolean;
+
     
 }
 export interface onlinePayment{

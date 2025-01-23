@@ -31,7 +31,7 @@ import {
   verifyMailApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
- 
+
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set) => ({
@@ -263,7 +263,9 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     wareHouseContactNumber: "",
     wareHouseOwnerName: "",
     subscriptionId: "",
-    plan: ""
+    plan: "",
+    dealerView: false,
+    paymentType: ""
   },
   getProfileInfo: async () => {
     const data = await getProfileInfoApi()
@@ -379,7 +381,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     set(() => ({ storeIconsLoader: data }))
   },
 
- 
+
 }));
 
 export default useMystoreStore;
