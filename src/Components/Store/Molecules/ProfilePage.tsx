@@ -13,7 +13,8 @@ import StoreFooter from "../../Footer/Footer";
 import CouponCardList from "./CouponView";
 import PlansAndBiillings from "./PlansAndBiillings";
 import Loader from "../../Loader/Loader";
-type pages = "info" | "password" | "coupon"|"Plans & billings";
+import { InventoryTable } from "./InventoryTable";
+type pages = "info" | "password" | "coupon"|"Plans & billings"|"inventory"|'dashbord';
 const ProfilePage: React.FC = () => {
   const {
     isOTPmodalVisible,
@@ -307,7 +308,23 @@ const ProfilePage: React.FC = () => {
                         onClick={() => setPageSelector("coupon")}
                       >
                         Coupons
+                      </li> 
+                      {profileData.dealerView&&
+                      <li
+                        style={
+                          pageSelector === "inventory"
+                            ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
+                              }
+                            : {}
+                        }
+                        onClick={() => setPageSelector("inventory")}
+                      >
+                        Inventory
                       </li>
+}
                       <Link
                         style={{
                           textDecoration: "none",
@@ -957,13 +974,15 @@ const ProfilePage: React.FC = () => {
                         </form>
                       </section>
                     </>
-                  ) : (
+                  ) : pageSelector === "inventory"
+                   ?<InventoryTable/>
+                    :
                     pageSelector === "coupon" ? (
                       <CouponCardList coupon={profileData.coupon} />
                     ):pageSelector==='Plans & billings'&&profileData?.role === "Admin" &&
                     
                     <PlansAndBiillings/>
-                  )}
+                  }
                 </main>
               </div>
             </>

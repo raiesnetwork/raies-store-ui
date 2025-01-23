@@ -12,6 +12,7 @@ import {
   DeleteCartApi,
   FetchToCartApi,
   getAddressApi,
+  getInventoryApi,
   getInvoicesApi,
   getProfileInfoApi,
   getShiprocketToken,
@@ -185,6 +186,9 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   getUserOrder: async (subdomain) => {
     const data = await getUserOrderApi(subdomain);
     return data;
+  },getInventory: async (subdomain) => {
+    const data = await getInventoryApi(subdomain);
+    return data;
   },
   createBarterOrder: async (data) => {
     const datas = await createBarterOrderApi(data);
@@ -262,7 +266,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
  wareHouseContactNumber:"",
  wareHouseOwnerName:"",
  subscriptionId:"",
- plan:""
+ plan:"",
+
   },
   getProfileInfo:async()=>{
     const data=await getProfileInfoApi()

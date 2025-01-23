@@ -76,6 +76,7 @@ export interface MystoreStore {
   createBiddingOrder: (hostName: biddingOrder) => Promise<ApiResponce>;
   getStoreIconAndName: (hostName: string|null) => Promise<ApiResponce>;
   getUserOrder: (subDomain:string|null) => Promise<ApiResponce>;
+  getInventory: (subDomain:string|null) => Promise<ApiResponce>;
   getAddress: () => Promise<ApiResponce>;
   setHomeLoader: (data: boolean) => void;
   homeLoader: boolean;
@@ -156,6 +157,8 @@ export interface updateProfileInfo{
   subscriptionId?:string
   coupon?:any,
   plan?:string
+  dealerView?:boolean
+  paymentType?:'Up Front'|'Monthly Payment'|'Credit'|'false'
     
 }
 export interface onlinePayment{
