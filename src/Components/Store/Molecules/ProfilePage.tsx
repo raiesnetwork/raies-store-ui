@@ -310,7 +310,7 @@ const ProfilePage: React.FC = () => {
                       >
                         Coupons
                       </li> 
-                      {profileData.dealerView&&
+                      {/* {profileData.dealerView&& */}
                       <li
                         style={
                           pageSelector === "inventory"
@@ -325,7 +325,7 @@ const ProfilePage: React.FC = () => {
                       >
                         Inventory
                       </li>
-}
+{/* } */}
 {/* {profileData.dealerView&&  */}
                       <li
                         style={
