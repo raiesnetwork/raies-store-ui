@@ -39,7 +39,6 @@ const ProfilePage: React.FC = () => {
     wareHouseOwnerName: profileData.wareHouseOwnerName,
     subscriptionId: profileData.subscriptionId,
   });
-  console.log(profileData);
 
   useEffect(() => {
     if (profileData) {
@@ -138,6 +137,11 @@ const ProfilePage: React.FC = () => {
   };
   //  password Section
   const [pageSelector, setPageSelector] = useState<pages>("info");
+  useEffect(()=>{
+    if(profileData?.dealerView){
+      setPageSelector('dashbord')
+    }
+  },[profileData])
   const [nameSaveBtnVisible, setnameSaveBtnVisible] = useState<boolean>(false);
   const [passwordForm, setPasswordForm] = useState({
     currentPassword: "",
@@ -251,6 +255,22 @@ const ProfilePage: React.FC = () => {
                   </div>
                   <nav>
                     <ul>
+                    {profileData.dealerView&& 
+                      <li
+                        style={
+                          pageSelector === "dashbord"
+                            ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
+                              }
+                            : {}
+                        }
+                        onClick={() => setPageSelector("dashbord")}
+                      >
+                        Dashboard
+                      </li>
+                       }
                       <li
                         style={
                           pageSelector === "info"
@@ -310,7 +330,7 @@ const ProfilePage: React.FC = () => {
                       >
                         Coupons
                       </li> 
-                      {/* {profileData.dealerView&& */}
+                      {profileData.dealerView&&
                       <li
                         style={
                           pageSelector === "inventory"
@@ -325,23 +345,8 @@ const ProfilePage: React.FC = () => {
                       >
                         Inventory
                       </li>
-{/* } */}
-{/* {profileData.dealerView&&  */}
-                      <li
-                        style={
-                          pageSelector === "dashbord"
-                            ? {
-                                backgroundColor: "white",
-                                color: "black",
-                                border: "1px solid black",
-                              }
-                            : {}
-                        }
-                        onClick={() => setPageSelector("dashbord")}
-                      >
-                        Dashboard
-                      </li>
-{/* } */}
+}
+
                       <Link
                         style={{
                           textDecoration: "none",
