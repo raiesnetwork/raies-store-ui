@@ -31,11 +31,11 @@ export const Register: React.FC = () => {
         try{
         setLoading(true);
         e.preventDefault();
-        if(mobileNumber.trim()||username.trim()){
+        if(!mobileNumber.trim()||!username.trim()){
            return toast.error('fill the input fields properly')
         }
         if(userType==='false'){
-           return toast.error('Select a payment type')
+           return toast.error('Select a user type')
         }
         if(userType==='Dealer'&&paymentType==='false'){
             return toast.error('Select a payment type')

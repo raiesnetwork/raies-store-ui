@@ -1,4 +1,4 @@
-import {  useLocation } from "react-router-dom";
+import {  useLocation, useNavigate } from "react-router-dom";
 import useMystoreStore from "../../Store/Core/Store";
 import { toast } from "react-toastify";
 import { useState } from "react";
@@ -10,7 +10,7 @@ export const OtpPage: React.FC = () => {
     const { loginUser, createUser, setUserName, checkLoggedIn } = useMystoreStore((state) => state);
     // const navigate = useNavigate();
     const location = useLocation();
-
+const navigate=useNavigate()
     // Extract necessary data from location state
     const mobileNumber = location.state?.mobileNumber || "";
     const subdomain = location.state?.subdomain || "";
@@ -42,6 +42,7 @@ export const OtpPage: React.FC = () => {
                     toast.error(response.message || "User registration failed");
                 } else {
                     toast.success("User registered successfully!");
+                    navigate('/login')
                     checkLoggedIn(true);
                     setUserName(response.data?.username);
                     localStorage.setItem("user", response.data?.username);
@@ -49,7 +50,7 @@ export const OtpPage: React.FC = () => {
                         "kt-auth-react-st",
                         JSON.stringify({ api_token: response.data?.token })
                     );
-                    window.location.reload() // Redirect to home page on successful registration
+                   // Redirect to home page on successful registration
                 }
             } else {
                 // Login Flow: Verify OTP for existing user
@@ -66,7 +67,7 @@ export const OtpPage: React.FC = () => {
                         JSON.stringify({ api_token: response.data?.token })
                     );
                     toast.success("OTP verified successfully!");
-                    window.location.reload() // Redirect to home page on successful login
+                    // Redirect to home page on successful login
                 }
             }
         } else {
