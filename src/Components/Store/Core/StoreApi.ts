@@ -511,6 +511,7 @@ export const postDownlodReceiptApi = async (id:string) => {
 
 
 
+
 // shprocket api calls
 export const getDeliveryCharge = async (productData: any, token: string) => {
   try {

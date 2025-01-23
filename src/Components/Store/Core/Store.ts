@@ -31,6 +31,7 @@ import {
   verifyMailApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
+ 
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set) => ({
@@ -40,7 +41,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     storeName: "",
     storeIcon: "",
     storeBanner: "",
-    refundAndCancelPolicy:""
+    refundAndCancelPolicy: ""
   },
   AllProducts: [],
   // getAllProduct: async (hostName) => {
@@ -69,13 +70,13 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     minBidPriceCurrency: "",
     maxBidPriceCurrency: "",
     barterProductName: "",
-    packageBreadth:"",
-    packageHeight:"",
-    packageLength:"",
-    packageWidth:"",
-    pickupAddress:{},
-    productWeight:"",
-    productWeightType:""
+    packageBreadth: "",
+    packageHeight: "",
+    packageLength: "",
+    packageWidth: "",
+    pickupAddress: {},
+    productWeight: "",
+    productWeightType: ""
   },
   updateSingleProductData: (data) => {
     set(() => ({ singleProductData: data }));
@@ -249,58 +250,59 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     set((s) => ({ storeIconRefresh: !s.storeIconRefresh }));
 
   },
-  profileData:{
- email:"",
- fullName:"",
- gender:"",
- mobileNumber:"",
- profileImage:"",
- role:"",
- storeName:"",storeBanner:"",
- storeIcon:"",
- wareHouseAddress:"",
- wareHouseContactNumber:"",
- wareHouseOwnerName:"",
- subscriptionId:"",
- plan:""
+  profileData: {
+    email: "",
+    fullName: "",
+    gender: "",
+    mobileNumber: "",
+    profileImage: "",
+    role: "",
+    storeName: "", storeBanner: "",
+    storeIcon: "",
+    wareHouseAddress: "",
+    wareHouseContactNumber: "",
+    wareHouseOwnerName: "",
+    subscriptionId: "",
+    plan: ""
   },
-  getProfileInfo:async()=>{
-    const data=await getProfileInfoApi()
+  getProfileInfo: async () => {
+    const data = await getProfileInfoApi()
     set(() => ({ profileData: data?.data }));
 
     return data
   },
-  updateProfileInfo:async(data)=> {
-    const response=await updateProfileInfoApi(data)
+  updateProfileInfo: async (data) => {
+    const response = await updateProfileInfoApi(data)
     return response
   },
-  modalOpener:"",
-  isOTPmodalVisible:false,
-  setIsOtpModalVisible:(data)=>{
-    set((s) => ({ isOTPmodalVisible: !s.isOTPmodalVisible,modalOpener:data }));
+  modalOpener: "",
+  isOTPmodalVisible: false,
+  setIsOtpModalVisible: (data) => {
+    set((s) => ({ isOTPmodalVisible: !s.isOTPmodalVisible, modalOpener: data }));
 
   },
-  verifyEmail:async(mail)=>{
+  verifyEmail: async (mail) => {
     await verifyMailApi(mail)
   },
-  getSingleProduct:async(id)=>{
-    const data=await getSingleProductDetailsApi(id)
+  getSingleProduct: async (id) => {
+    const data = await getSingleProductDetailsApi(id)
     console.log(data);
-    
-    set(()=>({singleProductData:data?.data
+
+    set(() => ({
+      singleProductData: data?.data
 
     }))
   },
-  postCouponApi:async(code,details)=>{
-    const data=await PostcouponApi(code,details)
+  postCouponApi: async (code, details) => {
+    const data = await PostcouponApi(code, details)
     return data
   },
-  shiprocketToken:"",
-  getShprocketToken:async()=>{
-    const {data}=await getShiprocketToken()
-  set(()=>({shiprocketToken:data?.token}))
-  console.log(data?.token);
-  
+  shiprocketToken: "",
+  getShprocketToken: async () => {
+    const { data } = await getShiprocketToken()
+    set(() => ({ shiprocketToken: data?.token }))
+    console.log(data?.token);
+
   },
 
 
@@ -313,69 +315,71 @@ const useMystoreStore = create<MystoreStore>((set) => ({
       _id: "",
       invoiceNumber: "",
       status: "",
-  
+
       subscription: {
         cardholderName: "",
         city: "",
         region: "",
         state: "",
         storeName: "",
-        UserDetails:{
-          mobile:"",
-          profile:{
-            name:""
+        UserDetails: {
+          mobile: "",
+          profile: {
+            name: ""
           }
         }
       },
-      
+
     }
   ],
-  getInvoice:async()=>{
-  const data=await getInvoicesApi()
-  set(()=>({storeInvoices:data?.data}))
+  getInvoice: async () => {
+    const data = await getInvoicesApi()
+    set(() => ({ storeInvoices: data?.data }))
   },
-  storeInvoiceData:{
+  storeInvoiceData: {
     amount: "",
     createdAt: "",
     dueDate: "",
     _id: "",
     invoiceNumber: "",
     status: "",
-  
+
     subscription: {
       cardholderName: "",
       city: "",
       region: "",
       state: "",
       storeName: "",
-      UserDetails:{
-        mobile:"",
-        profile:{
-          name:""
+      UserDetails: {
+        mobile: "",
+        profile: {
+          name: ""
         }
       }
     },
-   
+
   },
-  setInvoiceData:(data)=> {
-    set(()=>({storeInvoiceData:data}))
-  
+  setInvoiceData: (data) => {
+    set(() => ({ storeInvoiceData: data }))
+
   },
-  postInvoicePayment:async(response, invoiceId, amount)=> {
-  const data =await postInvoicesApi(response, invoiceId, amount)
-  return data
-  },
-  postDownloadReceipt:async(id)=>{
-    const data=await postDownlodReceiptApi(id)
+  postInvoicePayment: async (response, invoiceId, amount) => {
+    const data = await postInvoicesApi(response, invoiceId, amount)
     return data
   },
-  isOpenPlanModal:false,
-  setOpenPlanModal:()=>{
-    set((s)=>({isOpenPlanModal:!s.isOpenPlanModal}))
-  },storeIconsLoader:true,
-  setStoreIconLoader:(data)=>{
-    set(()=>({storeIconsLoader:data}))
-  }
+  postDownloadReceipt: async (id) => {
+    const data = await postDownlodReceiptApi(id)
+    return data
+  },
+  isOpenPlanModal: false,
+  setOpenPlanModal: () => {
+    set((s) => ({ isOpenPlanModal: !s.isOpenPlanModal }))
+  }, storeIconsLoader: true,
+  setStoreIconLoader: (data) => {
+    set(() => ({ storeIconsLoader: data }))
+  },
+
+ 
 }));
 
 export default useMystoreStore;

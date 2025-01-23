@@ -44,8 +44,12 @@ export interface storeData{
     storeBanner:string
     refundAndCancelPolicy:string
 }
+
+// interfaces/UserData.ts
+
 export interface MystoreStore {
   // getAllProduct: (id?: string|null) => Promise<ApiResponce>;
+ 
   AllProducts: respProduct[];
   storeData:storeData;
   singleProductData: respProduct;
@@ -127,7 +131,6 @@ storeIconRefresh:boolean
   setOpenPlanModal:() => void;
   storeIconsLoader:boolean
   setStoreIconLoader  :(d:boolean) => void;
-
 
 
 }
