@@ -14,6 +14,7 @@ import CouponCardList from "./CouponView";
 import PlansAndBiillings from "./PlansAndBiillings";
 import Loader from "../../Loader/Loader";
 import { InventoryTable } from "./InventoryTable";
+import DealerDashboard from "./DealerDashBoard";
 type pages = "info" | "password" | "coupon"|"Plans & billings"|"inventory"|'dashbord';
 const ProfilePage: React.FC = () => {
   const {
@@ -325,6 +326,22 @@ const ProfilePage: React.FC = () => {
                         Inventory
                       </li>
 }
+{/* {profileData.dealerView&&  */}
+                      <li
+                        style={
+                          pageSelector === "dashbord"
+                            ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
+                              }
+                            : {}
+                        }
+                        onClick={() => setPageSelector("dashbord")}
+                      >
+                        Dashboard
+                      </li>
+{/* } */}
                       <Link
                         style={{
                           textDecoration: "none",
@@ -976,6 +993,8 @@ const ProfilePage: React.FC = () => {
                     </>
                   ) : pageSelector === "inventory"
                    ?<InventoryTable/>
+                    :pageSelector === "dashbord"?
+                    <DealerDashboard/>
                     :
                     pageSelector === "coupon" ? (
                       <CouponCardList coupon={profileData.coupon} />
