@@ -12,7 +12,9 @@ import {
   DeleteCartApi,
   FetchToCartApi,
   getAddressApi,
+  getInvoicesApi,
   getProfileInfoApi,
+  getShiprocketToken,
   getSingleProductDetailsApi,
   getStoreIconApi,
   // getAllProductApi,
@@ -20,6 +22,9 @@ import {
   latestProductApi,
   loginUserApi,
   loginWithPasswordApi,
+  PostcouponApi,
+  postDownlodReceiptApi,
+  postInvoicesApi,
   registrationVerify,
   updateCartApi,
   updateProfileInfoApi,
@@ -64,6 +69,13 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     minBidPriceCurrency: "",
     maxBidPriceCurrency: "",
     barterProductName: "",
+    packageBreadth:"",
+    packageHeight:"",
+    packageLength:"",
+    packageWidth:"",
+    pickupAddress:{},
+    productWeight:"",
+    productWeightType:""
   },
   updateSingleProductData: (data) => {
     set(() => ({ singleProductData: data }));
@@ -249,7 +261,8 @@ const useMystoreStore = create<MystoreStore>((set) => ({
  wareHouseAddress:"",
  wareHouseContactNumber:"",
  wareHouseOwnerName:"",
- subscriptionId:""
+ subscriptionId:"",
+ plan:""
   },
   getProfileInfo:async()=>{
     const data=await getProfileInfoApi()
@@ -277,6 +290,91 @@ const useMystoreStore = create<MystoreStore>((set) => ({
     set(()=>({singleProductData:data?.data
 
     }))
+  },
+  postCouponApi:async(code,details)=>{
+    const data=await PostcouponApi(code,details)
+    return data
+  },
+  shiprocketToken:"",
+  getShprocketToken:async()=>{
+    const {data}=await getShiprocketToken()
+  set(()=>({shiprocketToken:data?.token}))
+  console.log(data?.token);
+  
+  },
+
+
+
+  storeInvoices: [
+    {
+      amount: "",
+      createdAt: "",
+      dueDate: "",
+      _id: "",
+      invoiceNumber: "",
+      status: "",
+  
+      subscription: {
+        cardholderName: "",
+        city: "",
+        region: "",
+        state: "",
+        storeName: "",
+        UserDetails:{
+          mobile:"",
+          profile:{
+            name:""
+          }
+        }
+      },
+      
+    }
+  ],
+  getInvoice:async()=>{
+  const data=await getInvoicesApi()
+  set(()=>({storeInvoices:data?.data}))
+  },
+  storeInvoiceData:{
+    amount: "",
+    createdAt: "",
+    dueDate: "",
+    _id: "",
+    invoiceNumber: "",
+    status: "",
+  
+    subscription: {
+      cardholderName: "",
+      city: "",
+      region: "",
+      state: "",
+      storeName: "",
+      UserDetails:{
+        mobile:"",
+        profile:{
+          name:""
+        }
+      }
+    },
+   
+  },
+  setInvoiceData:(data)=> {
+    set(()=>({storeInvoiceData:data}))
+  
+  },
+  postInvoicePayment:async(response, invoiceId, amount)=> {
+  const data =await postInvoicesApi(response, invoiceId, amount)
+  return data
+  },
+  postDownloadReceipt:async(id)=>{
+    const data=await postDownlodReceiptApi(id)
+    return data
+  },
+  isOpenPlanModal:false,
+  setOpenPlanModal:()=>{
+    set((s)=>({isOpenPlanModal:!s.isOpenPlanModal}))
+  },storeIconsLoader:true,
+  setStoreIconLoader:(data)=>{
+    set(()=>({storeIconsLoader:data}))
   }
 }));
 

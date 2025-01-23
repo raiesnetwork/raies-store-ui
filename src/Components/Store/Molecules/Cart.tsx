@@ -9,6 +9,7 @@ import Header from "./Header";
 import { Link } from "react-router-dom";
 import { FaSpinner } from "react-icons/fa";
 import StoreFooter from "../../Footer/Footer";
+import Loader from "../../Loader/Loader";
 
 const StoreCart: React.FC = () => {
   const {
@@ -71,9 +72,13 @@ const StoreCart: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
+<Header />
+<div style={{ flex: 1 }}>
       {cartLoader ? (
-        <div style={{ textAlign: "center" }}>Loading...</div>
+              <Loader/>
+
       ) : (
         <div className="cart-container">
           <h2>Your Cart</h2>
@@ -176,12 +181,8 @@ const StoreCart: React.FC = () => {
           </div>
         </div>
       )}
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
-
+     
+      </div>
       <StoreFooter/>
       </div>
     </>

@@ -21,6 +21,13 @@ export interface respProduct {
   minBidPriceCurrency: string;
   maxBidPriceCurrency: string;
   barterProductName: string;
+  pickupAddress:any
+  productWeight:string;
+  productWeightType:string
+  packageLength:string
+   packageWidth:string
+    packageHeight:string
+     packageBreadth:string
 }
 export interface barterOrder{
   addressId:string
@@ -107,12 +114,30 @@ storeIconRefresh:boolean
   modalOpener:string
   verifyEmail:(mail:string)=>void
   getSingleProduct:(id?:string)=>void
+  postCouponApi:(id?:string,details?:any)=>Promise<any>
+  shiprocketToken:string
+  getShprocketToken:()=>void
+  storeInvoices: storeInvoice[];
+  storeInvoiceData: storeInvoice;
+  setInvoiceData: (data: storeInvoice) => void;
+  postInvoicePayment: (response:any, invoiceId:string, amount:number) => Promise<ApiResponce>;
+  postDownloadReceipt: (id:string) => Promise<ApiResponce>;
+  getInvoice: () => void;
+  isOpenPlanModal:boolean,
+  setOpenPlanModal:() => void;
+  storeIconsLoader:boolean
+  setStoreIconLoader  :(d:boolean) => void;
+
+
+
 }
 export interface createOrder{
   productDetails:[]          
-    totalAmount:string  
+    totalAmount:string |number 
     paymentMethod :string
-    addressId  :string
+    addressId  :string,
+    couponData?:any
+    CourierId:string
     
 }
 export interface updateProfileInfo{
@@ -129,16 +154,19 @@ export interface updateProfileInfo{
   storeIcon?:string
   storeBanner?:string
   subscriptionId?:string
+  coupon?:any,
+  plan?:string
     
 }
 export interface onlinePayment{
   productDetails:[]          
-    totalAmount:string  
+    totalAmount:string  |number
     paymentMethod :string
     addressId  :string,
     // eslint-disable-next-line @typescript-eslint/no-explicit-any
     response:any
-    
+    couponData?:any
+
 }
 export interface ApiResponce {
   [x: string]: boolean;
@@ -161,6 +189,8 @@ export interface myStoreCart {
   maxBidPriceCurrency: string;
   minBidPriceCurrency: string;
   price: string;
+  priceOption?: string;
+
 }
 export interface respStoreCart {
   _id: string;
@@ -187,4 +217,27 @@ export interface respStoreAddress {
   fullAddress: string;
   landmark: string;
   pincode: string;
+}
+
+export interface storeInvoice {
+  _id: string;
+  subscription: {
+    cardholderName: string;
+    storeName: string;
+    region: string;
+    state: string;
+    city: string;
+    UserDetails: {
+      mobile: string;
+      profile: {
+        name: string;
+      };
+    };
+  };
+  amount: string;
+  status: string;
+  createdAt: string;
+  dueDate: string;
+  invoiceNumber: string;
+  
 }

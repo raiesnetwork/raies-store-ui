@@ -3,17 +3,59 @@ import axios from "axios";
 export const API_BASE_URL = import.meta.env.VITE_APP_API_URL;
 
 const createAxiosInstance = () => {
-    const token = localStorage.getItem('kt-auth-react-st');
-    const apiToken = token ? JSON.parse(token)['api_token'] : null;
+  const instance = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
 
-    return axios.create({
-        baseURL: API_BASE_URL,
-        headers: {
-            'Content-Type': 'application/json',
-            Authorization: apiToken ? 'Bearer ' + apiToken : null
-        }
-    });
+  // Add a request interceptor
+  instance.interceptors.request.use(
+    (config) => {
+      const token = localStorage.getItem('users');
+      const apiToken = token ? JSON.parse(token)['api_token'] : null;
+
+      if (apiToken) {
+        config.headers['Authorization'] = `Bearer ${apiToken}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      // Handle request errors
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
+};const createAxiosInstanceForProduct = () => {
+  const instance = axios.create({
+    baseURL: API_BASE_URL,
+    headers: {
+      'Content-Type': 'application/json',
+    },
+  });
+
+  // Add a request interceptor
+  instance.interceptors.request.use(
+    (config) => {
+      const rawToken = localStorage.getItem('store_t');
+      const token = rawToken ? JSON.parse(rawToken) : null;
+
+      if (token) {
+        config.headers['Authorization'] = `Bearer ${token}`;
+      }
+
+      return config;
+    },
+    (error) => {
+      // Handle request errors
+      return Promise.reject(error);
+    }
+  );
+
+  return instance;
 };
 
-
-export { createAxiosInstance };
+export { createAxiosInstance ,createAxiosInstanceForProduct};

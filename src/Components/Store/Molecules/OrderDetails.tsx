@@ -55,7 +55,10 @@ const OrderDetails: React.FC = () => {
 
   return (
     <>
-      <Header />
+      <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
+<Header />
+<div style={{ flex: 1 }}>
       <div className="order_details__page">
         <div className="order_details">
           <div className="order_details-header">
@@ -134,12 +137,9 @@ const OrderDetails: React.FC = () => {
           </div>
         </div>
       </div>
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
+      
 
+      </div>
       <StoreFooter/>
       </div>
     </>

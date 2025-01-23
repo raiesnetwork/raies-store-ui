@@ -1,57 +1,65 @@
-import { BrowserRouter as Router, Routes, Route } from "react-router-dom";
+import {
+  BrowserRouter as Router,
+  Routes,
+  Route,
+  Navigate,
+} from "react-router-dom";
 import Auth from "./Components/Auth/Auth";
 import { MyStore } from "./Components/Store/MyStore";
-import { useEffect, useState } from "react";
 import useMystoreStore from "./Components/Store/Core/Store";
-import { getSubdomain } from "./Utils/Subdomain";
 import { ToastContainer } from "react-toastify";
 import "react-toastify/dist/ReactToastify.css";
-import './App.scss'
+import "./App.scss";
+import { useAuth } from "./Components/Auth/AuthContext";
+import SingleProductView from "./Components/Store/Molecules/SigleViewPage";
+import { Login } from "./Components/Auth/Login/Login";
+import { Register } from "./Components/Auth/Register/Register";
+import { OtpPage } from "./Components/Auth/Otp/Otp";
+import RefundAndCancellationPolicy from "./Components/Footer/RefundAndCancellationPolicy";
+import Loader from "./Components/Loader/Loader";
 
-const { hostname } = window.location;
-let hostName = getSubdomain(hostname);
+import './main.css'
 
 function App() {
-  const { getStoreIconAndName } = useMystoreStore((s) => s);
-  const [loading, setLoading] = useState(true); // Loading state
+  
+  const { storeIconsLoader } = useMystoreStore((s) => s);
 
-  useEffect(() => {
-    const apiHelper = async () => {
-      try {
-        await getStoreIconAndName(hostName);
-      } catch (error) {
-      } finally {
-        setLoading(false); // Set loading to false once data is fetched
-      }
-    };
-    apiHelper();
-  }, [getStoreIconAndName, hostName]);
-
-  if (loading) {
+  if (storeIconsLoader) {
     // Show loader while data is being fetched
     return (
-      <div
-        style={{
-          display: "flex",
-          justifyContent: "center",
-          alignItems: "center",
-          height: "100vh",
-        }}
-      >
-        <div className="loader">Loading...</div>
-      </div>
+      <Loader/>
     );
   }
-
+  const { isAuthenticated } = useAuth() || {};
+  
   return (
     <>
       <Router>
-        <Auth>
-          <Routes>
-            {/* Define different routes for your application */}
-            <Route path="/" element={<MyStore />} />
-          </Routes>
-        </Auth>
+        <Routes>
+          {isAuthenticated ? (
+            <>
+              <Route path="/" element={<MyStore />} />
+              <Route path="/*" element={<Auth />} />
+              <Route path="/login" element={<Navigate to={"/"} />} />
+            </>
+          ) : (
+            <>
+              <Route path="/details/:id" element={<SingleProductView />} />
+
+              <Route path="/login" element={<Login></Login>} />
+              <Route path="/register" element={<Register></Register>} />
+              <Route path="/otp" element={<OtpPage></OtpPage>} />
+              <Route
+                path="/refund-cancellation-policy"
+                element={<RefundAndCancellationPolicy />}
+              />
+              <Route path="/" element={<MyStore />} />
+              <Route path="*" element={<Navigate to="/" />} />
+            </>
+          )}
+
+          {/* Define different routes for your application */}
+        </Routes>
       </Router>
       <ToastContainer />
     </>

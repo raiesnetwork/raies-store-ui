@@ -14,19 +14,19 @@ import { getSubdomain } from "../../../Utils/Subdomain";
 // import { IoLogOut } from "react-icons/io5";
 import { IoLogOutOutline } from "react-icons/io5";
 import { IoBagCheckOutline } from "react-icons/io5";
+import { useAuth } from "../../Auth/AuthContext";
 
 const { hostname } = window.location;
 // eslint-disable-next-line prefer-const
 let subdomain = getSubdomain(hostname);
 const Header: React.FC = () => {
   const {
-    //  userName,
-    logedIn,
-    logout,
+  
     latestProduct,
     storeData,
     // cartData
   } = useMystoreStore((state) => state);
+  const {logout,user}=useAuth()||{}
   const [isDropdownOpen, setIsDropdownOpen] = useState<boolean>(false);
   let navigate = useNavigate();
   const [search, setSearch] = useState<string>("");
@@ -74,7 +74,7 @@ const Header: React.FC = () => {
 
       {/* Right side: Cart, Profile, Login */}
       <div className="header__right">
-        {logedIn === true ? (
+        {user? (
           <>
             {/* <div className="header__icon header__cart">
 

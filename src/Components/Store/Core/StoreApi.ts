@@ -1,4 +1,4 @@
-import { createAxiosInstance } from "../../../Utils/Axios";
+import { createAxiosInstance, createAxiosInstanceForProduct } from "../../../Utils/Axios";
 import {
   barterOrder,
   biddingOrder,
@@ -8,8 +8,9 @@ import {
   updateProfileInfo,
   userStoreCreate,
 } from "./Interfaces";
-
+import axios from "axios";
 const axiosInstance = createAxiosInstance();
+const axiosInstance2 = createAxiosInstanceForProduct();
 
 // export const getAllProductApi = async (hostName?: string | null) => {
 //   try {
@@ -176,7 +177,7 @@ export const latestProductApi = async (
   name: string
 ) => {
   try {
-    const { data } = await axiosInstance.get(
+    const { data } = await axiosInstance2.get(
       `/userstore/auth/latest/${hostName}`,
       { params: { name: name } }
     );
@@ -315,7 +316,7 @@ export const createBiddingOrderApi = async (datas: biddingOrder) => {
 
 export const getStoreIconApi = async (hostName: string | null) => {
   try {
-    const { data } = await axiosInstance.get(
+    const { data } = await axiosInstance2.get(
       `/userstore/auth/nameandicon/${hostName}`
     );
     return data;
@@ -422,10 +423,11 @@ export const passwordChangeApi = async (
   }
 };
 
-
-export const getSingleProductDetailsApi = async (id?:string) => {
+export const getSingleProductDetailsApi = async (id?: string) => {
   try {
-    const { data } = await axiosInstance.get(`/userstore/auth/singleProducts/${id}`);
+    const { data } = await axiosInstance2.get(
+      `/userstore/auth/singleProducts/${id}`
+    );
     return data;
   } catch (error) {
     return {
@@ -435,3 +437,100 @@ export const getSingleProductDetailsApi = async (id?:string) => {
     };
   }
 };
+export const PostcouponApi = async (code?: string, productDetails?: any) => {
+  try {
+    const { data } = await axiosInstance.post(`/storcoupon/apply`, {
+      code,
+      productDetails,
+    });
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong plese try after sometime",
+      data: error,
+    };
+  }
+};
+
+export const getShiprocketToken = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/store/shiprocket/token`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong plese try after sometime",
+      data: error,
+    };
+  }
+};
+
+
+
+
+
+
+
+export const getInvoicesApi = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/store/invoice`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
+export const postInvoicesApi = async (response:any, invoiceId:string, amount:number) => {
+  try {
+    const { data } = await axiosInstance.post(`/store/invoice`,{response, invoiceId, amount});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
+
+export const postDownlodReceiptApi = async (id:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/store/downloadreceipt`,{id});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
+
+
+
+
+
+// shprocket api calls
+export const getDeliveryCharge = async (productData: any, token: string) => {
+  try {
+    const { data } = await axios.get(
+      "https://apiv2.shiprocket.in/v1/external/courier/serviceability/",
+
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: productData,
+      }
+    );
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong plese try after sometime",
+      data: error,
+    };
+  }
+};
+

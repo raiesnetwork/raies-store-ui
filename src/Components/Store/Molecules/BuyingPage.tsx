@@ -9,6 +9,8 @@ import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
 import StoreFooter from "../../Footer/Footer";
+import { getDeliveryCharge } from "../Core/StoreApi";
+import { fileToBase64 } from "../../../Utils/Base64";
 
 const CheckoutPage: React.FC = () => {
   const {
@@ -21,21 +23,37 @@ const CheckoutPage: React.FC = () => {
     setIsOpenSelectAddressModal,
     createOrdr,
     FetchToCart,
+    postCouponApi,
+    shiprocketToken,
+    setSelectedAddress,
+    createBiddingOrder,
+    createBarterOrder
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
-    useState<string>("");
+    useState<string>("online");
+  const [deliveryDetails, setDeliveryDetails] = useState<any>();
+  const [CourierId, setCourierId] = useState<string>('');
   const location = useLocation();
-  const { details } = location.state || {};
+  const { details,proType } = location.state || {};
   const [btnDisable, setBtndesable] = useState<boolean>(false);
   // const [loading, setLoading] = useState<boolean>(false);
   const [refresh, setRefresh] = useState<boolean>(false);
+  const [couponAmount, setCouponAmount] = useState<{
+    amount: number;
+    type: string;
+    couponId: string;
+  }>({ amount: 0, type: "", couponId: "" });
 
-  const totalPrice = details.reduce(
+  let totalPrice = details.reduce(
     (total: number, product: respStoreCart) =>
-      total + Number(product.productDetails.price) * product.quantity,
+      product.productDetails.priceOption !=='free'?
+      total + Number(product.productDetails.price) * product.quantity:0,
     0
   );
-
+  const [totalAmount, setTotalAmount] = useState(0);
+  useEffect(() => {
+    setTotalAmount(totalPrice);
+  }, [totalPrice]);
   const [isOpenAddressModal, setAddressModal] = useState<boolean>(false);
   const OpenAddressModal = () => {
     setAddressModal(true);
@@ -52,9 +70,35 @@ const CheckoutPage: React.FC = () => {
   }, [refresh]);
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
+
     if (selectedAddress._id.trim() && selectedPaymentMethod.trim()) {
       setBtndesable(true);
-      const productDetais = details.map((val: respStoreCart) => {
+      const diamentions = details.reduce((agg: {
+            weight: number;
+            length: number;
+            breadth: number;
+            height: number;
+          },
+          item: { productDetails: any } ) => {
+          const product = item.productDetails;
+          agg.weight += parseFloat(product.productWeight || 0);
+          agg.length = Math.max(
+            agg.length,
+            parseFloat(product.packageLength || 0)
+          );
+          agg.breadth = Math.max(
+            agg.breadth,
+            parseFloat(product.packageBreadth || 0)
+          );
+          agg.height = Math.max(
+            agg.height,
+            parseFloat(product.packageHeight || 0)
+          );
+          return agg;
+        },
+        { weight: 0, length: 0, breadth: 0, height: 0 }
+      );
+      const productDetais = details?.map((val: respStoreCart) => {
         return {
           _id: val?.productDetails?._id,
           quantity: val?.quantity,
@@ -62,16 +106,19 @@ const CheckoutPage: React.FC = () => {
           mainImage: val?.productDetails?.mainImage,
           cartId: val?._id,
           price: val?.productDetails?.price,
+          diamentions
         };
       });
 
-      const totalAmountWithDelivery = totalPrice + 80;
+      const totalAmountWithDelivery = totalPrice + deliveryDetails;
       if (selectedPaymentMethod === "offline") {
         const data = await createOrdr({
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
-          totalAmount: totalAmountWithDelivery,
+          totalAmount: totalAmount + deliveryDetails,
+          couponData: couponAmount,
+          CourierId
         });
         setBtndesable(false);
 
@@ -84,7 +131,9 @@ const CheckoutPage: React.FC = () => {
         } else {
           setBtndesable(false);
           await FetchToCart();
-          navigate("/success", { state: { orderDetails: details } });
+          console.log(data);
+          
+          navigate("/success", { state: { orderDetails: details ,orderId:data.data.orderData?.order_id} });
         }
       } else {
         setBtndesable(false);
@@ -95,11 +144,11 @@ const CheckoutPage: React.FC = () => {
           const { order } = await createRazorpayOrder(totalAmountWithDelivery);
 
           const options = {
-            key: "rzp_test_7TGBri3PsjHg77",
+            key: import.meta.env.VITE_APP_RAZOR_PAY,
             amount: order.amount,
             currency: "INR",
             name: "STORE CART PURCHASE",
-            description: "Fund for the campaign",
+            description: "",
             order_id: order.id,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
             handler: async (response: any) => {
@@ -110,7 +159,8 @@ const CheckoutPage: React.FC = () => {
                   addressId: selectedAddress._id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
-                  totalAmount: totalAmountWithDelivery,
+                  totalAmount: totalAmount + deliveryDetails,
+                  couponData: couponAmount,
                 };
                 await verifyRazorpayPayment(data);
 
@@ -148,7 +198,9 @@ const CheckoutPage: React.FC = () => {
           toast.error("Payment failed. Please try again.");
         }
         await FetchToCart();
-        navigate("/success", { state: { orderDetails: details } });
+        navigate("/success", { state: { orderDetails: details ,
+          // orderId:data.data.orderId
+        } });
       }
     } else {
       setBtndesable(false);
@@ -158,162 +210,517 @@ const CheckoutPage: React.FC = () => {
       );
     }
   };
-  console.log('addree',addressData);
-  
+  const [couponCode, setCouponCode] = useState<string>("");
+  const [couponCodeErr, setCouponCodeErr] = useState<string>("");
+  const [CouponBtnDisable, setCouponBtnDesable] = useState<boolean>(false);
+
+  const handileCoupon = async () => {
+    if (couponCode.trim()) {
+      setCouponBtnDesable(true);
+      const data = await postCouponApi(couponCode, details);
+      setCouponBtnDesable(false);
+      if (data.error) {
+        setCouponCodeErr(data?.message);
+      } else {
+        if (data?.data?.type === "fixed") {
+          setCouponAmount({
+            amount: data?.data?.amount,
+            type: "fixed",
+            couponId: data?.data?.couponId,
+          });
+          totalPrice = Math.max(0, totalPrice - (data?.data?.amount || 0));
+          setTotalAmount(totalPrice);
+        } else if (data?.data?.type === "percentage") {
+          totalPrice -= totalPrice * (data?.data?.amount / 100);
+          setTotalAmount(totalPrice);
+          setCouponAmount({
+            amount: data?.data?.amount,
+            type: "percentage",
+            couponId: data?.data?.couponId,
+          });
+        }
+        setCouponCodeErr("");
+
+        toast.success("Coupon Apply Successfully");
+      }
+    } else {
+      setCouponCodeErr("Enter a valid coupon code");
+    }
+  };
+  const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
+  const getDeliveryCharges = async () => {
+    const aggregatedDetails = details.reduce(
+      (
+        agg: {
+          weight: number;
+          length: number;
+          breadth: number;
+          height: number;
+        },
+        item: { productDetails: any }
+      ) => {
+        const product = item.productDetails;
+        agg.weight += parseFloat(product.productWeight || 0);
+        agg.length = Math.max(
+          agg.length,
+          parseFloat(product.packageLength || 0)
+        );
+        agg.breadth = Math.max(
+          agg.breadth,
+          parseFloat(product.packageBreadth || 0)
+        );
+        agg.height = Math.max(
+          agg.height,
+          parseFloat(product.packageHeight || 0)
+        );
+        return agg;
+      },
+      { weight: 0, length: 0, breadth: 0, height: 0 }
+    );
+
+    const payload = {
+      pickup_postcode:
+        details[0]?.productDetails?.pickupAddress?.Zip || "673504",
+      delivery_postcode: selectedAddress.pincode,
+      cod: selectedPaymentMethod === "offline" ? 1 : 0, // 1 for COD, 0 for prepaid
+      weight: aggregatedDetails.weight,
+      length: aggregatedDetails.length,
+      breadth: aggregatedDetails.breadth,
+      height: aggregatedDetails.height,
+    };
+    try {
+      const data = await getDeliveryCharge(payload, shiprocketToken);
+      const couriers = data.data.available_courier_companies;
+      const getBestCourier = (couriers: any[]) => {
+        return couriers.reduce((best, current) => {
+          if (
+            (current.total_charge < best.total_charge &&
+              current.etd < best.etd) ||
+            current.recommendation_score > best.recommendation_score
+          ) {
+            return current;
+          }
+          return best;
+        }, couriers[0]);
+      };
+      const bestCourier = getBestCourier(couriers);
+      const freightCharge = parseFloat(bestCourier.freight_charge || 0);
+      const codCharges = parseFloat(bestCourier.cod_charges || 0);
+      const otherCharges = parseFloat(bestCourier.other_charges || 0);
+      const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
+      setExpectedDeliveryDate(bestCourier?.etd);
+      setDeliveryDetails(totalDeliveryCharge);
+      console.log("Selected Best Courier:", bestCourier.id);
+      setCourierId(bestCourier?.id)
+    } catch (error) {
+      console.log(error, "delivery charges err");
+    }
+  };
+
+  console.log(deliveryDetails);
+
+  useEffect(() => {
+    if (details && selectedAddress) {
+      getDeliveryCharges();
+    }
+  }, [details, selectedAddress, selectedPaymentMethod]);
+
+  useEffect(() => {
+    if (addressData?.length > 0) {
+      setSelectedAddress(addressData[0]);
+    }
+  }, [addressData]);
+
+ const [formData, setFormData] = useState({
+    addressId: selectedAddress._id,
+    productImage: "",
+    productId: details[0]?.productDetails?._id,
+    // quantity:"1"
+    CourierId:"",
+    deliveryCharge:0,
+    biddingAmount: "0",
+  });
+  const handleImageUpload = async (e: React.ChangeEvent<HTMLInputElement>) => {
+    const file = e.target.files?.[0];
+    if (file) {
+      if (!file.type.startsWith("image/")) {
+        toast.error("Only image files are allowed");
+        return;
+      }
+
+      if (file.size > 1 * 1024 * 1024) {
+        toast.error("Image must be 1MB or less");
+        return;
+      }
+
+      const base64 = await fileToBase64(file);
+      setFormData({
+        ...formData,
+        productImage: base64,
+      });
+      toast.error(null);
+    }
+  };
+  useEffect(()=>{
+if (proType==='barter') {
+  setFormData((prev)=>{
+    return{
+      addressId:selectedAddress._id,
+      CourierId:CourierId,
+      deliveryCharge:deliveryDetails,
+      productId:details[0]?.productDetails?._id,
+    productImage:prev?.productImage,
+    biddingAmount:""
+    }
+  })
+}else if(proType==='bid'){
+  setFormData((prev)=>{
+    return{
+      addressId:selectedAddress._id,
+      CourierId:CourierId,
+      deliveryCharge:deliveryDetails,
+      productId:details[0]?.productDetails?._id,
+    productImage:prev?.productImage,
+    biddingAmount:prev?.biddingAmount
+    }
+  })
+}
+  },[proType,selectedAddress,deliveryDetails,CourierId])
+
+  const handleBarderSubmit = async (e: React.FormEvent) => {
+   
+    e.preventDefault();
+    
+    if (formData.productImage.trim()&&selectedAddress._id.trim()) {
+      if (CourierId.trim()&&!deliveryDetails) {
+       return toast.error('We cant fetch delivery details plese try after some time.')
+      }
+      try {
+        const data = await createBarterOrder(formData);
+
+        if (data.error) {
+          
+          return toast.error(
+            "We're sorry, but there was a problem creating your barter order. Please try again in a few minutes."
+          );
+        } else {
+          if (data.data === "exceed") {
+            return toast.error(
+              "This product is currently unavailable. Please check back later for restock updates!"
+            );
+          } else {
+           
+            navigate("/success", { state: { orderDetails: details ,orderId:""} });
+
+          }
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (e) {
+        toast.error(
+          "We couldn't submit your form due to an error. Please check your information and try again."
+        );
+      }
+    }else{
+      toast.error(
+        "Please select an exchange image and provide the delivery address."
+      );
+      
+    }
+  };
+  const handleChange = (
+    e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement>
+  ) => {
+    const { name, value } = e.target;
+    setFormData({
+      ...formData,
+      [name]: value,
+    });
+  };
+
+  const handleBidSubmit = async (e: React.FormEvent) => {
+    
+    e.preventDefault();
+    if (formData?.biddingAmount.trim()) {
+      if ( formData?.biddingAmount < details[0]?.productDetails.minBidPrice ||
+        formData?.biddingAmount > details[0]?.productDetails.maxBidPrice) {
+          toast.error(`Bid amount must in bitween ${details[0]?.productDetails.minBidPrice}-${details[0]?.productDetails.maxBidPrice}`)
+        return
+      }
+      if (!CourierId.trim()&&!deliveryDetails) {
+        return toast.error('We cant fetch delivery details plese try after some time.')
+       }
+      try {
+        const data = await createBiddingOrder(formData);
+        if (data.error) {
+         
+          return toast.error(
+            "We're sorry, but there was a problem creating your bid order. Please try again in a few minutes."
+          );
+        } else {
+          if (data.data === "exceed") {
+            return toast.error(
+              "This product is currently unavailable. Please check back later for restock updates!"
+            );
+          }
+          navigate("/success", { state: { orderDetails: details ,orderId:""} });
+        }
+        // eslint-disable-next-line @typescript-eslint/no-unused-vars
+      } catch (error) {
+       
+        toast.error(
+          "We couldn't submit your form due to an error. Please check your information and try again."
+        );
+      }
+    }else{
+      toast.error(
+        "Please enter bid  amount and provide the delivery address."
+      );
+      
+    }
+  };
   return (
     <>
-      <Header />
-      <div className="checkout-page">
-        {/* Delivery Address Section */}
-        <div className="section address-section">
-          <div className="section-header">1. Delivery Address</div>
-          <div className="address-details">
-            {selectedAddress._id && (
-              <>
-                <div className="checkout-page-address-details">
-                  <p>
-                    <span>{selectedAddress.fullName}</span>
-                  </p>
-                  <p>{selectedAddress.fullAddress}</p>
-                  <p>
-                    {selectedAddress.landmark},{selectedAddress.pincode}
-                  </p>
-                  <p>{selectedAddress.mobileNumber}</p>
-                </div>
-                <button onClick={() => setIsOpenSelectAddressModal()}>
-                  Change
-                </button>
-              </>
-            )}
-            {!addressData?.length && !selectedAddress._id && (
-              <button onClick={setIsOpenSelectAddressModal}>
-                Add new Address
-              </button>
-            )}
-            {addressData?.length && !selectedAddress._id && (
-              <button onClick={setIsOpenSelectAddressModal}>
-                Select Address
-              </button>
-            )}
-          </div>
-        </div>
-
-        {/* Payment Method Section */}
-        <div className="section payment-section">
-          <div className="section-header">2. Payment Method</div>
-          <div className="payment-methods">
-            <div>
-              <label>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="online"
-                  checked={selectedPaymentMethod === "online"}
-                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                />
-                Online Payment
-              </label>
-              <label style={{ marginLeft: "20px" }}>
-                <input
-                  type="radio"
-                  name="payment"
-                  value="offline"
-                  checked={selectedPaymentMethod === "offline"}
-                  onChange={(e) => setSelectedPaymentMethod(e.target.value)}
-                />
-                Pay on Delivery (Cash)
-              </label>
-            </div>
-          </div>
-        </div>
-
-        {/* Product Review Section */}
-        <div className="section product-review-section">
-          <div className="section-header">3. Review Items and Delivery</div>
-          <div className="product-list">
-            <div
-              style={{
-                overflowY: "scroll",
-                width: "100%",
-                display: "flex",
-                flexDirection: "column",
-                flexWrap: "wrap",
-              }}
-            >
-              '
-              {details?.length &&
-                details?.map((product: respStoreCart) => (
+      <div
+        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
+      >
+        <Header />
+        <div style={{ flex: 1 }}>
+          <div className="checkout-page">
+            {/* Delivery Address Section */}
+            <div className="section address-section">
+              <div className="section-header">1. Delivery Address</div>
+              <div className="address-details">
+                {selectedAddress._id && (
                   <>
-                    <hr key={product._id} />
-
-                    <div
-                      style={{
-                        display: "flex",
-                        alignItems: "center",
-                        justifyContent: "space-between",
-                        gap: "15px",
-
-                        width: "100%",
-                      }}
-                    >
-                      <img
-                        style={{
-                          maxWidth: "100px",
-                          marginRight: "20px",
-                          marginBottom: "5px",
-                        }}
-                        src={product.productDetails.mainImage}
-                        alt={product.productDetails.productName}
-                      />
-                      <div className="product-details">
-                        <h4>{product.productDetails.productName}</h4>
-                        <p>Price: ₹{product.productDetails.price}.00</p>
-                        {/* <p>Delivery: {product.deliveryDate}</p> */}
-                      </div>
-                      <div className="quantity">
-                        <p>Qty: {product.quantity}</p>
-                      </div>
+                    <div className="checkout-page-address-details">
+                      <p>
+                        <span>{selectedAddress.fullName}</span>
+                      </p>
+                      <p>{selectedAddress.fullAddress}</p>
+                      <p>
+                        {selectedAddress.landmark},{selectedAddress.pincode}
+                      </p>
+                      <p>{selectedAddress.mobileNumber}</p>
                     </div>
-                    <hr />
+                    <button onClick={() => setIsOpenSelectAddressModal()}>
+                      Change
+                    </button>
                   </>
-                ))}
+                )}
+                {!addressData?.length && !selectedAddress._id && (
+                  <button onClick={setIsOpenSelectAddressModal}>
+                    Add new Address
+                  </button>
+                )}
+                {addressData?.length && !selectedAddress._id && (
+                  <button onClick={setIsOpenSelectAddressModal}>
+                    Select Address
+                  </button>
+                )}
+              </div>
+            </div>
+
+            {/* Payment Method Section */}
+            <div className="section payment-section">
+              <div className="section-header">
+                {
+                  proType==='barter'?
+                  '2. Select Barter Product image':
+                  proType==='bid'?
+                  '2. Enter Bid Amount':
+                  '2. Payment Method'
+                }
+                </div>
+              <div className="payment-methods">
+                {
+                  proType==='barter'?
+                  <input
+                    type="file"
+                    id="productImage"
+                    name="productImage"
+                    // ref={ProductImageRef}
+                    onChange={handleImageUpload}
+                    // className={`form-control ${
+                    //   errors.productImage ? "is-invalid" : ""
+                    // }`}
+                  />:proType==='bid'?
+                  <input
+                  type="number"
+                  id="biddingAmount"
+                  value={formData.biddingAmount}
+                  name="biddingAmount"
+                  onChange={handleChange}
+                  // className={`form-control ${
+                  //   errors.biddingAmount ? "is-invalid" : ""
+                  // }`}
+                />
+                  :
+                <div>
+                  <label>
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="online"
+                      checked={selectedPaymentMethod === "online"}
+                      onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                      />
+                    Online Payment
+                  </label>
+                  <label style={{ marginLeft: "20px" }}>
+                    <input
+                      type="radio"
+                      name="payment"
+                      value="offline"
+                      checked={selectedPaymentMethod === "offline"}
+                      onChange={(e) => setSelectedPaymentMethod(e.target.value)}
+                      />
+                    Pay on Delivery (Cash)
+                  </label>
+                </div>
+                    }
+              </div>
+            </div>
+
+            {/* Product Review Section */}
+            <div className="section product-review-section">
+              <div className="section-header">3. Review Items and Delivery</div>
+              <div className="product-list">
+                <div
+                  style={{
+                    overflowY: "scroll",
+                    width: "100%",
+                    display: "flex",
+                    flexDirection: "column",
+                    flexWrap: "wrap",
+                  }}
+                >
+                  '
+                  {details?.length &&
+                    details?.map((product: respStoreCart) => (
+                      <>
+                        <hr key={product._id} />
+
+                        <div
+                          style={{
+                            display: "flex",
+                            alignItems: "center",
+                            justifyContent: "space-between",
+                            gap: "15px",
+
+                            width: "100%",
+                          }}
+                        >
+                          <img
+                            style={{
+                              maxWidth: "100px",
+                              marginRight: "20px",
+                              marginBottom: "5px",
+                            }}
+                            src={product.productDetails.mainImage}
+                            alt={product.productDetails.productName}
+                          />
+                          <div className="product-details">
+                            <h4>{product.productDetails.productName}</h4>
+                            <p>Price: ₹{product.productDetails.price}.00</p>
+                            {/* <p>Delivery: {product.deliveryDate}</p> */}
+                          </div>
+                          <div className="quantity">
+                            <p>Qty: {product.quantity}</p>
+                          </div>
+                        </div>
+                        <hr />
+                      </>
+                    ))}
+                </div>
+              </div>
+            </div>
+            {/* coupon section */}
+{!proType&&
+            <div className="section order-summary">
+              <div className="section-header">Apply Coupon</div>
+              <div
+                style={{
+                  display: "flex",
+                  alignItems: "center",
+                  justifyContent: "center",
+                  gap: "10px",
+                }}
+              >
+                <input
+                  style={{
+                    width: "85%",
+                    height: "35px",
+                    borderRadius: "5px",
+                    outline: "none",
+                    border: "1px solid",
+                  }}
+                  value={couponCode}
+                  placeholder="Enter coupon code"
+                  onChange={(e) => setCouponCode(e.target.value)}
+                />
+                <button
+                  style={{
+                    width: "15%",
+                  }}
+                  onClick={handileCoupon}
+                >
+                  {CouponBtnDisable ? "Applying..." : "Apply"}
+                </button>
+              </div>
+              <div
+                style={{
+                  color: "red",
+                }}
+              >
+                {couponCodeErr}
+              </div>
+            </div>
+            }
+            {/* Order Summary Section */}
+            <div className="section order-summary">
+              <>
+                <div className="summary-row">
+                  <span>Expected delivery:</span>
+                  <span>{expetedDeliveryData}</span>
+                </div>
+                {!proType&&
+                  <div className="summary-row">
+                  <span>Items:</span>
+                  <span>₹{totalPrice}</span>
+                </div>}
+                <div className="summary-row">
+                  <span>Delivery:</span>
+                  <span>{deliveryDetails || 0}</span>
+                </div>
+                {!proType&&
+                  <div className="summary-row">
+                  <span>Discount Coupon:</span>
+                  <span>{couponAmount.amount}</span>
+                </div>}
+                <div className="summary-row">
+                  <span>Total:</span>
+                  <span className="total-price">
+                    ₹{proType==='bid'?parseFloat(formData?.biddingAmount)??0+ deliveryDetails??0: totalAmount + deliveryDetails}
+                  </span>
+                </div>
+              </>
+
+              <button disabled={btnDisable} onClick={proType==='barter'?
+              handleBarderSubmit:
+                proType==='bid'?handleBidSubmit:
+                handilPlaceOrder}>
+                {btnDisable ? "Loading..." : " Place Your Order"}
+              </button>
             </div>
           </div>
+          {isOpenAddressModal && (
+            <AddressModal closeModal={closeAddressModal} />
+          )}
+          {isOpenselectAddressModal && (
+            <AddressComponent opencreateAddressModal={OpenAddressModal} />
+          )}
         </div>
-
-        {/* Order Summary Section */}
-        <div className="section order-summary">
-          <>
-            <div className="summary-row">
-              <span>Items:</span>
-              <span>₹{totalPrice}</span>
-            </div>
-            <div className="summary-row">
-              <span>Delivery:</span>
-              <span>₹80.00</span>
-            </div>
-            <div className="summary-row">
-              <span>Total:</span>
-              <span className="total-price">₹{totalPrice + 80}</span>
-            </div>
-          </>
-
-          <button disabled={btnDisable} onClick={handilPlaceOrder}>
-            {btnDisable ? "Loading..." : " Place Your Order"}
-          </button>
-        </div>
-      </div>
-      {isOpenAddressModal && <AddressModal closeModal={closeAddressModal} />}
-      {isOpenselectAddressModal && (
-        <AddressComponent opencreateAddressModal={OpenAddressModal} />
-      )}
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
-
-      <StoreFooter/>
+        <StoreFooter />
       </div>
     </>
   );

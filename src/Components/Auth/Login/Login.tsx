@@ -8,13 +8,14 @@ import { Link, useNavigate } from "react-router-dom";
 import useMystoreStore from "../../Store/Core/Store";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { MdErrorOutline } from "react-icons/md";
+import { useAuth } from "../AuthContext";
 
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 console.log("ss",subdomain);
 
 export const Login: React.FC = () => {
-
+const {login}=useAuth()||{}
     const [mobileNumber, setMobileNumber] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false); // Spinner state
     const [error, setError] = useState<boolean>(false);
@@ -22,9 +23,9 @@ export const Login: React.FC = () => {
     const [password, setPassword] = useState<string>("");
     const [checkBox, setCheckBox] = useState<boolean>(false);
     const {
-        setUserName,
+     
         verifyNumber,
-        checkLoggedIn,
+        
         loginWithPassword,
         storeData
     } = useMystoreStore((state) => state);
@@ -43,21 +44,20 @@ export const Login: React.FC = () => {
 
         if (mobileNumber.trim() && password.trim() && mobileNumber.length > 7) {
             const response = await loginWithPassword(mobileNumber, password, subdomain);
-            console.log("s", response);
 
             setLoading(false); // Stop spinner once response is received
             if (response.error) {
                 setError(true);
                 setErrorMsg(response.message);
             } else {
-                checkLoggedIn(true);
-                setUserName(response.data?.username);
-                localStorage.setItem("user", response.data?.username);
-                localStorage.setItem(
-                    "kt-auth-react-st",
-                    JSON.stringify({ api_token: response.data?.token })
-                );
-            window.location.reload()
+                const credentials={
+                    username:response.data?.username,
+                    api_token: response.data?.token,
+
+                }
+               
+                    login(credentials);
+                
             }
         } else {
             setLoading(false); // Stop spinner if the form validation fails
@@ -88,7 +88,7 @@ export const Login: React.FC = () => {
             <Header />
             <div className="login">
                 <div className="login__header">
-                 {`WELCOME TO ${storeData.storeName.toUpperCase()}`}
+                 {`WELCOME TO ${storeData?.storeName?.toUpperCase()}`}
                 </div>
                 <div className="login__header_login">
                     SIGN IN

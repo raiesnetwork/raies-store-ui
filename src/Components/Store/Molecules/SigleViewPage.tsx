@@ -12,18 +12,20 @@ import { FaShoppingCart } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
 import StoreFooter from "../../Footer/Footer";
+import { useAuth } from "../../Auth/AuthContext";
+import Loader from "../../Loader/Loader";
 const SingleProductView: React.FC = () => {
   const {id}=useParams()
   
   const {
     addressSupparator,
     addressSupparatorBarter,
-    setaddressSupparatorBarter,
-    setAddressSuparator,
+    // setaddressSupparatorBarter,
+    // setAddressSuparator,
     isOpenselectAddressModal,
     OpenAddressModal,
     isOpenAddressModal,
-    logedIn,
+   
     FetchToCart,
     AddToCart,
     isOpenBarteModal,
@@ -46,9 +48,9 @@ const SingleProductView: React.FC = () => {
   const [year, month, day] = singleProductData?.endDate.split("-");
   const lastDate = `${day}-${month}-${year}`;
   const [disable, setDisable] = useState<boolean>(false);
-
+const {isAuthenticated}=useAuth()||{}
   const handileCart = async (id: string, count: number, userId: string) => {
-    if (logedIn) {
+    if (isAuthenticated) {
       setDisable(true);
       const data = await AddToCart(id, count, userId);
       setDisable(false);
@@ -73,7 +75,11 @@ const SingleProductView: React.FC = () => {
 
   return (
     <>
+        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+
       <Header />
+      <div style={{ flex: 1 }}>
+
       {singleProductData._id ? (
         <>
           <div className="single-product-container">
@@ -195,7 +201,7 @@ const SingleProductView: React.FC = () => {
                 <div className="purchase-btns">
                   {singleProductData.priceOption === "barter" && (
                     <>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setOpenBarterModal();
                           setaddressSupparatorBarter(true);
@@ -204,7 +210,27 @@ const SingleProductView: React.FC = () => {
                         {" "}
                         <LiaExchangeAltSolid />
                         Exchange
-                      </button>
+                      </button> */}
+                      <Link
+                          style={{ textDecoration: "none" }}
+                          to="/buy"
+                          state={{
+                            details: [
+                              {
+                                id: singleProductData._id,
+                                quantity: 1,
+                                productDetails: singleProductData,
+                              },
+                            ],
+                            type: "single",
+                            proType:'barter'
+                          }}
+                        >
+                          <button>
+                          <LiaExchangeAltSolid />
+                          Exchange
+                          </button>
+                        </Link>
                     </>
                   )}
                   {singleProductData.priceOption === "free" &&
@@ -283,14 +309,34 @@ const SingleProductView: React.FC = () => {
                     )}
                   {singleProductData.priceOption === "bidding" && (
                     <>
-                      <button
+                      {/* <button
                         onClick={() => {
                           setOpenBiddingModal();
                           setAddressSuparator(true);
                         }}
                       >
                         Start Auction
-                      </button>
+                      </button> */}
+                      <Link
+                          style={{ textDecoration: "none" }}
+                          to="/buy"
+                          state={{
+                            details: [
+                              {
+                                id: singleProductData._id,
+                                quantity: 1,
+                                productDetails: singleProductData,
+                              },
+                            ],
+                            type: "single",
+                            proType:'bid'
+                          }}
+                        >
+                          <button>
+                          <LiaExchangeAltSolid />
+                          Start Auction
+                          </button>
+                        </Link>
                     </>
                   )}
                 </div>
@@ -312,22 +358,17 @@ const SingleProductView: React.FC = () => {
             <AddressComponentModal opencreateAddressModal={OpenAddressModal} />
           )}
 
-          {isOpenBarteModal && <BarterModal />}
-          {isOpenBiddingModal && <BiddingModal />}
+          {isOpenBarteModal && <BarterModal product={singleProductData} />}
+          {isOpenBiddingModal && <BiddingModal product={singleProductData} />}
         </>
       ) : (
         <>
-          <div style={{ textAlign: "center" }}>
-            Loading...
-          </div>
+          <Loader/>
         </>
       )}
-      <div style={{
-        position:"fixed",
-        bottom:0,
-        width:"100%"
-      }}>
+      
 
+      </div>
       <StoreFooter/>
       </div>
     </>
