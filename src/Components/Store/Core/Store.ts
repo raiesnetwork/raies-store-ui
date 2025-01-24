@@ -32,10 +32,13 @@ import {
   verifyMailApi,
   verifyNumberApi,
   verifyRazorpayPaymentApi,
+  getDealerInvoicesApi,
+  createRazorpayApi,
+  dealerPaymentApi
 
 } from "./StoreApi";
 
-const useMystoreStore = create<MystoreStore>((set) => ({
+const useMystoreStore = create<MystoreStore>((set,get) => ({
   storeIconRefresh: false,
   onlinePaymenterror: "",
   storeData: {
@@ -187,7 +190,7 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   getUserOrder: async (subdomain) => {
     const data = await getUserOrderApi(subdomain);
     return data;
-  },getInventory: async (subdomain) => {
+  }, getInventory: async (subdomain) => {
     const data = await getInventoryApi(subdomain);
     return data;
   },
@@ -383,6 +386,35 @@ const useMystoreStore = create<MystoreStore>((set) => ({
   }, storeIconsLoader: true,
   setStoreIconLoader: (data) => {
     set(() => ({ storeIconsLoader: data }))
+  },
+
+  dealerInvoices: [],
+  fetchDealerInvoices: async () => {
+    try {
+      const data = await getDealerInvoicesApi();
+
+      set({ dealerInvoices: data });
+    } catch (error) {
+      console.log(error)
+    }
+  },
+  createDealerPayment: async (amount: number) => {
+    try {
+      const { order } = await createRazorpayApi(amount)
+      return order;
+    } catch (error: any) {
+      console.log(error)
+    }
+  },
+
+  dealerPayment: async (response: any, invoiceId: string, amount: number) => {
+    try {
+      await dealerPaymentApi(response, invoiceId, amount);
+      await get().fetchDealerInvoices();
+
+    } catch (error: any) {
+      console.log(error)
+    }
   },
 
 

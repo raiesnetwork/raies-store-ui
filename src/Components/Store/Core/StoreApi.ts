@@ -284,7 +284,7 @@ export const getUserOrderApi = async (subdomain: string | null) => {
       data: error,
     };
   }
-};export const getInventoryApi = async (subdomain: string | null) => {
+}; export const getInventoryApi = async (subdomain: string | null) => {
   try {
     const { data } = await axiosInstance.get(`/storuser/inventory/${subdomain}`);
     return data;
@@ -475,6 +475,34 @@ export const getShiprocketToken = async () => {
       data: error,
     };
   }
+}
+export const getDealerInvoicesApi = async () => {
+  try {
+    const { data } = await axiosInstance.get(`/store/dealer-invoices`);
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong plese try after sometime",
+      data: error,
+    };
+  }
+};
+export const createRazorpayApi = async (amount: number) => {
+  try {
+    const response = await axiosInstance.post(`/store/create-order`, { amount });
+    console.log('response',response)
+    return response.data;
+  } catch (error) {
+    throw new Error("Failed to create Razorpay order");
+  }
+};
+export const dealerPaymentApi = async (response: any, invoiceId: string, amount: number) => {
+  try {
+    await axiosInstance.post(`/store/dealer-invoices`, { response, invoiceId, amount });
+  } catch (error) {
+    throw new Error("Failed to verify Razorpay payment");
+  }
 };
 
 
@@ -494,9 +522,9 @@ export const getInvoicesApi = async () => {
     };
   }
 };
-export const postInvoicesApi = async (response:any, invoiceId:string, amount:number) => {
+export const postInvoicesApi = async (response: any, invoiceId: string, amount: number) => {
   try {
-    const { data } = await axiosInstance.post(`/store/invoice`,{response, invoiceId, amount});
+    const { data } = await axiosInstance.post(`/store/invoice`, { response, invoiceId, amount });
     return data;
   } catch (error) {
     return {
@@ -506,9 +534,9 @@ export const postInvoicesApi = async (response:any, invoiceId:string, amount:num
   }
 };
 
-export const postDownlodReceiptApi = async (id:string) => {
+export const postDownlodReceiptApi = async (id: string) => {
   try {
-    const { data } = await axiosInstance.post(`/store/downloadreceipt`,{id});
+    const { data } = await axiosInstance.post(`/store/downloadreceipt`, { id });
     return data;
   } catch (error) {
     return {
