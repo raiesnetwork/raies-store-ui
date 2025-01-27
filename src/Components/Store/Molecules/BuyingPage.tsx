@@ -105,6 +105,10 @@ const CheckoutPage: React.FC = () => {
     try {
       setDeliveryLoader(true)
       const data = await getDeliveryCharge(payload, shiprocketToken);
+      if(data.status===404){
+    return toast.error(data.message)
+      }
+      console.log(data)
       const couriers = data.data.available_courier_companies;
       const getBestCourier = (couriers: any[]) => {
         return couriers.reduce((best, current) => {
@@ -127,7 +131,7 @@ const CheckoutPage: React.FC = () => {
       setExpectedDeliveryDate(bestCourier?.etd);
       setCourierId(bestCourier?.id)
     } catch (error) {
-      // toast.error('ship rocket error')
+    
     }finally{
       setDeliveryLoader(false)
     }
