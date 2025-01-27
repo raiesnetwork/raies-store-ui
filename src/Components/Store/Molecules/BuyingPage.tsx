@@ -11,6 +11,7 @@ import AddressComponent from "./ShowAllAddressModal";
 import StoreFooter from "../../Footer/Footer";
 import { getDeliveryCharge } from "../Core/StoreApi";
 import { fileToBase64 } from "../../../Utils/Base64";
+import Loader from "../../Loader/Loader";
 
 const CheckoutPage: React.FC = () => {
   const {
@@ -33,13 +34,14 @@ const CheckoutPage: React.FC = () => {
   } = useMystoreStore((s) => s);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("online");
-  const [deliveryDetails, setDeliveryDetails] = useState<any>();
-  const [CourierId, setCourierId] = useState<string>('');
-  const location = useLocation();
-  const { details, proType } = location.state || {};
-  const [btnDisable, setBtndesable] = useState<boolean>(false);
-  // const [loading, setLoading] = useState<boolean>(false);
-  const [refresh, setRefresh] = useState<boolean>(false);
+    const [CourierId, setCourierId] = useState<string>('');
+    const location = useLocation();
+    const { details, proType } = location.state || {};
+    const [btnDisable, setBtndesable] = useState<boolean>(false);
+    // const [loading, setLoading] = useState<boolean>(false);
+    const [refresh, setRefresh] = useState<boolean>(false);
+    const [deliveryCharge, setdeliveryCharge] = useState<number>(0);
+
   const [couponAmount, setCouponAmount] = useState<{
     amount: number;
     type: string;
@@ -55,11 +57,92 @@ const CheckoutPage: React.FC = () => {
   const [totalAmount, setTotalAmount] = useState(0);
 
   useEffect(() => {
-    console.log("total", totalPrice)
-
-    setTotalAmount(totalPrice);
-
+    setTotalAmount(totalPrice)
   }, [totalPrice]);
+  const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
+  const [deliveryLoader,setDeliveryLoader]=useState(false)
+  const getDeliveryCharges = async () => {
+    
+    const aggregatedDetails = details.reduce(
+      (
+        agg: {
+          weight: number;
+          length: number;
+          breadth: number;
+          height: number;
+        },
+        item: { productDetails: any }
+      ) => {
+        const product = item.productDetails;
+        agg.weight += parseFloat(product.productWeight || 0);
+        agg.length = Math.max(
+          agg.length,
+          parseFloat(product.packageLength || 0)
+        );
+        agg.breadth = Math.max(
+          agg.breadth,
+          parseFloat(product.packageBreadth || 0)
+        );
+        agg.height = Math.max(
+          agg.height,
+          parseFloat(product.packageHeight || 0)
+        );
+        return agg;
+      },
+      { weight: 0, length: 0, breadth: 0, height: 0 }
+    );
+
+    const payload = {
+      pickup_postcode:
+        details[0]?.productDetails?.pickupAddress?.Zip || "673504",
+      delivery_postcode: selectedAddress.pincode,
+      cod: selectedPaymentMethod === "offline" ? 1 : 0, // 1 for COD, 0 for prepaid
+      weight: aggregatedDetails.weight,
+      length: aggregatedDetails.length,
+      breadth: aggregatedDetails.breadth,
+      height: aggregatedDetails.height,
+    };
+    try {
+      setDeliveryLoader(true)
+      const data = await getDeliveryCharge(payload, shiprocketToken);
+      const couriers = data.data.available_courier_companies;
+      const getBestCourier = (couriers: any[]) => {
+        return couriers.reduce((best, current) => {
+          if (
+            (current.total_charge < best.total_charge &&
+              current.etd < best.etd) ||
+            current.recommendation_score > best.recommendation_score
+          ) {
+            return current;
+          }
+          return best;
+        }, couriers[0]);
+      };
+      const bestCourier = getBestCourier(couriers);
+      const freightCharge = parseFloat(bestCourier.freight_charge || 0);
+      const codCharges = parseFloat(bestCourier.cod_charges || 0);
+      const otherCharges = parseFloat(bestCourier.other_charges || 0);
+      const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
+      setdeliveryCharge(totalDeliveryCharge);
+      setExpectedDeliveryDate(bestCourier?.etd);
+      setCourierId(bestCourier?.id)
+    } catch (error) {
+      // toast.error('ship rocket error')
+    }finally{
+      setDeliveryLoader(false)
+    }
+  };
+  useEffect(() => {
+    if (details && selectedAddress) {
+      getDeliveryCharges();
+    }
+  }, [details, selectedAddress, selectedPaymentMethod]);
+
+  useEffect(() => {
+    if (addressData?.length > 0) {
+      setSelectedAddress(addressData[0]);
+    }
+  }, [addressData]);
 
 
   const [isOpenAddressModal, setAddressModal] = useState<boolean>(false);
@@ -84,7 +167,6 @@ const CheckoutPage: React.FC = () => {
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
 
-  console.log("profile", profileData)
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
 
@@ -127,13 +209,13 @@ const CheckoutPage: React.FC = () => {
         };
       });
 
-      const totalAmountWithDelivery = totalPrice + deliveryDetails;
+      const totalAmountWithDelivery = totalPrice + deliveryCharge;
       if (selectedPaymentMethod === "offline") {
         const data = await createOrdr({
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
-          totalAmount: totalAmount + deliveryDetails,
+          totalAmount: totalAmount + deliveryCharge,
           couponData: couponAmount,
           CourierId
         });
@@ -148,7 +230,6 @@ const CheckoutPage: React.FC = () => {
         } else {
           setBtndesable(false);
           await FetchToCart();
-          console.log(data);
 
           navigate("/success", { state: { orderDetails: details, orderId: data.data.orderData?.order_id } });
         }
@@ -169,7 +250,6 @@ const CheckoutPage: React.FC = () => {
           return toast.error("We couldn't create your credit order. Please try again.");
         } else {
           await FetchToCart();
-          console.log(data);
 
           navigate("/credit-success", {
             state: { orderDetails: details, orderId: data.data.orderData?.order_id },
@@ -201,7 +281,7 @@ const CheckoutPage: React.FC = () => {
                   addressId: selectedAddress._id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
-                  totalAmount: totalAmount + deliveryDetails,
+                  totalAmount: totalAmount + deliveryCharge,
                   couponData: couponAmount,
                 };
                 await verifyRazorpayPayment(data);
@@ -236,7 +316,6 @@ const CheckoutPage: React.FC = () => {
           const rzp1 = new (window as any).Razorpay(options);
           rzp1.open();
         } catch (error) {
-          console.error("Payment failed:", error);
           toast.error("Payment failed. Please try again.");
         }
         await FetchToCart();
@@ -293,92 +372,7 @@ const CheckoutPage: React.FC = () => {
       setCouponCodeErr("Enter a valid coupon code");
     }
   };
-  const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>();
-  const getDeliveryCharges = async () => {
-    console.log(details,'aggg');
-    
-    const aggregatedDetails = details.reduce(
-      (
-        agg: {
-          weight: number;
-          length: number;
-          breadth: number;
-          height: number;
-        },
-        item: { productDetails: any }
-      ) => {
-        const product = item.productDetails;
-        agg.weight += parseFloat(product.productWeight || 0);
-        agg.length = Math.max(
-          agg.length,
-          parseFloat(product.packageLength || 0)
-        );
-        agg.breadth = Math.max(
-          agg.breadth,
-          parseFloat(product.packageBreadth || 0)
-        );
-        agg.height = Math.max(
-          agg.height,
-          parseFloat(product.packageHeight || 0)
-        );
-        return agg;
-      },
-      { weight: 0, length: 0, breadth: 0, height: 0 }
-    );
-
-    const payload = {
-      pickup_postcode:
-        details[0]?.productDetails?.pickupAddress?.Zip || "673504",
-      delivery_postcode: selectedAddress.pincode,
-      cod: selectedPaymentMethod === "offline" ? 1 : 0, // 1 for COD, 0 for prepaid
-      weight: aggregatedDetails.weight,
-      length: aggregatedDetails.length,
-      breadth: aggregatedDetails.breadth,
-      height: aggregatedDetails.height,
-    };
-    try {
-      const data = await getDeliveryCharge(payload, shiprocketToken);
-      const couriers = data.data.available_courier_companies;
-      const getBestCourier = (couriers: any[]) => {
-        return couriers.reduce((best, current) => {
-          if (
-            (current.total_charge < best.total_charge &&
-              current.etd < best.etd) ||
-            current.recommendation_score > best.recommendation_score
-          ) {
-            return current;
-          }
-          return best;
-        }, couriers[0]);
-      };
-      const bestCourier = getBestCourier(couriers);
-      const freightCharge = parseFloat(bestCourier.freight_charge || 0);
-      const codCharges = parseFloat(bestCourier.cod_charges || 0);
-      const otherCharges = parseFloat(bestCourier.other_charges || 0);
-      const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
-      setExpectedDeliveryDate(bestCourier?.etd);
-      setDeliveryDetails(totalDeliveryCharge);
-      console.log("Selected Best Courier:", bestCourier.id);
-      setCourierId(bestCourier?.id)
-    } catch (error) {
-      console.log(error, "delivery charges err");
-    }
-  };
-
-  console.log(deliveryDetails);
-
-  useEffect(() => {
-    if (details && selectedAddress) {
-      getDeliveryCharges();
-    }
-  }, [details, selectedAddress, selectedPaymentMethod]);
-
-  useEffect(() => {
-    if (addressData?.length > 0) {
-      setSelectedAddress(addressData[0]);
-    }
-  }, [addressData]);
-
+ 
   const [formData, setFormData] = useState({
     addressId: selectedAddress._id,
     productImage: "",
@@ -415,7 +409,7 @@ const CheckoutPage: React.FC = () => {
         return {
           addressId: selectedAddress._id,
           CourierId: CourierId,
-          deliveryCharge: deliveryDetails,
+          deliveryCharge: deliveryCharge,
           productId: details[0]?.productDetails?._id,
           productImage: prev?.productImage,
           biddingAmount: ""
@@ -426,21 +420,21 @@ const CheckoutPage: React.FC = () => {
         return {
           addressId: selectedAddress._id,
           CourierId: CourierId,
-          deliveryCharge: deliveryDetails,
+          deliveryCharge: deliveryCharge,
           productId: details[0]?.productDetails?._id,
           productImage: prev?.productImage,
           biddingAmount: prev?.biddingAmount
         }
       })
     }
-  }, [proType, selectedAddress, deliveryDetails, CourierId])
+  }, [proType, selectedAddress, deliveryCharge, CourierId])
 
   const handleBarderSubmit = async (e: React.FormEvent) => {
 
     e.preventDefault();
 
     if (formData.productImage.trim() && selectedAddress._id.trim()) {
-      if (CourierId.trim() && !deliveryDetails) {
+      if (CourierId.trim() && !deliveryCharge) {
         return toast.error('We cant fetch delivery details plese try after some time.')
       }
       try {
@@ -494,7 +488,7 @@ const CheckoutPage: React.FC = () => {
         toast.error(`Bid amount must in bitween ${details[0]?.productDetails.minBidPrice}-${details[0]?.productDetails.maxBidPrice}`)
         return
       }
-      if (!CourierId.trim() && !deliveryDetails) {
+      if (!CourierId.trim() && !deliveryCharge) {
         return toast.error('We cant fetch delivery details plese try after some time.')
       }
       try {
@@ -526,7 +520,15 @@ const CheckoutPage: React.FC = () => {
 
     }
   };
-  return (
+
+
+
+   return (
+    <>
+    {
+      deliveryLoader?
+      <Loader/>
+      :
     <>
       <div
         style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
@@ -776,7 +778,7 @@ const CheckoutPage: React.FC = () => {
                   </div>}
                 <div className="summary-row">
                   <span>Delivery:</span>
-                  <span>{deliveryDetails || 0}</span>
+                  <span>{deliveryCharge}</span>
                 </div>
                 {!proType &&
                   <div className="summary-row">
@@ -786,7 +788,9 @@ const CheckoutPage: React.FC = () => {
                 <div className="summary-row">
                   <span>Total:</span>
                   <span className="total-price">
-                    ₹{proType === 'bid' ? parseFloat(formData?.biddingAmount) ?? 0 + deliveryDetails ?? 0 : totalAmount + deliveryDetails||0}
+                    ₹{!deliveryLoader&&proType === "bid"
+        ? ( parseFloat(formData?.biddingAmount) || 0) + deliveryCharge 
+        :!deliveryLoader &&totalAmount+deliveryCharge}
                   </span>
                 </div>
               </>
@@ -818,6 +822,8 @@ const CheckoutPage: React.FC = () => {
         </div>
         <StoreFooter />
       </div>
+    </>
+}
     </>
   );
 };
