@@ -55,7 +55,7 @@ const CheckoutPage: React.FC = () => {
     0
   );
   const [totalAmount, setTotalAmount] = useState(0);
-
+const [deliveryError,setDeliveryError]=useState({error:false,message:""})
   useEffect(() => {
     setTotalAmount(totalPrice)
   }, [totalPrice]);
@@ -105,9 +105,19 @@ const CheckoutPage: React.FC = () => {
     try {
       setDeliveryLoader(true)
       const data = await getDeliveryCharge(payload, shiprocketToken);
-      if(data.status===404){
-    return toast.error(data.message)
+      if(data?.status===404){
+        setDeliveryLoader(false)
+
+        setDeliveryError({error:true,message:data.message})
+    return 
+      } if(data?.error===true){
+        setDeliveryLoader(false)
+
+        setDeliveryError({error:true,message:data.message})
+    return 
       }
+      setDeliveryError({error:false,message:""})
+      alert('d')
       console.log(data)
       const couriers = data.data.available_courier_companies;
       const getBestCourier = (couriers: any[]) => {
@@ -173,7 +183,13 @@ const CheckoutPage: React.FC = () => {
 
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
+    if(deliveryError.error){
+  
+      setBtndesable(false);
 
+      toast.error(deliveryError.message)
+      return
+    }
     if (selectedAddress._id.trim() && selectedPaymentMethod.trim()) {
       setBtndesable(true);
       const diamentions = details.reduce((agg: {
@@ -212,7 +228,11 @@ const CheckoutPage: React.FC = () => {
           diamentions
         };
       });
+      if(deliveryError.error){
+        setBtndesable(false);
 
+        return toast.error(deliveryError.message)
+      }
       const totalAmountWithDelivery = totalPrice + deliveryCharge;
       if (selectedPaymentMethod === "offline") {
         const data = await createOrdr({
@@ -238,6 +258,11 @@ const CheckoutPage: React.FC = () => {
           navigate("/success", { state: { orderDetails: details, orderId: data.data.orderData?.order_id } });
         }
       } else if (selectedPaymentMethod === "credit") {
+        if(deliveryError.error){
+          setBtndesable(false);
+  
+          return toast.error(deliveryError.message)
+        }
         // Credit payment flow
         const data = await createOrdr({
           addressId: selectedAddress._id,
@@ -262,6 +287,7 @@ const CheckoutPage: React.FC = () => {
       }
       else {
 
+       
         setBtndesable(false);
 
         try {
