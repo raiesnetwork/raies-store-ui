@@ -70,6 +70,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           length: number;
           breadth: number;
           height: number;
+          productWeightType:string;
         },
         item: { productDetails: any }
       ) => {
@@ -87,9 +88,10 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           agg.height,
           parseFloat(product.packageHeight || 0)
         );
+        agg.productWeightType
         return agg;
       },
-      { weight: 0, length: 0, breadth: 0, height: 0 }
+      { weight: 0, length: 0, breadth: 0, height: 0 ,productWeightType:'g'}
     );
 
     const payload = {
@@ -97,11 +99,12 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         details[0]?.productDetails?.pickupAddress?.Zip || "673504",
       delivery_postcode: selectedAddress.pincode,
       cod: selectedPaymentMethod === "offline" ? 1 : 0, // 1 for COD, 0 for prepaid
-      weight: aggregatedDetails.weight,
+      weight:aggregatedDetails.weight,
       length: aggregatedDetails.length,
       breadth: aggregatedDetails.breadth,
       height: aggregatedDetails.height,
     };
+    console.log(payload)
     try {
       setDeliveryLoader(true)
       const data = await getDeliveryCharge(payload, shiprocketToken);
@@ -117,7 +120,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
     return 
       }
       setDeliveryError({error:false,message:""})
-      alert('d')
+   
       console.log(data)
       const couriers = data.data.available_courier_companies;
       const getBestCourier = (couriers: any[]) => {
