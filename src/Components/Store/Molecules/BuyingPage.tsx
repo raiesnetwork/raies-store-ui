@@ -88,10 +88,10 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           agg.height,
           parseFloat(product.packageHeight || 0)
         );
-        agg.productWeightType
+        agg.productWeightType=product.productWeightType
         return agg;
       },
-      { weight: 0, length: 0, breadth: 0, height: 0 ,productWeightType:'g'}
+      { weight: 0, length: 0, breadth: 0, height: 0 ,productWeightType:''}
     );
 
     const payload = {
@@ -104,6 +104,12 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
       breadth: aggregatedDetails.breadth,
       height: aggregatedDetails.height,
     };
+    if(aggregatedDetails.productWeightType==='g'){
+      payload.weight=aggregatedDetails.weight / 1000;
+      if (payload.weight <= 0.5) {
+        payload.weight = 0.5;
+      }
+    }
     console.log(payload)
     try {
       setDeliveryLoader(true)
