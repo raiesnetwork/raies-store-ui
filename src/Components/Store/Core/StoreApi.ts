@@ -19,7 +19,7 @@ const axiosInstance2 = createAxiosInstanceForProduct();
 //   } catch (error) {
 //     return {
 //       error: true,
-//       message: "api call faild",
+//       message: "Unable to process your request. Please try again.",
 //       data: error,
 //     };
 //   }
@@ -39,7 +39,7 @@ export const AddToCartApi = async (
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -51,7 +51,7 @@ export const FetchToCartApi = async () => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -63,7 +63,7 @@ export const DeleteCartApi = async (id: string) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -78,7 +78,7 @@ export const updateCartApi = async (id: string, quantity: number) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -92,7 +92,7 @@ export const verifyNumberApi = async (mobileNumber: string) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -113,7 +113,7 @@ export const registrationVerify = async (
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
     };
   }
 };
@@ -126,7 +126,7 @@ export const createStoreUserApi = async (datas: userStoreCreate) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -146,7 +146,7 @@ export const loginUserApi = async (
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -185,7 +185,7 @@ export const latestProductApi = async (
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -197,7 +197,7 @@ export const DeleteAddressApi = async (id: string) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -211,7 +211,7 @@ export const createAddressApi = async (datas: StoreAddress) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -223,7 +223,7 @@ export const getAddressApi = async () => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -235,7 +235,7 @@ export const createOrderApi = async (datas: createOrder) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -250,7 +250,7 @@ export const createRazorpayOrderApi = async (amount: number): Promise<any> => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -268,7 +268,7 @@ export const verifyRazorpayPaymentApi = async (
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -280,7 +280,7 @@ export const getUserOrderApi = async (subdomain: string | null) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -291,7 +291,7 @@ export const getUserOrderApi = async (subdomain: string | null) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -305,7 +305,7 @@ export const createBarterOrderApi = async (datas: barterOrder) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -319,7 +319,7 @@ export const createBiddingOrderApi = async (datas: biddingOrder) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -334,7 +334,7 @@ export const getStoreIconApi = async (hostName: string | null) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -346,7 +346,7 @@ export const getProfileInfoApi = async () => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -360,7 +360,7 @@ export const updateProfileInfoApi = async (datas: updateProfileInfo) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -374,7 +374,7 @@ export const verifyMailApi = async (email: string) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -389,7 +389,7 @@ export const updateMailApi = async (email: string, otp: string) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -409,7 +409,7 @@ export const updateMobileNumberApi = async (
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -428,7 +428,7 @@ export const passwordChangeApi = async (
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -443,7 +443,7 @@ export const getSingleProductDetailsApi = async (id?: string) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
       data: error,
     };
   }
@@ -518,7 +518,7 @@ export const getInvoicesApi = async () => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
     };
   }
 };
@@ -529,7 +529,7 @@ export const postInvoicesApi = async (response: any, invoiceId: string, amount: 
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
     };
   }
 };
@@ -541,7 +541,7 @@ export const postDownlodReceiptApi = async (id: string) => {
   } catch (error) {
     return {
       error: true,
-      message: "api call faild",
+      message: "Unable to process your request. Please try again.",
     };
   }
 };

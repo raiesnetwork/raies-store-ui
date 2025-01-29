@@ -4,12 +4,14 @@ import { toast } from "react-toastify";
 import { useState } from "react";
 import Header from "../../Store/Molecules/Header";
 import "./Otp.scss"
+import { useAuth } from "../AuthContext";
 
 export const OtpPage: React.FC = () => {
     const [otp, setOtp] = useState(Array(6).fill(""));
-    const { loginUser, createUser, setUserName, checkLoggedIn } = useMystoreStore((state) => state);
+    const { loginUser, createUser, setUserName } = useMystoreStore((state) => state);
     // const navigate = useNavigate();
     const location = useLocation();
+    const {login}=useAuth()||{}
 const navigate=useNavigate()
     // Extract necessary data from location state
     const mobileNumber = location.state?.mobileNumber || "";
@@ -42,14 +44,17 @@ const navigate=useNavigate()
                     toast.error(response.message || "User registration failed");
                 } else {
                     toast.success("User registered successfully!");
-                    navigate('/login')
-                    checkLoggedIn(true);
+                    
+                    // checkLoggedIn(true);
                     setUserName(response.data?.username);
-                    localStorage.setItem("user", response.data?.username);
-                    localStorage.setItem(
-                        "kt-auth-react-st",
-                        JSON.stringify({ api_token: response.data?.token })
-                    );
+                    const credentials={
+                        username:response.data?.username,
+                        api_token: response.data?.token,
+                        
+                    }
+                    
+                    login(credentials);
+                    navigate('/home')
                    // Redirect to home page on successful registration
                 }
             } else {
@@ -59,14 +64,17 @@ const navigate=useNavigate()
                 if (response.error) {
                     toast.error(response.message || "OTP verification failed");
                 } else {
-                    checkLoggedIn(true);
+                   
                     setUserName(response.data?.username);
-                    localStorage.setItem("user", response.data?.username);
-                    localStorage.setItem(
-                        "kt-auth-react-st",
-                        JSON.stringify({ api_token: response.data?.token })
-                    );
+                    const credentials={
+                        username:response.data?.username,
+                        api_token: response.data?.token,
+                        
+                    }
+                    
+                    login(credentials);
                     toast.success("OTP verified successfully!");
+                    navigate('/home')
                     // Redirect to home page on successful login
                 }
             }
