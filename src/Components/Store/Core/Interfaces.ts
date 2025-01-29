@@ -28,6 +28,7 @@ export interface respProduct {
   packageWidth: string
   packageHeight: string
   packageBreadth: string
+  
 }
 export interface barterOrder {
   addressId: string

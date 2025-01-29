@@ -1,9 +1,12 @@
 import React, { useState } from "react";
 import { Modal, Form, Button, Spinner, Alert } from "react-bootstrap";
 import useMystoreStore from "../Core/Store";
+import { postStockRequestApi } from "../Core/StoreApi";
+import { toast } from "react-toastify";
 
 const StockRequestModal: React.FC = () => {
-  const { singleProductData, isOpenBiddingModal, setOpenBiddingModal } = useMystoreStore((state) => state);
+  const { singleProductData, isOpenBiddingModal, setOpenBiddingModal } =
+    useMystoreStore((state) => state);
 
   const [stockQuantity, setStockQuantity] = useState(1);
   const [expectedDate, setExpectedDate] = useState("");
@@ -39,15 +42,21 @@ const StockRequestModal: React.FC = () => {
     return true;
   };
 
-  const handleStockRequest = () => {
+  const handleStockRequest = async () => {
     if (!validateForm()) return;
 
-    setLoading(true);
-    setTimeout(() => {
+    try {
+      setLoading(true);
+      const data= await postStockRequestApi(
+        singleProductData?.productName, stockQuantity,
+        expectedDate,advancePayment,singleProductData?._id,singleProductData.user);
+
+      toast.success(data?.message)
+      setOpenBiddingModal()
+    } catch (e) {
+    } finally {
       setLoading(false);
-      setOpenBiddingModal();
-      alert("Stock request placed successfully!");
-    }, 2000);
+    }
   };
 
   return (
@@ -57,18 +66,26 @@ const StockRequestModal: React.FC = () => {
       </Modal.Header>
 
       <Modal.Body>
-        {error && <Alert variant="danger">{error}</Alert>} {/* Show Error Message */}
-
+        {error && <Alert variant="danger">{error}</Alert>}{" "}
+        {/* Show Error Message */}
         <Form>
           {/* Product Name */}
           <Form.Group className="mb-3">
-            <Form.Label><strong>Product Name</strong></Form.Label>
-            <Form.Control type="text" value={singleProductData?.productName || ""} readOnly />
+            <Form.Label>
+              <strong>Product Name</strong>
+            </Form.Label>
+            <Form.Control
+              type="text"
+              value={singleProductData?.productName || ""}
+              readOnly
+            />
           </Form.Group>
 
           {/* Number of Stock Requests */}
           <Form.Group className="mb-3">
-            <Form.Label><strong>Number of Stock Requests</strong></Form.Label>
+            <Form.Label>
+              <strong>Number of Stock Requests</strong>
+            </Form.Label>
             <Form.Control
               type="number"
               min="1"
@@ -76,26 +93,34 @@ const StockRequestModal: React.FC = () => {
               onChange={(e) => setStockQuantity(Number(e.target.value))}
               isInvalid={stockQuantity < 1}
             />
-            <Form.Control.Feedback type="invalid">Must be at least 1.</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Must be at least 1.
+            </Form.Control.Feedback>
           </Form.Group>
 
           {/* Expected Date */}
           <Form.Group className="mb-3">
-            <Form.Label><strong>Stock Expected Date</strong></Form.Label>
+            <Form.Label>
+              <strong>Stock Expected Date</strong>
+            </Form.Label>
             <Form.Control
               type="date"
               value={expectedDate}
               min={getTomorrowDate()} // Prevents past & today’s dates
               onChange={(e) => setExpectedDate(e.target.value)}
-            //@ts-ignore
+              //@ts-ignore
               isInvalid={expectedDate && expectedDate < getTomorrowDate()}
             />
-            <Form.Control.Feedback type="invalid">Select a future date (not today or before).</Form.Control.Feedback>
+            <Form.Control.Feedback type="invalid">
+              Select a future date (not today or before).
+            </Form.Control.Feedback>
           </Form.Group>
 
           {/* Calculated Stock Cost */}
           <Form.Group className="mb-3">
-            <Form.Label><strong>Stock Cost (Exclusive of Tax & Delivery)</strong></Form.Label>
+            <Form.Label>
+              <strong>Stock Cost (Exclusive of Tax & Delivery)</strong>
+            </Form.Label>
             <Form.Control type="text" value={`₹${totalStockCost}`} readOnly />
           </Form.Group>
 
@@ -111,8 +136,16 @@ const StockRequestModal: React.FC = () => {
 
           {/* Submit Button */}
           <div className="d-flex justify-content-center">
-            <Button variant="primary" onClick={handleStockRequest} disabled={loading}>
-              {loading ? <Spinner animation="border" size="sm" /> : "Place Stock Request"}
+            <Button
+              variant="primary"
+              onClick={handleStockRequest}
+              disabled={loading}
+            >
+              {loading ? (
+                <Spinner animation="border" size="sm" />
+              ) : (
+                "Place Stock Request"
+              )}
             </Button>
           </div>
         </Form>

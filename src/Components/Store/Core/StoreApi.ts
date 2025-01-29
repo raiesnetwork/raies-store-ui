@@ -546,6 +546,21 @@ export const postDownlodReceiptApi = async (id: string) => {
   }
 };
 
+export const postStockRequestApi = async (productName:string,
+  stockQuantity:any,expectedDate:string,
+  advancePayment:boolean,productId:string,adminId:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/store/stockrequest`, {productName,
+      stockQuantity,expectedDate,advancePayment,productId ,adminId });
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Unable to process your request. Please try again.",
+    };
+  }
+};
+
 
 
 
