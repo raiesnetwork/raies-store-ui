@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../Helpers/scss/SinglePageView.scss";
 import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
-import BiddingModal from "./BiddingModal";
+// import BiddingModal from "./BiddingModal";
 import Header from "./Header";
 import { toast } from "react-toastify";
 import { Link, useParams } from "react-router-dom";
@@ -14,6 +14,7 @@ import { LiaExchangeAltSolid } from "react-icons/lia";
 import StoreFooter from "../../Footer/Footer";
 import { useAuth } from "../../Auth/AuthContext";
 import Loader from "../../Loader/Loader";
+import StockRequestModal from "./StockRequestModal";
 const SingleProductView: React.FC = () => {
   const {id}=useParams()
   
@@ -305,6 +306,14 @@ const {isAuthenticated}=useAuth()||{}
                             Buy Now
                           </button>
                         </Link>
+                         
+                          <button
+                        onClick={() => {
+                          setOpenBiddingModal();
+                        }}
+                      >
+                         Request for stock
+                      </button>
                       </>
                     )}
                   {singleProductData.priceOption === "bidding" && (
@@ -359,7 +368,8 @@ const {isAuthenticated}=useAuth()||{}
           )}
 
           {isOpenBarteModal && <BarterModal product={singleProductData} />}
-          {isOpenBiddingModal && <BiddingModal product={singleProductData} />}
+          {isOpenBiddingModal && <StockRequestModal/> }
+          {/* <StockRequestModal/> */}
         </>
       ) : (
         <>
@@ -370,6 +380,7 @@ const {isAuthenticated}=useAuth()||{}
 
       </div>
       <StoreFooter/>
+
       </div>
     </>
   );

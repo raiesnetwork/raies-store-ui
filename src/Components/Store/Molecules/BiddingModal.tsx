@@ -184,9 +184,9 @@ const BiddingModal: React.FC <props>= ({product}) => {
   return (
     <>
       <div
-        className={`modal ${
-          isOpenBiddingModal ? "d-block show" : "d-none fade"
-        }`}
+        // className={`modal ${
+        //   isOpenBiddingModal ? "d-block show" : "d-none fade"
+        // }`}
         id="kt_modal_barter_form"
         tabIndex={-1}
       >
