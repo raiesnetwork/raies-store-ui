@@ -49,7 +49,7 @@ const BusinessPlaceOrder: React.FC = () => {
   useEffect(() => {
 
     if (
-        stockPaymentPageData.productData?.price &&
+        stockPaymentPageData?.productData?.price &&
       stockPaymentPageData?.stockData?.stock
     ) {
       const total =
@@ -409,7 +409,7 @@ const BusinessPlaceOrder: React.FC = () => {
                           name="payment"
                           value="online"
                           checked={
-                            stockPaymentPageData.paymentType === "online"
+                            stockPaymentPageData?.paymentType === "online"
                           }
                         />
                         Online Payment
@@ -424,14 +424,14 @@ const BusinessPlaceOrder: React.FC = () => {
                             name="payment"
                             value="credit"
                             checked={
-                              stockPaymentPageData.paymentType === "credit"
+                              stockPaymentPageData?.paymentType === "credit"
                             }
                           />
                           Purchase on Credit
                         </label>
 
                         {/* Note for Credit Payment */}
-                        {stockPaymentPageData.paymentType === "credit" && (
+                        {stockPaymentPageData?.paymentType === "credit" && (
                           <div
                             style={{
                               marginTop: "10px",
@@ -495,12 +495,12 @@ const BusinessPlaceOrder: React.FC = () => {
                               marginRight: "20px",
                               marginBottom: "5px",
                             }}
-                            src={stockPaymentPageData.productData.mainImage}
-                            alt={stockPaymentPageData.productData.productName}
+                            src={stockPaymentPageData?.productData?.mainImage}
+                            alt={stockPaymentPageData?.productData?.productName}
                           />
                           <div className="product-details">
                             <h4>
-                              {stockPaymentPageData.productData.productName}
+                              {stockPaymentPageData?.productData.productName}
                             </h4>
                             <p>
                               Price: ₹{stockPaymentPageData?.productData.price}
@@ -578,7 +578,7 @@ const BusinessPlaceOrder: React.FC = () => {
 
                     <div className="summary-row">
                       <span>Discount Coupon:</span>
-                      <span>{couponAmount.amount}</span>
+                      <span>{couponAmount?.amount}</span>
                     </div>
                     <div className="summary-row">
                       <span>Total:</span>
