@@ -47,8 +47,7 @@ const BusinessPlaceOrder: React.FC = () => {
     message: "",
   });
   useEffect(() => {
-    console.log(stockPaymentPageData.productData?.price,
-        stockPaymentPageData?.stockData?.stock)
+
     if (
         stockPaymentPageData.productData?.price &&
       stockPaymentPageData?.stockData?.stock
@@ -221,7 +220,7 @@ const BusinessPlaceOrder: React.FC = () => {
 
           navigate("/success", {
             state: {
-              orderDetails: stockPaymentPageData.productData,
+              orderDetails: [{productDetails:stockPaymentPageData.productData,quantity:stockPaymentPageData?.stockData?.stock}],
               orderId: data.data.orderData?.order_id,
             },
           });
@@ -278,6 +277,12 @@ const BusinessPlaceOrder: React.FC = () => {
               ondismiss: () => {
                 // setLoading(false);
                 // Optionally stop loading if the user dismisses the payment modal
+                navigate("/success", {
+                    state: {
+                      orderDetails: [{productDetails:stockPaymentPageData.productData,quantity:stockPaymentPageData?.stockData?.stock}],
+                      // orderId:data.data.orderId
+                    },
+                  });
               },
             },
           };
@@ -289,12 +294,7 @@ const BusinessPlaceOrder: React.FC = () => {
           toast.error("Payment failed. Please try again.");
         }
 
-        navigate("/success", {
-          state: {
-            orderDetails: stockPaymentPageData.productData,
-            // orderId:data.data.orderId
-          },
-        });
+        
       }
     } else {
       setBtndesable(false);
