@@ -47,18 +47,20 @@ const BusinessPlaceOrder: React.FC = () => {
     message: "",
   });
   useEffect(() => {
+    console.log(stockPaymentPageData.productData?.price,
+        stockPaymentPageData?.stockData?.stock)
     if (
-      stockPaymentPageData?.productId?.price &&
-      stockPaymentPageData?.stock
+        stockPaymentPageData.productData?.price &&
+      stockPaymentPageData?.stockData?.stock
     ) {
       const total =
-        parseInt(stockPaymentPageData.productId.price) *
-        parseInt(stockPaymentPageData.stock);
+        parseInt(stockPaymentPageData.productData?.price) *
+        parseInt(stockPaymentPageData.stockData.stock);
       setTotalAmount(total);
     } else {
       setTotalAmount(0); 
     }
-  }, [stockPaymentPageData]);
+  }, [ stockPaymentPageData]);
   
   const [expetedDeliveryData, setExpectedDeliveryDate] = useState<any>('Not Available');
   const [deliveryLoader, setDeliveryLoader] = useState(false);
