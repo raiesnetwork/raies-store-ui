@@ -146,7 +146,8 @@ export interface MystoreStore {
   fetchDealerInvoices: () => Promise<any>;
   createDealerPayment: (amount: number) => Promise<any>;
   dealerPayment: (response: any, invoiceId: string, amount: number) => Promise<any>;
-
+  stockPaymentPageData: any,
+  setStockPaymentPageData:(data:any)=>void
 
 }
 export interface createOrder {

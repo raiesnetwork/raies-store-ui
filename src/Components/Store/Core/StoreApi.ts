@@ -563,7 +563,17 @@ export const postStockRequestApi = async (productName:string,
 
 
 
-
+export const getStockRequestApi = async (pageNo: string,type:string) => {
+  try {
+    const { data } = await axiosInstance.get(`/store/stockrequest`,{params:{pageNo,type}});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "api call faild",
+    };
+  }
+};
 
 
 // shprocket api calls

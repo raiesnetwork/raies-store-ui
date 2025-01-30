@@ -16,7 +16,10 @@ import Loader from "../../Loader/Loader";
 import { InventoryTable } from "./InventoryTable";
 import DealerDashboard from "./DealerDashBoard";
 import DelalerInvoices from "./DealerInvoices";
-type pages = "info" | "password" | "coupon" | "Plans & billings" | "inventory" | 'dashbord' | 'dealerInvoices';
+import { StockRequestTable } from "./StockRequestTable";
+type pages = "info" | "password" | "coupon" |
+ "Plans & billings" | "inventory" |
+  'dashbord' | 'dealerInvoices'|'stockRequest';
 const ProfilePage: React.FC = () => {
   const {
     isOTPmodalVisible,
@@ -370,10 +373,24 @@ const ProfilePage: React.FC = () => {
                           Inventory
                         </li>
                       }
-                      {/* {profileData.dealerView&&  */}
 
-
+                       {/* {profileData.dealerView && */}
+                        <li
+                          style={
+                            pageSelector === "stockRequest"
+                              ? {
+                                backgroundColor: "white",
+                                color: "black",
+                                border: "1px solid black",
+                              }
+                              : {}
+                          }
+                          onClick={() => setPageSelector("stockRequest")}
+                        >
+                          Stock Request
+                        </li>
                       {/* } */}
+                      
                       <Link
                         style={{
                           textDecoration: "none",
@@ -1029,6 +1046,8 @@ const ProfilePage: React.FC = () => {
                       ? <DelalerInvoices />
                       : pageSelector === "dashbord"&&profileData.dealerView ?
                         <DealerDashboard />
+                        :pageSelector==='stockRequest'?
+                        <StockRequestTable/>
                         :
                         pageSelector === "coupon" ? (
                           <CouponCardList coupon={profileData.coupon} />

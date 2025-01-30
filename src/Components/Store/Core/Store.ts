@@ -383,9 +383,14 @@ const useMystoreStore = create<MystoreStore>((set,get) => ({
   isOpenPlanModal: false,
   setOpenPlanModal: () => {
     set((s) => ({ isOpenPlanModal: !s.isOpenPlanModal }))
-  }, storeIconsLoader: true,
+  },
+   storeIconsLoader: true,
   setStoreIconLoader: (data) => {
     set(() => ({ storeIconsLoader: data }))
+  },
+stockPaymentPageData: null,
+  setStockPaymentPageData: (data:any) => {
+    set(() => ({ stockPaymentPageData: data }))
   },
 
   dealerInvoices: [],
