@@ -77,49 +77,54 @@ const StockRequestTable: React.FC = () => {
               <table className="table table-row-bordered table-row-gray-100 align-middle gs-0 gy-3">
                 <thead>
                   <tr className="fw-bold text-muted">
-                    <th className="min-w-50px">No</th>
-                    <th className="min-w-140px">Product Name</th>
-                    <th className="min-w-120px">Requested Date</th>
-                    <th className="min-w-120px">Expect Delivery Date</th>
-                    <th className="min-w-120px">Advance Payment</th>
-                    <th className="min-w-120px">Due Amount</th>
-                    <th className="min-w-120px">Status</th>
-                    <th className="min-w-120px">Response</th>
-                    <th className="min-w-120px">Notes</th>
-                    <th className="min-w-100px text-end">Actions</th>
+                    <th className="min-w-50px text-center">No</th>
+                    <th className="min-w-120px text-center">Product Name</th>
+                    <th className="min-w-120px text-center">Stock & Price</th>
+                    <th className="min-w-120px text-center">Total Amount</th>
+                    <th className="min-w-120px text-center">Requested Date</th>
+                    <th className="min-w-120px text-center">Expect Delivery Date</th>
+                    <th className="min-w-120px text-center">Advance Payment</th>
+                    <th className="min-w-120px text-center ">Due Amount</th>
+                    <th className="min-w-120px text-center">Status</th>
+                    <th className="min-w-120px text-center">Response</th>
+                    <th className="min-w-120px text-center">Notes</th>
+                    <th className="min-w-120px text-center ">Actions</th>
                   </tr>
                 </thead>
                 <tbody>
                   {stock.map((val, i) => (
                     <tr key={val._id}>
-                      <td>{(pageNo - 1) * 10 + (i + 1)}</td>
-                      <td>{val.productName}</td>
-                      <td>
+                      <td className="text-center">{(pageNo - 1) * 10 + (i + 1)}</td>
+                      <td className="text-center">{val.productName}</td>
+                      <td className="text-center">{val.stock} x {val.productId.price}</td>
+                      <td className="text-center">{parseInt(val.productId.price)*parseInt(val.stock)}</td>
+                      <td className="text-center">
                         {new Date(val.createdAt).toLocaleDateString("en-GB", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
                         })}
                       </td>
-                      <td>
+                      <td className="text-center">
                         {new Date(val.expectedDate).toLocaleDateString("en-GB", {
                           day: "2-digit",
                           month: "short",
                           year: "numeric",
                         })}
                       </td>
-                      <td>{val.adwancePaymentMode ? "Yes" : "No"}</td>
-                      <td>{val.deuAmount }</td>
-                      <td style={{color:val.status==='Rejected'?"red":val.status==='Accepted'?"green":"yellow"}}>{val.status}</td>
-                      <td>{val.notesType || "N/A"}</td>
-                      <td>{val.notes || "N/A"}</td>
-                      <td>
+                      <td className="text-center">{val.adwancePaymentMode ? "Yes" : "No"}</td>
+                      <td className="text-center">{val.deuAmount }</td>
+                      <td className="text-center" style={{color:val.status==='Rejected'?"red":val.status==='Accepted'?"green":"yellow"}}>{val.status}</td>
+                      <td className="text-center">{val.notesType || "N/A"}</td>
+                      <td className="text-center">{val.notes || "N/A"}</td>
+                      <td className="text-center">
                         <Button
                           variant="success"
                           disabled={!val.approve}
                           onClick={() => {
                             setStockPaymentPageData({
                               productData: val.productId,
+                              stockData:val,
                               paymentType: val.adwancePaymentMode ? "online" : "credit",
                             });
                             navigate("/businessorder");
