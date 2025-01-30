@@ -23,9 +23,11 @@ interface Stock {
 }
 
 const StockRequestTable: React.FC = () => {
-  const { setStockPaymentPageData } = useMystoreStore((s) => s);
+  const { setStockPaymentPageData,getShprocketToken } = useMystoreStore((s) => s);
   const navigate = useNavigate();
-
+useEffect(()=>{
+    getShprocketToken()
+},[])
   const [stock, setStock] = useState<Stock[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
   const [pageNo, setPageNo] = useState<number>(1);

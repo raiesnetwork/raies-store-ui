@@ -13,6 +13,7 @@ import SingleProductView from "../Store/Molecules/SigleViewPage";
 import ProfilePage from "../Store/Molecules/ProfilePage";
 import OrderDetails from "../Store/Molecules/OrderDetails";
 import RefundAndCancellationPolicy from "../Footer/RefundAndCancellationPolicy";
+import BusinessPlaceOrder from "../Store/Molecules/BusinessPlaceOrderPage";
 const Auth: React.FC = () => {
 
  
@@ -31,6 +32,7 @@ const Auth: React.FC = () => {
           <Route path="/otp" element={<Navigate to="/" />} />
           <Route path="/profile" element={<ProfilePage />} />
           <Route path="/orderdetails" element={<OrderDetails />} />
+          <Route path="/businessorder" element={<BusinessPlaceOrder />} />
           <Route
             path="/refund-cancellation-policy"
             element={<RefundAndCancellationPolicy />}
