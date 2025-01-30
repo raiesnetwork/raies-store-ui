@@ -1,19 +1,24 @@
 import React, { useEffect, useState } from "react";
 import "../Helpers/scss/CodSuccsPage.scss";
 import Header from "./Header";
-import { Link, useLocation } from "react-router-dom";
+import { Link, useLocation, useNavigate } from "react-router-dom";
 import { respStoreCart } from "../Core/Interfaces";
 import { FaShoppingCart } from "react-icons/fa";
 import { GiShoppingBag } from "react-icons/gi";
 import StoreFooter from "../../Footer/Footer";
 const SuccessPage: React.FC = () => {
   const location = useLocation();
+  const navigate = useNavigate();
   const { orderDetails,orderId } = location.state || {};
   const [data, setData] = useState(orderDetails);
   useEffect(() => {
     if (orderDetails) {
       setData(orderDetails);
     }
+    history.replaceState(null, "", "/success");
+    window.onpopstate = () => {
+      navigate("/"); 
+    };
   }, [orderDetails]);
 
   return (
