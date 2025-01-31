@@ -54,7 +54,7 @@ function App() {
                 element={<RefundAndCancellationPolicy />}
               />
               <Route path="/" element={<MyStore />} />
-              <Route path="*" element={<Navigate to="/" />} />
+              <Route path="*" element={<Navigate to="/login" />} />
             </>
           )}
 
