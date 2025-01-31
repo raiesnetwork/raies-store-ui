@@ -374,7 +374,7 @@ const ProfilePage: React.FC = () => {
                         </li>
                       }
 
-                       {/* {profileData.dealerView && */}
+                       {profileData.dealerView &&
                         <li
                           style={
                             pageSelector === "stockRequest"
@@ -389,7 +389,7 @@ const ProfilePage: React.FC = () => {
                         >
                           Stock Request
                         </li>
-                      {/* } */}
+                     } 
                       
                       <Link
                         style={{

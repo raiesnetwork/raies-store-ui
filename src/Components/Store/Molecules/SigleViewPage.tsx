@@ -34,8 +34,13 @@ const SingleProductView: React.FC = () => {
     setOpenBiddingModal,
     singleProductData,
     setOpenBarterModal,
-    getSingleProduct
+    getSingleProduct,
+    profileData,
+    getProfileInfo
   } = useMystoreStore((s) => s);
+  useEffect(()=>{
+    getProfileInfo()
+  },[])
   const [imageView, setImageView] = useState<string>(
     singleProductData.mainImage
   );
@@ -305,15 +310,15 @@ const {isAuthenticated}=useAuth()||{}
                             <IoBag className="product-details-page-cart-icon" />
                             Buy Now
                           </button>
-                        </Link>
+                        </Link><br/>
                          
-                          <button
+                        { profileData?.dealerView&& <button
                         onClick={() => {
                           setOpenBiddingModal();
                         }}
                       >
                          Request for stock
-                      </button>
+                      </button>}
                       </>
                     )}
                   {singleProductData.priceOption === "bidding" && (

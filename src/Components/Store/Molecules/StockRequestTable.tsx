@@ -20,6 +20,7 @@ interface Stock {
   notes: string;
   deuAmount: string;
   notesType: string;
+  orderStatus:boolean;
 }
 
 const StockRequestTable: React.FC = () => {
@@ -115,14 +116,14 @@ useEffect(()=>{
                         })}
                       </td>
                       <td className="text-center">{val.adwancePaymentMode ? "Yes" : "No"}</td>
-                      <td className="text-center">{val.deuAmount }</td>
+                      <td className="text-center">{(parseFloat(val?.deuAmount)).toFixed(3) }</td>
                       <td className="text-center" style={{color:val.status==='Rejected'?"red":val.status==='Accepted'?"green":"yellow"}}>{val.status}</td>
                       <td className="text-center">{val.notesType || "N/A"}</td>
                       <td className="text-center">{val.notes || "N/A"}</td>
                       <td className="text-center">
                         <Button
                           variant="success"
-                          disabled={!val.approve}
+                          disabled={!val.approve?true:val?.orderStatus?true:false}
                           onClick={() => {
                             setStockPaymentPageData({
                               productData: val.productId,
@@ -132,7 +133,7 @@ useEffect(()=>{
                             navigate("/businessorder");
                           }}
                         >
-                          Place Order
+                          {val?.orderStatus?'Order Created':'Place Order'}
                         </Button>
                       </td>
                     </tr>

@@ -206,6 +206,8 @@ const BusinessPlaceOrder: React.FC = () => {
           totalAmount: totalAmount + deliveryCharge,
           couponData: couponAmount,
           CourierId,
+          type:"business",
+          businessDealerId:stockPaymentPageData?.stockData?._id
         });
         setBtndesable(false);
 

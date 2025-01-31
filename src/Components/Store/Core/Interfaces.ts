@@ -157,6 +157,8 @@ export interface createOrder {
   addressId: string,
   couponData?: any
   CourierId: string
+  type?:string
+  businessDealerId?:string
 
 }
 export interface updateProfileInfo {

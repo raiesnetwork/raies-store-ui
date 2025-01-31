@@ -18,7 +18,7 @@
     }
   
     .statistics-section {
-      display: flex;
+      // display: flex;
       justify-content: space-between;
       flex-wrap: wrap;
       gap: 20px;
@@ -27,6 +27,7 @@
       .statistics-container {
         display: flex;
         gap: 10px;
+        justify-content: space-around;
   
         .stat-card {
           background: #f9f9f9;
