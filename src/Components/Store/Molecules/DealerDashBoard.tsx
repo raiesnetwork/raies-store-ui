@@ -2,7 +2,7 @@ import React, { useEffect, useState } from "react";
 import "../Helpers/scss/dadhBoard.scss";
 import useMystoreStore from "../Core/Store";
 import { getSubdomain } from "../../../Utils/Subdomain";
-import { Bar } from "react-chartjs-2";
+import { Doughnut } from "react-chartjs-2";
 import {
   Chart as ChartJS,
   BarElement,
@@ -184,7 +184,7 @@ const DealerDashboard: React.FC = () => {
         ],
         backgroundColor: ["#FF9800","#4CAF50",   "#F44336",'yellow'],
         hoverBackgroundColor: ["#FF9800","#4CAF50",   "#F44336",'yellow'],
-        borderWidth: 1,
+        // borderWidth: 1,
       },
     ],
   }; const barDataP = {
@@ -201,81 +201,12 @@ const DealerDashboard: React.FC = () => {
         ],
         backgroundColor: ["#FF9800","#4CAF50",   "#F44336",'yellow'],
         hoverBackgroundColor: ["#FF9800","#4CAF50",   "#F44336",'yellow'],
-        borderWidth: 1,
+        // borderWidth: 1,
       },
     ],
   };
 
-  const barOptions = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: true,
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Categories",
-          font: {
-            size: 14,
-          },
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Values",
-          font: {
-            size: 14,
-          },
-        },
-        ticks: {
-          stepSize: 0, // Adjust based on your data
-        },
-      },
-    },
-  };
- const barOptionsP = {
-    responsive: true,
-    maintainAspectRatio: false,
-    plugins: {
-      legend: {
-        display: false,
-      },
-      tooltip: {
-        enabled: true,
-      },
-    },
-    scales: {
-      x: {
-        title: {
-          display: true,
-          text: "Categories",
-          font: {
-            size: 14,
-          },
-        },
-      },
-      y: {
-        title: {
-          display: true,
-          text: "Values",
-          font: {
-            size: 14,
-          },
-        },
-        ticks: {
-          stepSize: 0, // Adjust based on your data
-        },
-      },
-    },
-  };
+  
 
   return (
     <div className="dealer-dashboard">
@@ -295,19 +226,21 @@ const DealerDashboard: React.FC = () => {
           <section className="statistics-section">
             <StatisticsComponent stats={stats} />
           </section>
+            <div className='statistics-section-main'>
 
-          <section className="inventory-section">
+          <section >
             <h2>Stock Requests Orders</h2>
-            <div className="bar-chart-container" style={{ height: "400px" }}>
-              <Bar data={barData} options={barOptions} />
+            <div >
+              <Doughnut data={barData}  />
             </div>
           </section>
-          <section className="inventory-section">
+          <section >
             <h2>Stock Requests Payments</h2>
-            <div className="bar-chart-container" style={{ height: "400px" }}>
-              <Bar data={barDataP} options={barOptionsP} />
+            <div  >
+              <Doughnut data={barDataP}  />
             </div>
           </section>
+            </div>
         </>
       )}
     </div>

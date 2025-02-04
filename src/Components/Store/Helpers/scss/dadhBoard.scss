@@ -59,4 +59,19 @@
       }
     }
   }
+  .statistics-section-main{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 10px;
   
+  }
+  @media (max-width:580px) {
+    .statistics-section-main{
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      gap: 10px;
+    }
+  }

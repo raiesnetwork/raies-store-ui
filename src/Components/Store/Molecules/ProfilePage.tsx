@@ -390,7 +390,8 @@ const ProfilePage: React.FC = () => {
                           Stock Request
                         </li>
                      } 
-                      
+                                             {!profileData.dealerView &&
+
                       <Link
                         style={{
                           textDecoration: "none",
@@ -400,6 +401,7 @@ const ProfilePage: React.FC = () => {
                       >
                         <li>My Orders</li>
                       </Link>
+}
                     </ul>
                   </nav>
                 </aside>
