@@ -88,8 +88,8 @@ export const Register: React.FC = () => {
                                 onChange={(e) => setUserType(e.target.value)}
                             >
                                 <MenuItem value="false">Select User Role</MenuItem>
-                                <MenuItem value="Normal">Normal</MenuItem>
-                                <MenuItem value="Dealer">Dealer</MenuItem>
+                                <MenuItem value="Normal">Standard User</MenuItem>
+                                <MenuItem value="Dealer">Business Partner</MenuItem>
                             </Select>
                         </FormControl>
                     </div>
