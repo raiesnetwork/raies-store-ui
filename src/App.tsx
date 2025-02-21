@@ -19,6 +19,7 @@ import RefundAndCancellationPolicy from "./Components/Footer/RefundAndCancellati
 import Loader from "./Components/Loader/Loader";
 
 import './main.css'
+import Billing from "./Components/Billing/Billing";
 
 function App() {
   
@@ -45,6 +46,7 @@ function App() {
           ) : (
             <>
               <Route path="/details/:id" element={<SingleProductView />} />
+              <Route path="/billing" element={<Billing />} />
 
               <Route path="/login" element={<Login></Login>} />
               <Route path="/register" element={<Register></Register>} />
