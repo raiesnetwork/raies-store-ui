@@ -8,7 +8,11 @@ import { Country, State, City } from "country-state-city";
 import "react-international-phone/style.css"; // Correct phone input spacing issue
 import Swal from "sweetalert2";
 import {  plans } from "../../Utils/PricingPlan";
-import useMystoreStore from "../Store/Core/Store";
+import { createRazorpayBusinessSubscribe, verifyRazorpayBusinessSubscribe } from "../Auth/Core/Api";
+import { getSubdomain } from "../../Utils/Subdomain";
+
+const { hostname } = window.location;
+let subdomain = getSubdomain(hostname);
 
 const Billing: React.FC = () => {
   const location = useLocation();
@@ -26,7 +30,7 @@ const selectedPlan=plans?.Businesses
     city: "",
     pin: "",
     state: "",
-    plan: selectedPlan,
+    plan: selectedPlan[0],
     region: "IN",
   };
   const [formData, setFormData] = useState(initialFormData);
@@ -89,7 +93,6 @@ const selectedPlan=plans?.Businesses
   console.log("plan", selectedPlan);
   // /////////////////////////////////////////////////////////////////////////////////
 
-const { createRazorpayOrder } = useMystoreStore((s) => s);
 
 
   const handlePayment = async () => {
@@ -99,7 +102,8 @@ const { createRazorpayOrder } = useMystoreStore((s) => s);
     try {
       setLoading(true);
 
-      const { order } = await createRazorpayOrder(amount);
+      const { order } = await createRazorpayBusinessSubscribe(amount,subdomain);
+      
       console.log(order);
 
       const options = {
@@ -112,25 +116,25 @@ const { createRazorpayOrder } = useMystoreStore((s) => s);
         handler: async (response: any) => {
           try {
             
-          const data= null 
-        //   await verifyPaymentIxesSubscription(
-        //       response,
-        //       amount,
-        //       formData.email,
-        //       formData.planDuration,
-        //       formData.address1,
-        //       formData.address2,
-        //       formData.city,
-        //       formData.pin,
-        //       formData.state,
-        //       formData.plan,
-        //       formData.region,
-        //       mobileNumber,
-        //       username,
-        //       userType,
-        //       paymentType,
-        //       password
-        //     );
+          const data=  await verifyRazorpayBusinessSubscribe(
+              response,
+              amount,
+              formData.email,
+              formData.planDuration,
+              formData.address1,
+              formData.address2,
+              formData.city,
+              formData.pin,
+              formData.state,
+              formData.plan,
+              formData.region,
+              mobileNumber,
+              username,
+              userType,
+              paymentType,
+              password,
+              subdomain
+            );
             if(data){
             Swal.fire({
               icon: "success",
@@ -138,13 +142,13 @@ const { createRazorpayOrder } = useMystoreStore((s) => s);
               showConfirmButton: false,
               timer: 3500,
             });
-          toast.success('Subscribed Successfully')
-          navigate('/')
+          toast.success('Sign up Successfully')
+          navigate('/login')
           }else{
               Swal.fire({
                 icon: "error",
                 title: "Payment verification failed",
-                // text: data.message,
+                text: data.message,
               });
             }
             setLoading(false);
