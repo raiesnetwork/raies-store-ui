@@ -9,6 +9,7 @@ import { MdErrorOutline } from "react-icons/md";
 import useMystoreStore from "../../Store/Core/Store";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { toast } from "react-toastify";
+import { FaCrown } from "react-icons/fa6";
 
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
@@ -33,6 +34,8 @@ export const Register: React.FC = () => {
         e.preventDefault();
         if(!mobileNumber.trim()||!username.trim()){
            return toast.error('fill the input fields properly')
+        }if(!password.trim()){
+           return toast.error('Enter a valid password')
         }
         if(userType==='false'){
            return toast.error('Select a user type')
@@ -58,12 +61,24 @@ export const Register: React.FC = () => {
 
     }
     };
+const handlePremiumplan=()=>{
+    if(!mobileNumber.trim()||!username.trim()){
+        return toast.error('fill the input fields properly')
+     }
+     if(userType==='Dealer'&&paymentType==='false'){
+         return toast.error('Select a payment type')
 
+     }
+     if(!password.trim()){
+        return toast.error('Enter a valid password')
+     }
+    navigate('/billing',{state:{mobileNumber,username,userType,paymentType,password}})
+}
     return (
         <>
             <Header />
             <div className="login">
-                <div className="login__header">WELCOME TO RAIES NETWORK</div>
+                <div className="login__header">WELCOME TO <span style={{color:"blueviolet"}}>iXES</span> STORE</div>
                 <div className="login__header_login">REGISTER</div>
                 <div className="login__container">
                     <div className="login__input_container">
@@ -134,9 +149,21 @@ export const Register: React.FC = () => {
                     </div>
                   
                     <div className="login__btn_container">
-                        <button className="login__btn" onClick={handleSubmit} disabled={loading}>
+                       {userType==='Dealer'?
+                       <button className="login__btn" onClick={handlePremiumplan}>
+                       <div style={{
+                        display:"flex",
+                        alignItems:"center",
+                        justifyContent:"center",
+                        gap:"5px"
+                       }}>
+                       <FaCrown size={22} style={{paddingBottom:"5px"}} /> 
+                       GET PREMIUM PLAN
+                       </div>
+                   </button>
+                       : <button className="login__btn" onClick={handleSubmit} disabled={loading}>
                             {loading ? <CircularProgress size={24} /> : "SIGN UP"}
-                        </button>
+                        </button>}
                     </div>
                     <div className="login__redirect_text_sec">
                         <div className="login__redirect_text">
