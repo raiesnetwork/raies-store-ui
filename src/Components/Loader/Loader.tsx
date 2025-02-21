@@ -5,12 +5,12 @@ const Loader: React.FC = () => {
   return (
     <div className="loader-container">
       <div className="loader-icon">
-        <span>R</span>
-        <span>A</span>
-        <span>I</span>
+        <span>i</span>
+        <span>X</span>
+        <span>E</span>
         <span>S</span>
       </div>
-      <p className="loader-icon-sub">NETWORK</p>
+      <p className="loader-icon-sub">Xtended-Human-AI-Eco-System</p>
       {/* <div className="loader-bar"> */}
         {/* <div className="loader-progress"></div> */}
       {/* </div> */}
