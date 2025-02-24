@@ -85,9 +85,14 @@ const selectedPlan=plans?.Businesses
   const [totalAmount, setTotalAmount] = useState(0);
   useEffect(() => {
     if ((selectedPlan[0]?.amount, formData?.planDuration)) {
-      const total =
+      let total =
         Number(selectedPlan[0]?.amount) * Number(formData?.planDuration);
-      setTotalAmount(total);
+
+        if (formData?.planDuration === '12') {
+          total *= 0.9; // Apply 10% discount
+        }
+    
+        setTotalAmount(Math.round(total));
     }
   }, [selectedPlan, formData.planDuration]);
   console.log("plan", selectedPlan);
@@ -289,9 +294,9 @@ const selectedPlan=plans?.Businesses
           >
             <option value="">Select Duration</option>
             <option value="1">1 Month</option>
-            <option value="3">3 Months</option>
-            <option value="6">6 Months</option>
-            <option value="12">1 Year</option>
+            {/* <option value="3">3 Months</option>
+            <option value="6">6 Months</option> */}
+            <option value="12">1 Year (10% Discount)</option>
           </select>
           {errors.planDuration && (
             <div className="invalid-feedback">{errors.planDuration}</div>
@@ -309,7 +314,7 @@ const selectedPlan=plans?.Businesses
               value={couponCode}
               onChange={(e)=>setCouponCode(e.target.value)}
             />
-            <button disabled={couponLoad} onClick={ApplyCoupon} className="btn btn-primary-override">Apply</button>
+            <button disabled={couponLoad} onClick={ApplyCoupon} className="btn btn-primary">Apply</button>
          
             </div>
              </div>
