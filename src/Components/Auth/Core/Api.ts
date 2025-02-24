@@ -49,7 +49,8 @@ export const createRazorpayBusinessSubscribe = async (amount:number,subdomain:an
               userType:string,
               paymentType:string,
               password:string,
-              subdomain:any
+              subdomain:any,
+              userId?:string
 ) => {
   try {
     const {data} = await axiosInstanceProduct.post(`/storebusiness/verify-payment`,{
@@ -69,7 +70,8 @@ export const createRazorpayBusinessSubscribe = async (amount:number,subdomain:an
       userType,
       paymentType,
       password,
-      subdomain
+      subdomain,
+      userId
     });
     return data;
   } catch (error) {    

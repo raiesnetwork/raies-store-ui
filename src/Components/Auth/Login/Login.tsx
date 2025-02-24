@@ -47,6 +47,9 @@ const {login}=useAuth()||{}
 
             setLoading(false); // Stop spinner once response is received
             if (response.error) {
+                if(response.subscription===false){
+                    navigate('/upgrade-plan',{state:{userId:response.userId,username:response.username}})
+                }
                 setError(true);
                 setErrorMsg(response.message);
             } else {

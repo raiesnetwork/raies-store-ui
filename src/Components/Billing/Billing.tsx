@@ -16,7 +16,7 @@ let subdomain = getSubdomain(hostname);
 
 const Billing: React.FC = () => {
   const location = useLocation();
-  const { mobileNumber,username,userType,paymentType,password } = location.state || {};
+  const { mobileNumber,username,userType,paymentType,password ,userId} = location.state || {};
 //   const selectedPlan=plans[3]
 const selectedPlan=plans?.Businesses
 
@@ -138,7 +138,8 @@ const selectedPlan=plans?.Businesses
               userType,
               paymentType,
               password,
-              subdomain
+              subdomain,
+              userId
             );
             if(data){
             Swal.fire({
