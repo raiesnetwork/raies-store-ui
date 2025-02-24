@@ -212,6 +212,13 @@ const selectedPlan=plans?.Businesses
   return (
     <>
       <div className="billing-modal">
+        <style>
+          {`.form-control:focus {
+  outline: none;
+  box-shadow: none;
+  border: 1px solid transparent; /* Prevents default browser focus styles */
+}`}
+        </style>
         <div className="IXES-billing-summary">
           <div className="billing-page-img-sec">
             <img
@@ -302,13 +309,17 @@ const selectedPlan=plans?.Businesses
             <div className="invalid-feedback">{errors.planDuration}</div>
           )}
           <div style={{ padding: "8px 0px" }}>
-            <div style={{
+            <div className="form-control" style={{
               display:"flex",
-              gap:"5px"
+              // gap:"5px"
             }}>
             <input
               type="text"
-              
+              style={{ border: "1px solid transparent",
+                 borderRadius: "4px", padding: "8px", 
+                 width: "100%" ,
+                outline:"none"}}
+
               placeholder="Apply coupon"
               className={`form-control`}
               value={couponCode}
