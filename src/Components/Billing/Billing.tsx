@@ -1,6 +1,6 @@
 import React, { useEffect, useState } from "react";
 
-import { useLocation, useNavigate } from "react-router-dom";
+import { useLocation, useNavigate, useParams } from "react-router-dom";
 // import useMystoreStore from "../core/store/MyStoreStore";
 import { toast } from "react-toastify";
 import "./billing.scss";
@@ -15,12 +15,21 @@ const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 
 const Billing: React.FC = () => {
+  const {id,}=useParams()
   const location = useLocation();
   const { mobileNumber,username,userType,paymentType,password ,userId} = location.state || {};
 //   const selectedPlan=plans[3]
 const selectedPlan=plans?.Businesses
 
-
+const [ids,setIds]=useState('')
+useEffect(()=>{
+if(id){
+  setIds(id)
+}
+if(userId){
+  setIds(userId)
+}
+},[id,userId])
   const initialFormData = {
     email: "",
 
@@ -139,7 +148,7 @@ const selectedPlan=plans?.Businesses
               paymentType,
               password,
               subdomain,
-              userId
+              ids
             );
             if(data){
             Swal.fire({

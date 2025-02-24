@@ -48,6 +48,7 @@ function App() {
               <Route path="/details/:id" element={<SingleProductView />} />
               <Route path="/billing" element={<Billing />} />
               <Route path="/upgrade-plan" element={<Billing />} />
+              <Route path="/upgrade-plan/:id" element={<Billing />} />
 
               <Route path="/login" element={<Login></Login>} />
               <Route path="/register" element={<Register></Register>} />
