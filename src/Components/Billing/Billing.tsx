@@ -190,6 +190,20 @@ const selectedPlan=plans?.Businesses
     }
   };
 
+
+
+  const [couponCode,setCouponCode]=useState('')
+  const [couponLoad,setCouponLoad]=useState(false)
+
+  const ApplyCoupon=async()=>{
+    try{
+      setCouponLoad(true)
+
+    }catch(e){}finally{
+      setCouponLoad(false)
+    }
+  }
+
   return (
     <>
       <div className="billing-modal">
@@ -282,6 +296,23 @@ const selectedPlan=plans?.Businesses
           {errors.planDuration && (
             <div className="invalid-feedback">{errors.planDuration}</div>
           )}
+          <div style={{ padding: "8px 0px" }}>
+            <div style={{
+              display:"flex",
+              gap:"5px"
+            }}>
+            <input
+              type="text"
+              
+              placeholder="Apply coupon"
+              className={`form-control`}
+              value={couponCode}
+              onChange={(e)=>setCouponCode(e.target.value)}
+            />
+            <button disabled={couponLoad} onClick={ApplyCoupon} className="btn btn-primary-override">Apply</button>
+         
+            </div>
+             </div>
           <div style={{ padding: "8px 0px" }}>
             <input
               type="text"
