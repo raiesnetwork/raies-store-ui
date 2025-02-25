@@ -58,9 +58,7 @@ localStorage.setItem(`store_t`, JSON.stringify(data?.token));
 }
     apihelper()
   },[hostName])
-  useEffect(() => {
-    
-  }, [getStoreIconAndName, hostName]);
+ 
   const login =(userData: any) => {
     localStorage.setItem("users", JSON.stringify(userData));
     setUser(userData);
