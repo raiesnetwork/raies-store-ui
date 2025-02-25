@@ -32,7 +32,24 @@ export const createRazorpayBusinessSubscribe = async (amount:number,subdomain:an
   
       };
   }
-};export const verifyRazorpayBusinessSubscribe = async (
+};
+export const verifyCoupon = async (code:string) => {
+  try {
+    const {data} = await axiosInstanceProduct.post(`/storebusiness/couponverify`,{code,store:true});
+    console.log(data)
+
+    return data;
+  } catch (error) {    
+    return {
+        error: true,
+        message: error,
+        data:false
+  
+      };
+  }
+};
+
+export const verifyRazorpayBusinessSubscribe = async (
   response:any,
               amount:number,
               email:string,

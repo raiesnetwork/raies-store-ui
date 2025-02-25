@@ -8,7 +8,7 @@ import { Country, State, City } from "country-state-city";
 import "react-international-phone/style.css"; // Correct phone input spacing issue
 import Swal from "sweetalert2";
 import {  plans } from "../../Utils/PricingPlan";
-import { createRazorpayBusinessSubscribe, verifyRazorpayBusinessSubscribe } from "../Auth/Core/Api";
+import { createRazorpayBusinessSubscribe, verifyCoupon, verifyRazorpayBusinessSubscribe } from "../Auth/Core/Api";
 import { getSubdomain } from "../../Utils/Subdomain";
 
 const { hostname } = window.location;
@@ -212,8 +212,37 @@ if(userId){
 
   const ApplyCoupon=async()=>{
     try{
+      if(!couponCode.trim()){
+        return toast.warning('Enter a valid coupon code')
+      }if(!formData.planDuration.trim()){
+        return toast.warning('Select Duration')
+      }
       setCouponLoad(true)
+      const data=await verifyCoupon(couponCode)
+      console.log(data,'ccou');
+      
+      if(data?.error){
+        toast.error(data.message)
+      }else{
+        
+        
+          let total =
+            Number(selectedPlan[0]?.amount) * Number(formData?.planDuration);
+            if (formData?.planDuration === '12') {
+              total *= 0.9; // Apply 10% discount
+            }
+          let newTotal = Math.round(total); 
 
+  if (data?.coupon?.couponType === 'discount-in-percentage') {
+    newTotal = newTotal - (newTotal * Number(data?.coupon?.discountPercentage) / 100);
+  } else if (data?.coupon?.couponType === 'discount-amount') {
+    newTotal = newTotal - Number(data.coupon.discountAmount);
+  }
+
+  setTotalAmount(Math.round(newTotal));  
+  toast.success(data.message)
+
+      }
     }catch(e){}finally{
       setCouponLoad(false)
     }
