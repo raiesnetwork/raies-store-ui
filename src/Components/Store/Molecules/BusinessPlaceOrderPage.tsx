@@ -182,7 +182,7 @@ const BusinessPlaceOrder: React.FC = () => {
         breadth: stockPaymentPageData.productData.packageBreadth,
         height: stockPaymentPageData.productData.packageHeight,
       };
-      const productDetais = {
+      const productDetais = [{
         _id: stockPaymentPageData.productData?._id,
         quantity: stockPaymentPageData.stockData.stock,
         productName: stockPaymentPageData.productData?.productName,
@@ -190,7 +190,7 @@ const BusinessPlaceOrder: React.FC = () => {
         cartId: "",
         price: stockPaymentPageData.productData?.price,
         diamentions,
-      };
+      }];
       if (deliveryError.error) {
         setBtndesable(false);
 
@@ -249,14 +249,19 @@ const BusinessPlaceOrder: React.FC = () => {
                 let data = {
                   response,
                   addressId: selectedAddress._id,
-                  paymentMethod: stockPaymentPageData.paymenttype,
+                  paymentMethod: stockPaymentPageData.paymentType,
                   productDetails: productDetais,
                   totalAmount: totalAmount + deliveryCharge,
                   couponData: couponAmount,
                 };
                 // @ts-ignore
                 await verifyRazorpayPayment(data);
-
+                navigate("/success", {
+                  state: {
+                    orderDetails: [{productDetails:stockPaymentPageData.productData,quantity:stockPaymentPageData?.stockData?.stock}],
+                    // orderId:data.data.orderId
+                  },
+                })
                 // setLoading(false);
                 setRefresh(true);
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -279,12 +284,7 @@ const BusinessPlaceOrder: React.FC = () => {
               ondismiss: () => {
                 // setLoading(false);
                 // Optionally stop loading if the user dismisses the payment modal
-                navigate("/success", {
-                    state: {
-                      orderDetails: [{productDetails:stockPaymentPageData.productData,quantity:stockPaymentPageData?.stockData?.stock}],
-                      // orderId:data.data.orderId
-                    },
-                  });
+              ;
               },
             },
           };
