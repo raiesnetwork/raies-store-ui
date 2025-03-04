@@ -56,7 +56,7 @@ const Header: React.FC = () => {
           alt="Store Logo"
           className="header__logo"
         />
-        <p>{storeData ? storeData?.storeName : ""}</p>
+        <div>{storeData ? storeData?.storeName : ""}</div>
       </Link>
 
       {/* Center: Search Box */}

@@ -78,7 +78,7 @@ const handlePremiumplan=()=>{
         <>
             <Header />
             <div className="login">
-                <div className="login__header">WELCOME TO <span style={{color:"blueviolet"}}>iXES</span> IRP</div>
+                <div className="login__header">WELCOME TO <span style={{color:"blueviolet"}}>iXES</span> IRP COMMERCE</div>
                 <div className="login__header_login">REGISTER</div>
                 <div className="login__container">
                     <div className="login__input_container">

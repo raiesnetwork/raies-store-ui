@@ -10,10 +10,11 @@ import {
   LinearScale,
   Tooltip,
   Legend,
+  ArcElement,
 } from "chart.js";
 
 // Register ChartJS components
-ChartJS.register(CategoryScale, LinearScale, BarElement, Tooltip, Legend);
+ChartJS.register(ArcElement,CategoryScale, LinearScale, BarElement, Tooltip, Legend);
 
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);

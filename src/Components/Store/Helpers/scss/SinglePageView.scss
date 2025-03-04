@@ -147,7 +147,8 @@
 @mixin btn() {
     outline: none;
     border-radius: 42px;
-    width: 200px;
+    width: fit-content;
+    padding:0px 20px;
     height: 56px;
     border: 0;
     background-color: black;
