@@ -186,13 +186,6 @@ const {isAuthenticated}=useAuth()||{}
 
                   <div className="product-description">
                     {singleProductData.description}
-                    Lorem ipsum dolor sit amet consectetur adipisicing elit.
-                    Inventore provident, deleniti sunt, doloremque quo id
-                    assumenda unde numquam cupiditate voluptates, aut minus non
-                    quisquam eaque sequi debitis. Facilis eius debitis, quod,
-                    ducimus fuga aliquid veniam consectetur quia sit dolore
-                    recusandae molestias! Necessitatibus, at commodi! Quisquam
-                    rerum odit voluptatum. Labore, officia.
                   </div>
                   {singleProductData.productCount < 5 && (
                     <p className="product-card__limited-stock">
@@ -310,7 +303,7 @@ const {isAuthenticated}=useAuth()||{}
                             <IoBag className="product-details-page-cart-icon" />
                             Buy Now
                           </button>
-                        </Link><br/>
+                        </Link>
                          
                         { profileData?.dealerView&& <button
                         onClick={() => {

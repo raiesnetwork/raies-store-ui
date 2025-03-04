@@ -7,5 +7,4 @@ export function getSubdomain(hostname: string) {
     }
       
     return null; 
-    // return "srs"
   }
