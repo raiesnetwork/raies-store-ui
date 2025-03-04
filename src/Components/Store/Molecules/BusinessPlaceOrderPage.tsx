@@ -253,6 +253,9 @@ const BusinessPlaceOrder: React.FC = () => {
                   productDetails: productDetais,
                   totalAmount: totalAmount + deliveryCharge,
                   couponData: couponAmount,
+                  type:"business",
+                  businessDealerId:stockPaymentPageData?.stockData?._id
+
                 };
                 // @ts-ignore
                 await verifyRazorpayPayment(data);
