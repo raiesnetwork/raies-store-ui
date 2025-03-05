@@ -14,7 +14,8 @@ const StoreFooter: React.FC = () => {
         */}
         </div> 
       <div className="store_footer__copyright">
-        &copy; {new Date().getFullYear()}  AIANR TECHNOLOGIES PRIVATE LIMITED. All Rights Reserved.
+        &copy; {new Date().getFullYear()}       iXES Global solutions private limited. All Rights Reserved
+
       </div>
     </footer>
   );
