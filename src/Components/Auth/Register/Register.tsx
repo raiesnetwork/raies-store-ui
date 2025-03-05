@@ -23,81 +23,110 @@ export const Register: React.FC = () => {
     const [errorMessage, setErrorMsg] = useState<string>("");
     const [userType, setUserType] = useState<string>("false"); // User type state
     const [paymentType, setPaymentType] = useState<string>("false"); // Payment type state
+    const [businessPartnerType, setBusinessPartnerType] = useState<string>(""); // New state for business partner type
 
     const { registrationVerify } = useMystoreStore((state) => state);
-
     const navigate = useNavigate();
 
     const handleSubmit = async (e: React.FormEvent) => {
-        try{
-        setLoading(true);
-        e.preventDefault();
-        if(!mobileNumber.trim()||!username.trim()){
-           return toast.error('fill the input fields properly')
-        }if(!password.trim()){
-           return toast.error('Enter a valid password')
-        }
-        if(userType==='false'){
-           return toast.error('Select a user type')
-        }
-        if(userType==='Dealer'&&paymentType==='false'){
-            return toast.error('Select a payment type')
+        try {
+            setLoading(true);
+            e.preventDefault();
 
-        }
-        const data = await registrationVerify(mobileNumber, subdomain);
-        if (data.error) {
+            if (!mobileNumber.trim() || !username.trim()) {
+                return toast.error("Fill the input fields properly");
+            }
+            if (!password.trim()) {
+                return toast.error("Enter a valid password");
+            }
+            if (userType === "false") {
+                return toast.error("Select a user type");
+            }
+            if (userType === "Dealer" && paymentType === "false") {
+                return toast.error("Select a payment type");
+            }
+            if (userType === "Dealer" && !businessPartnerType.trim()) {
+                return toast.error("Enter your Business Partner Type");
+            }
+
+            const data = await registrationVerify(mobileNumber, subdomain);
+            if (data.error) {
+                setLoading(false);
+                setError(true);
+                setErrorMsg(data.message);
+            } else {
+                setLoading(false);
+                setError(false);
+                navigate("/otp", { 
+                    state: { 
+                        mobileNumber, 
+                        subdomain, 
+                        username, 
+                        password, 
+                        userType, 
+                        paymentType, 
+                        businessPartnerType, // Include the new field
+                        registration: true 
+                    } 
+                });
+            }
+        } catch (e) {
+            console.error(e);
+        } finally {
             setLoading(false);
-            setError(true);
-            setErrorMsg(data.message);
-        } else {
-            setLoading(false);
-            setError(false);
-            navigate("/otp", { state: { mobileNumber, subdomain, username, password, userType, paymentType, registration: true } });
         }
-    }catch(e){
-
-    }finally{
-        setLoading(false);
-
-    }
     };
-const handlePremiumplan=()=>{
-    if(!mobileNumber.trim()||!username.trim()){
-        return toast.error('fill the input fields properly')
-     }
-     if(userType==='Dealer'&&paymentType==='false'){
-         return toast.error('Select a payment type')
 
-     }
-     if(!password.trim()){
-        return toast.error('Enter a valid password')
-     }
-    navigate('/billing',{state:{mobileNumber,username,userType,paymentType,password}})
-}
+    const handlePremiumplan = () => {
+        if (!mobileNumber.trim() || !username.trim()) {
+            return toast.error("Fill the input fields properly");
+        }
+        if (userType === "Dealer" && paymentType === "false") {
+            return toast.error("Select a payment type");
+        }
+        if (!password.trim()) {
+            return toast.error("Enter a valid password");
+        }
+        if (userType === "Dealer" && !businessPartnerType.trim()) {
+            return toast.error("Enter your Business Partner Type");
+        }
+
+        navigate("/billing", { 
+            state: { 
+                mobileNumber, 
+                username, 
+                userType, 
+                paymentType, 
+                businessPartnerType, // Include the new field
+                password 
+            } 
+        });
+    };
+
     return (
         <>
             <Header />
             <div className="login">
-                <div className="login__header">WELCOME TO <span style={{color:"blueviolet"}}>iXES</span> IRP COMMERCE</div>
+                <div className="login__header">
+                    WELCOME TO <span style={{ color: "blueviolet" }}>iXES</span> IRP COMMERCE
+                </div>
                 <div className="login__header_login">REGISTER</div>
                 <div className="login__container">
                     <div className="login__input_container">
                         <TextField
-                            id="outlined-password-input"
+                            id="outlined-username"
                             label="Name"
                             type="text"
-                            autoComplete="current-password"
                             className="login__input_field"
                             value={username}
                             onChange={(e) => setUsername(e.target.value)}
                         />
                     </div>
-                      {/* User Type Selector */}
-                      <div className="login__input_container">
+
+                    {/* User Type Selector */}
+                    <div className="login__input_container">
                         <FormControl fullWidth>
-                            {/* <InputLabel id="user-type-label">User Type</InputLabel> */}
                             <Select
-                                labelId="user-type-label"
                                 id="user-type"
                                 value={userType}
                                 onChange={(e) => setUserType(e.target.value)}
@@ -108,13 +137,26 @@ const handlePremiumplan=()=>{
                             </Select>
                         </FormControl>
                     </div>
-                    {/* Payment Type Dropdown (Visible only if userType is Dealer) */}
+
+                    {/* Business Partner Type (Only if user selects "Dealer") */}
+                    {userType === "Dealer" && (
+                        <div className="login__input_container">
+                            <TextField
+                                id="business-partner-type"
+                                label="Business Partner Type"
+                                type="text"
+                                className="login__input_field"
+                                value={businessPartnerType}
+                                onChange={(e) => setBusinessPartnerType(e.target.value)}
+                            />
+                        </div>
+                    )}
+
+                    {/* Payment Type Dropdown (Only for Dealers) */}
                     {userType === "Dealer" && (
                         <div className="login__input_container">
                             <FormControl fullWidth>
-                                {/* <InputLabel id="payment-type-label"></InputLabel> */}
                                 <Select
-                                    labelId="payment-type-label"
                                     id="payment-type"
                                     value={paymentType}
                                     onChange={(e) => setPaymentType(e.target.value)}
@@ -127,52 +169,57 @@ const handlePremiumplan=()=>{
                             </FormControl>
                         </div>
                     )}
+
                     <div className="login__input_container">
                         <PhoneInput
                             value={mobileNumber}
                             onChange={setMobileNumber}
                             className="login__phone_input_field"
-                            defaultCountry="in" // You can set default country if required
+                            defaultCountry="in"
                             placeholder="Enter phone number"
                         />
                     </div>
+
                     <div className="login__input_container">
                         <TextField
                             id="outlined-password-input"
                             label="Password"
                             type="password"
-                            autoComplete="current-password"
                             className="login__input_field"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
                         />
                     </div>
-                  
+
                     <div className="login__btn_container">
-                       {userType==='Dealer'?
-                       <button className="login__btn" onClick={handlePremiumplan}>
-                       <div style={{
-                        display:"flex",
-                        alignItems:"center",
-                        justifyContent:"center",
-                        gap:"5px"
-                       }}>
-                       <FaCrown size={22} style={{paddingBottom:"5px"}} /> 
-                       GET PREMIUM PLAN
-                       </div>
-                   </button>
-                       : <button className="login__btn" onClick={handleSubmit} disabled={loading}>
-                            {loading ? <CircularProgress size={24} /> : "SIGN UP"}
-                        </button>}
+                        {userType === "Dealer" ? (
+                            <button className="login__btn" onClick={handlePremiumplan}>
+                                <div style={{
+                                    display: "flex",
+                                    alignItems: "center",
+                                    justifyContent: "center",
+                                    gap: "5px"
+                                }}>
+                                    <FaCrown size={22} style={{ paddingBottom: "5px" }} />
+                                    GET PREMIUM PLAN
+                                </div>
+                            </button>
+                        ) : (
+                            <button className="login__btn" onClick={handleSubmit} disabled={loading}>
+                                {loading ? <CircularProgress size={24} /> : "SIGN UP"}
+                            </button>
+                        )}
                     </div>
+
                     <div className="login__redirect_text_sec">
                         <div className="login__redirect_text">
-                            <span className="login__redirect_txt">Already have an account ?</span>
+                            <span className="login__redirect_txt">Already have an account?</span>
                             <Link to="/login" className="login__redirect_link">
                                 LOG IN
                             </Link>
                         </div>
                     </div>
+
                     {error && (
                         <div className="login__error_sec">
                             <MdErrorOutline />
