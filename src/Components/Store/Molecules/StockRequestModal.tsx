@@ -47,9 +47,9 @@ const StockRequestModal: React.FC = () => {
 
     try {
       setLoading(true);
-      const data= await postStockRequestApi(
+      const data = await postStockRequestApi(
         singleProductData?.productName, stockQuantity,
-        expectedDate,advancePayment,singleProductData?._id,singleProductData.user);
+        expectedDate, advancePayment, singleProductData?._id, singleProductData.user);
 
       toast.success(data?.message)
       setOpenBiddingModal()
@@ -86,13 +86,18 @@ const StockRequestModal: React.FC = () => {
             <Form.Label>
               <strong>Number of Stock Requests</strong>
             </Form.Label>
+
             <Form.Control
               type="number"
-              min="1"
-              value={stockQuantity}
-              onChange={(e) => setStockQuantity(Number(e.target.value))}
+              value={isNaN(stockQuantity) ? "" : stockQuantity} // Show empty when NaN
+              onChange={(e) => {
+                const value = e.target.value;
+                setStockQuantity(value === "" ? NaN : Number(value)); // Use NaN for empty case
+              }}
               isInvalid={stockQuantity < 1}
             />
+
+
             <Form.Control.Feedback type="invalid">
               Must be at least 1.
             </Form.Control.Feedback>
