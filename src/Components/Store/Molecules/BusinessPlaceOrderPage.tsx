@@ -223,7 +223,7 @@ const BusinessPlaceOrder: React.FC = () => {
           navigate("/success", {
             state: {
               orderDetails: [{productDetails:stockPaymentPageData.productData,quantity:stockPaymentPageData?.stockData?.stock}],
-              orderId: data.data.orderData?.order_id,
+              orderId: data?.data.orderData?.order_id||stockPaymentPageData?.productData?._id,
             },
           });
         }
