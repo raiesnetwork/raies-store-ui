@@ -202,7 +202,7 @@ const BusinessPlaceOrder: React.FC = () => {
           addressId: selectedAddress._id,
           paymentMethod: stockPaymentPageData.paymentType,
           //@ts-ignore
-          productDetails: [productDetais],
+          productDetails: productDetais,
           totalAmount: totalAmount + deliveryCharge,
           couponData: couponAmount,
           CourierId,
