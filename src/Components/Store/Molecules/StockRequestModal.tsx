@@ -15,7 +15,8 @@ const StockRequestModal: React.FC = () => {
   const [error, setError] = useState("");
 
   const productCost = singleProductData?.price || 0;
-  const totalStockCost = stockQuantity * productCost;
+  const totalStockCost = stockQuantity ? stockQuantity * productCost : 0;
+
 
   // Get tomorrow's date in YYYY-MM-DD format
   const getTomorrowDate = () => {
