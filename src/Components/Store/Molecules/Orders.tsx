@@ -124,7 +124,7 @@ const UserOrdersPage: React.FC = () => {
     }
     return { orders: [], bidOrders: [], barterOrders: [] };
   };
-
+console.log("payement",orders)
   const {
     orders: filteredOrderList,
     bidOrders: filteredBidOrders,
@@ -239,33 +239,42 @@ const UserOrdersPage: React.FC = () => {
                         {/* Order Details */}
                         <div className="myorder-page__order-details-sec">
                           <div className="myorder-page__order-amount-sec">
-                            {order.paymentMethod === "offline" ? (
-                              <>
-                                {order.totalAmount === 0 ? (
-                                  <div className="myorder-page__order-amount">
-                                    ₹80
-                                  </div>
-                                ) : (
-                                  <div className="myorder-page__order-amount">
-                                    {`₹${order.totalAmount}`}
-                                  </div>
-                                )}
-                                <div className="myorder-page__payment-status">
-                                  Payment Due{" "}
-                                  <CgDanger className="myorder-page__order-amount-warning" />
-                                </div>
-                              </>
-                            ) : (
-                              <>
-                                <div className="myorder-page__order-amount">
-                                  {`₹${order.totalAmount}`}
-                                </div>
-                                <div className="myorder-page__payment-status">
-                                  Paid{" "}
-                                  <MdVerified className="myorder-page__order-amount-tick" />
-                                </div>
-                              </>
-                            )}
+                          {order.paymentMethod === "offline" ? (
+  <>
+    {order.totalAmount === 0 ? (
+      <div className="myorder-page__order-amount">₹80</div>
+    ) : (
+      <div className="myorder-page__order-amount">
+        {`₹${order.totalAmount}`}
+      </div>
+    )}
+    <div className="myorder-page__payment-status">
+      Payment Due{" "}
+      <CgDanger className="myorder-page__order-amount-warning" />
+    </div>
+  </>
+) : order.paymentMethod === "credit" ? (
+  <>
+    <div className="myorder-page__order-amount">
+      {`₹${order.totalAmount}`}
+    </div>
+    <div className="myorder-page__payment-status">
+      Credit{" "}
+      <CgDanger className="myorder-page__order-amount-credit" />
+    </div>
+  </>
+) : (
+  <>
+    <div className="myorder-page__order-amount">
+      {`₹${order.totalAmount}`}
+    </div>
+    <div className="myorder-page__payment-status">
+      Paid{" "}
+      <MdVerified className="myorder-page__order-amount-tick" />
+    </div>
+  </>
+)}
+
                           </div>
 
                           <div className="myorder-page__delivery-status">
