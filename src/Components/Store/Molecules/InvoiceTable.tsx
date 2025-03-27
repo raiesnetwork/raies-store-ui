@@ -154,7 +154,7 @@ const InvioceTable: React.FC = () => {
                       </div>
                     </td>
                     <td className="text-gray-900 fw-bold text-hover-primary fs-6">
-                      ${val?.amount}
+                    ₹{val?.amount}
                     </td>
 
                     <td>
