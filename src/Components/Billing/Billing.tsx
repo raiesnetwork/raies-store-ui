@@ -17,7 +17,7 @@ let subdomain = getSubdomain(hostname);
 const Billing: React.FC = () => {
   const {id,}=useParams()
   const location = useLocation();
-  const { mobileNumber,username,userType,paymentType,password ,userId} = location.state || {};
+  const { businessPartnerType,mobileNumber,username,userType,paymentType,password ,userId} = location.state || {};
 //   const selectedPlan=plans[3]
 const selectedPlan=plans?.Businesses
 
@@ -147,6 +147,7 @@ if(userId){
               userType,
               paymentType,
               password,
+              businessPartnerType,
               subdomain,
               ids
             );

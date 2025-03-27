@@ -66,6 +66,7 @@ export const verifyRazorpayBusinessSubscribe = async (
               userType:string,
               paymentType:string,
               password:string,
+              businessPartnerType:string,
               subdomain:any,
               userId?:string
 ) => {
@@ -88,7 +89,8 @@ export const verifyRazorpayBusinessSubscribe = async (
       paymentType,
       password,
       subdomain,
-      userId
+      userId,
+      businessPartnerType
     });
     return data;
   } catch (error) {    

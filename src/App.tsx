@@ -23,6 +23,7 @@ import Billing from "./Components/Billing/Billing";
 
 function App() {
   
+  const { isAuthenticated } = useAuth() || {};
   const { storeIconsLoader } = useMystoreStore((s) => s);
 
   if (storeIconsLoader) {
@@ -31,7 +32,6 @@ function App() {
       <Loader/>
     );
   }
-  const { isAuthenticated } = useAuth() || {};
   
   return (
     <>
