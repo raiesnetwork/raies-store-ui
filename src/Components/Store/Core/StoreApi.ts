@@ -579,6 +579,8 @@ export const getStockRequestApi = async (pageNo: string,type:string) => {
 // shprocket api calls
 export const getDeliveryCharge = async (productData: any, token: string) => {
   try {
+    console.log("tocken",token)
+    console.log("productData",productData)
     const { data } = await axios.get(
       "https://apiv2.shiprocket.in/v1/external/courier/serviceability/",
 
