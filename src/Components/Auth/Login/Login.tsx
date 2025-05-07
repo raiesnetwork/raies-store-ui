@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, CircularProgress } from '@mui/material'; // Import CircularProgress for spinner
+import { TextField, CircularProgress ,Select, MenuItem, FormControl} from '@mui/material'; // Import CircularProgress for spinner
 import { PhoneInput } from "react-international-phone";
 import 'react-international-phone/style.css';
 import "./Login.scss";
@@ -22,6 +22,8 @@ const {login}=useAuth()||{}
     const [errorMessage, setErrorMsg] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [checkBox, setCheckBox] = useState<boolean>(false);
+    const [userType, setUserType] = useState<string>("false"); // User type state
+
     const {
      
         verifyNumber,
@@ -39,11 +41,15 @@ const {login}=useAuth()||{}
         }
     }
     const handleLogin = async () => {
+        if (userType === "false") {
+            setError(true)
+            return setErrorMsg("Select a user type");
+        }
         setLoading(true); // Start loading spinner
         setError(false);  // Reset error state
 
         if (mobileNumber.trim() && password.trim() && mobileNumber.length > 7) {
-            const response = await loginWithPassword(mobileNumber, password, subdomain);
+            const response = await loginWithPassword(mobileNumber, password, subdomain,userType);
 
             setLoading(false); // Stop spinner once response is received
             if (response.error) {
@@ -69,6 +75,10 @@ const {login}=useAuth()||{}
         }
     };
     const LoginWithOtp = async () => {
+        if (userType === "false") {
+            setError(true)
+            return setErrorMsg("Select a user type");
+        }
         setLoading(true); // Start loading spinner
         setError(false); 
         let data = null;
@@ -82,7 +92,7 @@ const {login}=useAuth()||{}
         } else {
             setLoading(false); 
             setError(false); 
-            navigate("/otp", { state: { mobileNumber,subdomain,registration:false } }); 
+            navigate("/otp", { state: { mobileNumber,subdomain,registration:false,userType } }); 
         }
 
     };
@@ -105,6 +115,20 @@ const {login}=useAuth()||{}
                             defaultCountry="in"
                             placeholder="Enter phone number"
                         />
+                    </div>
+                      {/* User Type Selector */}
+                      <div className="login__input_container">
+                        <FormControl fullWidth>
+                            <Select
+                                id="user-type"
+                                value={userType}
+                                onChange={(e) => setUserType(e.target.value)}
+                            >
+                                <MenuItem value="false">Select User Role</MenuItem>
+                                <MenuItem value="Normal">Standard User</MenuItem>
+                                <MenuItem value="Dealer">Business Partner</MenuItem>
+                            </Select>
+                        </FormControl>
                     </div>
                     {!checkBox ?
                         <div className="login__input_container">

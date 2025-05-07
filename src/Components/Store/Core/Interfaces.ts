@@ -78,8 +78,8 @@ export interface MystoreStore {
   deleteCart: (id: string) => Promise<ApiResponce>;
   verifyNumber: (number: string) => Promise<ApiResponce>;
   createUser: (data: userStoreCreate) => Promise<ApiResponce>;
-  loginUser: (data: string, otp: string, subdomain: string) => Promise<ApiResponce>;
-  loginWithPassword: (data: string, pass: string, subdomain: string | null) => Promise<ApiResponce>;
+  loginUser: (data: string, otp: string, subdomain: string,userType:string) => Promise<ApiResponce>;
+  loginWithPassword: (data: string, pass: string, subdomain: string | null,userType:string) => Promise<ApiResponce>;
   updateCart: (id: string, quantity: number) => Promise<ApiResponce>;
   latestProduct: (hostName: string | null, name: string) => Promise<ApiResponce>;
   createAddress: (data: StoreAddress) => Promise<ApiResponce>;

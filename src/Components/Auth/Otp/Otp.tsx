@@ -59,7 +59,7 @@ const navigate=useNavigate()
                 }
             } else {
                 // Login Flow: Verify OTP for existing user
-                response = await loginUser(mobileNumber, enteredOtp, subdomain);
+                response = await loginUser(mobileNumber, enteredOtp, subdomain,userType);
 
                 if (response.error) {
                     toast.error(response.message || "OTP verification failed");

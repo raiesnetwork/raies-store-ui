@@ -134,13 +134,15 @@ export const createStoreUserApi = async (datas: userStoreCreate) => {
 export const loginUserApi = async (
   mobileNumber: string,
   otp: string,
-  subdomain: string
+  subdomain: string,
+  userType: string
 ) => {
   try {
     const { data } = await axiosInstance.post(`/userstore/auth/login`, {
       mobileNumber,
       otp,
       subdomain,
+      userType
     });
     return data;
   } catch (error) {
@@ -154,13 +156,15 @@ export const loginUserApi = async (
 export const loginWithPasswordApi = async (
   mobileNumber: string,
   password: string,
-  subdomain: string | null
+  subdomain: string | null,
+  userType:string
 ) => {
   try {
     const response = await axiosInstance.post(`/userstore/auth/passlogin`, {
       mobileNumber,
       password,
       subdomain,
+      userType
     });
     console.log("apires", response);
     return response.data;

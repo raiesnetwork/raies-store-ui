@@ -132,8 +132,8 @@ const useMystoreStore = create<MystoreStore>((set,get) => ({
     return data;
   },
 
-  loginUser: async (number, otp, subdomain) => {
-    const data = await loginUserApi(number, otp, subdomain);
+  loginUser: async (number, otp, subdomain,userType) => {
+    const data = await loginUserApi(number, otp, subdomain,userType);
     return data;
   },
   logedIn: false,
@@ -202,8 +202,8 @@ const useMystoreStore = create<MystoreStore>((set,get) => ({
     const datas = await createBiddingOrderApi(data);
     return datas;
   },
-  loginWithPassword: async (number, password, subdomain) => {
-    const data = await loginWithPasswordApi(number, password, subdomain);
+  loginWithPassword: async (number, password, subdomain,userType) => {
+    const data = await loginWithPasswordApi(number, password, subdomain,userType);
     return data;
   },
 
