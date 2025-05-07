@@ -117,7 +117,7 @@ useEffect(()=>{
                       </td>
                       <td className="text-center">{val.adwancePaymentMode ? "Yes" : "No"}</td>
                       <td className="text-center">{(parseFloat(val?.deuAmount)).toFixed(3) }</td>
-                      <td className="text-center" style={{color:val.status==='Rejected'?"red":val.status==='Accepted'?"green":"yellow"}}>{val.status}</td>
+                      <td className="text-center" style={{color:val.status==='Rejected'?"red":val.status==='Accepted'?"green":"orange"}}>{val.status}</td>
                       <td className="text-center">{val.notesType || "N/A"}</td>
                       <td className="text-center">{val.notes || "N/A"}</td>
                       <td className="text-center">

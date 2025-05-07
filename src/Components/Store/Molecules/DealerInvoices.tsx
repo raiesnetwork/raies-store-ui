@@ -71,7 +71,7 @@ const DelalerInvoices: React.FC = () => {
             {/* begin::Header */}
             <div className="card-header border-0 pt-5">
                 <h3 className="card-title align-items-start flex-column">
-                    <span className="card-label fw-bold fs-3 mb-1">Recent Invoices</span>
+                    <span className="card-label fw-bold fs-3 mb-1">Recent Invoices - </span>
                     <span className="text-muted mt-1 fw-semibold fs-7">
                         {dealerInvoices.length > 0
                             ? `${dealerInvoices.length} invoices`
@@ -130,11 +130,11 @@ const DelalerInvoices: React.FC = () => {
                                         </td>
                                         <td>
                                             {invoice.status === "Unpaid" ? (
-                                                <span className="badge badge-light-warning">
+                                                <span className="badge badge-light-warning" style={{background:"orange"}}>
                                                     {invoice.status}
                                                 </span>
                                             ) : invoice.status === "Paid" ? (
-                                                <span className="badge badge-light-success">
+                                                <span className="badge badge-light-success" style={{background:"green"}}>
                                                     {invoice.status}
                                                 </span>
                                             ) : (
