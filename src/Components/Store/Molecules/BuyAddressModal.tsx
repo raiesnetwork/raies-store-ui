@@ -5,7 +5,7 @@ import "react-international-phone/style.css";
 import useMystoreStore from "../Core/Store";
 import { toast } from "react-toastify";
 import { Country, State, City } from "country-state-city";
-
+import { Modal, Button, Form, FloatingLabel } from "react-bootstrap";
 
 interface AddressData {
   fullName: string;
@@ -29,12 +29,10 @@ interface AddressErrors {
   landmark?: string;
   pincode?: string;
   email?: string;
-  
 }
 
 interface AddressModalProps {
   closeModal: () => void;
-  //   setErrors: React.Dispatch<React.SetStateAction<Record<string, string>>>;
 }
 
 const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
@@ -45,10 +43,10 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
     fullAddress: "",
     landmark: "",
     pincode: "",
-    city:"",
-    country:"IN",
-    state:"",
-    email:"",
+    city: "",
+    country: "IN",
+    state: "",
+    email: "",
   });
   const [addressErrors, setAddressErrors] = useState<AddressErrors>({});
   const countries = Country.getAllCountries();
@@ -58,8 +56,7 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
   const citys = addressData.state
     ? City.getCitiesOfState(addressData.country, addressData.state)
     : [];
-    
-  
+
   const handleChange = (
     e: ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>
   ) => {
@@ -73,12 +70,14 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
       [name]: "",
     }));
   };
+  
   const setMobileNumber = (n: string) => {
     setAddressData((prevData) => ({
       ...prevData,
       mobileNumber: n,
     }));
   };
+  
   const validateAddress = (): boolean => {
     const newErrors: AddressErrors = {};
     if (!addressData.fullName.trim())
@@ -128,223 +127,189 @@ const AddressModal: React.FC<AddressModalProps> = ({ closeModal }) => {
   };
 
   return (
-    <>
-      <div className="modal-overlay">
-        <div className="modal-content">
-          <h2>Create Delivery Address</h2>
-          <form onSubmit={handleAddressSubmit}>
-  <div className="form-group">
-    <label htmlFor="fullName">Full Name</label>
-    <input
-      type="text"
-      id="fullName"
-      name="fullName"
-      value={addressData.fullName}
-      onChange={handleChange}
-      className={`form-control `}
-    />
-    {addressErrors.fullName && (
-      <div className="invalid-feedback">{addressErrors.fullName}</div>
-    )}
-  </div>
-
-  <div
-    style={{
-      marginBottom: "15px",
-      minWidth: "100%",
-      display: "block",
-    }}
-    className="form-group"
-  >
-    <label
-      style={{
-        marginBottom: "5px",
-      }}
-      htmlFor="mobileNumber"
-    >
-      Mobile Number
-    </label>
-    <div
-      style={{
-        border: "1px solid #d7d7d7",
-        width: "98%",
-        borderRadius: "3px",
-      }}
-    >
-      <PhoneInput
-        onChange={(phone) => {
-          setMobileNumber(phone);
-        }}
-        name="mobileNumber"
-        defaultCountry="in"
-        disableDialCodeAndPrefix={true}
-        value={addressData.mobileNumber}
-        inputStyle={{
-          backgroundColor: "transparent",
-          border: "0",
-          width: "100%",
-          padding: " 28px 8px",
-        }}
-        countrySelectorStyleProps={{
-          buttonStyle: {
-            backgroundColor: "transparent",
-            border: "0",
-          },
-        }}
-      />
-    </div>
-    {addressErrors.mobileNumber && (
-      <div style={{ color: "red", fontSize: "0.875rem" }}>
-        {addressErrors.mobileNumber}
-      </div>
-    )}
-  </div>
-
-  <div className="form-group">
-    <label htmlFor="fullAddress">Email</label>
-    <input
-      id="email"
-      name="email"
-      type="email"
-      value={addressData.email}
-      onChange={handleChange}
-      className={`form-control`}
-      
-    />
-    {addressErrors.email && (
-      <div className="invalid-feedback">{addressErrors.email}</div>
-    )}
-  </div>
-  <div className="form-group">
-    <label htmlFor="fullAddress">Full Address</label>
-    <textarea
-      id="fullAddress"
-      name="fullAddress"
-      value={addressData.fullAddress}
-      onChange={handleChange}
-      className={`form-control`}
-    />
-    {addressErrors.fullAddress && (
-      <div className="invalid-feedback">{addressErrors.fullAddress}</div>
-    )}
-  </div>
-
-  <div className="form-group">
-    <label htmlFor="landmark">Landmark (Optional)</label>
-    <input
-      type="text"
-      id="landmark"
-      name="landmark"
-      value={addressData.landmark}
-      onChange={handleChange}
-      className="form-control"
-    />
-  </div>
-
- 
-
- 
-  <div className="form-group" style={{width:"104%"}}>
-            <label htmlFor="country">Country</label>
-            <select
-              id="country"
-              name="country"
-              value={addressData.country}
+    <Modal show={true} onHide={closeModal} size="lg">
+      <Modal.Header closeButton>
+        <Modal.Title>Create Delivery Address</Modal.Title>
+      </Modal.Header>
+      <Modal.Body>
+        <Form onSubmit={handleAddressSubmit}>
+          <FloatingLabel controlId="fullName" label="Full Name" className="mb-3">
+            <Form.Control
+              type="text"
+              name="fullName"
+              value={addressData.fullName}
               onChange={handleChange}
-              className={`form-control `}
-            >
-              <option value="">Select Country</option>
-              {countries.map((country) => (
-                <option key={country.isoCode} value={country.isoCode}>
-                  {country.name}
-                </option>
-              ))}
-            </select>
-            {addressErrors.country && (
-              <div className="invalid-feedback">{addressErrors.country}</div>
+              isInvalid={!!addressErrors.fullName}
+              placeholder="Full Name"
+            />
+            <Form.Control.Feedback type="invalid">
+              {addressErrors.fullName}
+            </Form.Control.Feedback>
+          </FloatingLabel>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Mobile Number</Form.Label>
+            <div className="phone-input-container">
+              <PhoneInput
+                onChange={(phone) => {
+                  setMobileNumber(phone);
+                }}
+                name="mobileNumber"
+                defaultCountry="in"
+                disableDialCodeAndPrefix={true}
+                value={addressData.mobileNumber}
+                inputStyle={{
+                  backgroundColor: "transparent",
+                  border: "1px solid #ced4da",
+                  width: "100%",
+                  padding: "0.375rem 0.75rem",
+                  borderRadius: "0.25rem",
+                }}
+                countrySelectorStyleProps={{
+                  buttonStyle: {
+                    backgroundColor: "transparent",
+                    border: "0",
+                  },
+                }}
+              />
+            </div>
+            {addressErrors.mobileNumber && (
+              <Form.Text className="text-danger">
+                {addressErrors.mobileNumber}
+              </Form.Text>
             )}
+          </Form.Group>
+
+          <FloatingLabel controlId="email" label="Email" className="mb-3">
+            <Form.Control
+              type="email"
+              name="email"
+              value={addressData.email}
+              onChange={handleChange}
+              isInvalid={!!addressErrors.email}
+              placeholder="Email"
+            />
+            <Form.Control.Feedback type="invalid">
+              {addressErrors.email}
+            </Form.Control.Feedback>
+          </FloatingLabel>
+
+          <FloatingLabel controlId="fullAddress" label="Full Address" className="mb-3">
+            <Form.Control
+              as="textarea"
+              name="fullAddress"
+              value={addressData.fullAddress}
+              onChange={handleChange}
+              isInvalid={!!addressErrors.fullAddress}
+              placeholder="Full Address"
+              style={{ height: '100px' }}
+            />
+            <Form.Control.Feedback type="invalid">
+              {addressErrors.fullAddress}
+            </Form.Control.Feedback>
+          </FloatingLabel>
+
+          <FloatingLabel controlId="landmark" label="Landmark (Optional)" className="mb-3">
+            <Form.Control
+              type="text"
+              name="landmark"
+              value={addressData.landmark}
+              onChange={handleChange}
+              placeholder="Landmark (Optional)"
+            />
+          </FloatingLabel>
+
+          <div className="row g-3 mb-3">
+            <div className="col-md-4">
+              <FloatingLabel controlId="country" label="Country">
+                <Form.Select
+                  name="country"
+                  value={addressData.country}
+                  onChange={handleChange}
+                  isInvalid={!!addressErrors.country}
+                >
+                  <option value="">Select Country</option>
+                  {countries.map((country) => (
+                    <option key={country.isoCode} value={country.isoCode}>
+                      {country.name}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {addressErrors.country}
+                </Form.Control.Feedback>
+              </FloatingLabel>
+            </div>
+            <div className="col-md-4">
+              <FloatingLabel controlId="state" label="State">
+                <Form.Select
+                  name="state"
+                  value={addressData.state}
+                  onChange={handleChange}
+                  isInvalid={!!addressErrors.state}
+                  disabled={!addressData.country}
+                >
+                  <option value="">Select State</option>
+                  {states.map((state) => (
+                    <option key={state.isoCode} value={state.isoCode}>
+                      {state.name}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {addressErrors.state}
+                </Form.Control.Feedback>
+              </FloatingLabel>
+            </div>
+            <div className="col-md-4">
+              <FloatingLabel controlId="city" label="City">
+                <Form.Select
+                  name="city"
+                  value={addressData.city}
+                  onChange={handleChange}
+                  isInvalid={!!addressErrors.city}
+                  disabled={!addressData.state}
+                >
+                  <option value="">Select City</option>
+                  {citys.map((city) => (
+                    <option key={city.name} value={city.name}>
+                      {city.name}
+                    </option>
+                  ))}
+                </Form.Select>
+                <Form.Control.Feedback type="invalid">
+                  {addressErrors.city}
+                </Form.Control.Feedback>
+              </FloatingLabel>
+            </div>
           </div>
 
-          <div className="form-group" style={{width:"104%"}}>
-            <label htmlFor="state">State</label>
-            <select
-              id="state"
-              name="state"
-              value={addressData.state}
+          <FloatingLabel controlId="pincode" label="Pincode" className="mb-3">
+            <Form.Control
+              type="number"
+              name="pincode"
+              value={addressData.pincode}
               onChange={handleChange}
-              className={`form-control `}
+              isInvalid={!!addressErrors.pincode}
+              placeholder="Pincode"
+              maxLength={6}
+            />
+            <Form.Control.Feedback type="invalid">
+              {addressErrors.pincode}
+            </Form.Control.Feedback>
+          </FloatingLabel>
 
-              disabled={!addressData.country}
-            >
-              <option value="">Select State</option>
-              {states.map((state) => (
-                <option key={state.isoCode} value={state.isoCode}>
-                  {state.name}
-                </option>
-              ))}
-            </select>
-            {addressErrors.state && (
-              <div className="invalid-feedback">{addressErrors.state}</div>
-            )}
+          <div className="d-flex justify-content-end mt-4">
+            <Button variant="outline-secondary" onClick={closeModal} className="me-2">
+              Cancel
+            </Button>
+            <Button variant="primary" type="submit">
+              Confirm Address
+            </Button>
           </div>
-
-          <div className="form-group" style={{width:"104%"}}>
-            <label htmlFor="city">City</label>
-            <select
-              id="city"
-              name="city"
-              value={addressData.city}
-              onChange={handleChange}
-              className={`form-control `}
-
-              disabled={!addressData.state}
-            >
-              <option value="">Select City</option>
-              {citys.map((city) => (
-                <option key={city.name} value={city.name}>
-                  {city.name}
-                </option>
-              ))}
-            </select>
-            {addressErrors.city && (
-              <div className="invalid-feedback">{addressErrors.city}</div>
-            )}
-          </div>
-
-  
-  
-  <div className="form-group">
-    <label htmlFor="pincode">Pincode</label>
-    <input
-      type="number"
-      id="pincode"
-      name="pincode"
-      value={addressData.pincode}
-      onChange={handleChange}
-      className={`form-control `}
-      maxLength={6}
-    />
-    {addressErrors.pincode && (
-      <div className="invalid-feedback">{addressErrors.pincode}</div>
-    )}
-  </div>
-
-
-  <button type="submit" className="btn btn-primary">
-    Confirm Address
-  </button>
-  <button
-    type="button"
-    className="btn btn-secondary btn-c"
-    onClick={closeModal}
-  >
-    Cancel
-  </button>
-</form>
-
-        </div>
-      </div>
-    </>
+        </Form>
+      </Modal.Body>
+    </Modal>
   );
 };
 

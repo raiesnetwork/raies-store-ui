@@ -50,6 +50,7 @@ const {login}=useAuth()||{}
 
         if (mobileNumber.trim() && password.trim() && mobileNumber.length > 7) {
             const response = await loginWithPassword(mobileNumber, password, subdomain,userType);
+console.log('response',response);
 
             setLoading(false); // Stop spinner once response is received
             if (response.error) {
