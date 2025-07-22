@@ -48,6 +48,8 @@ export const AuthProvaider: React.FC<{ children: ReactNode }> = ({
         localStorage.setItem(`store_t`, JSON.stringify(data?.token));
   
         await getStoreIconAndName(hostName);
+        setStoreIconLoader(false);
+
       } catch (error) {
         console.error("API error:", error);
       } finally {

@@ -27,7 +27,8 @@ function App() {
   const { storeIconsLoader } = useMystoreStore((s) => s);
 
   if (storeIconsLoader) {
-    // Show loader while data is being fetched
+    console.log(storeIconsLoader,'storeIconsLoader');
+    
     return (
       <Loader/>
     );

@@ -46,11 +46,15 @@ const {isAuthenticated}=useAuth()||{}
       getShprocketToken()
     }
   }, [isAuthenticated]);
+  const {user}=useAuth()||{}
 
   useEffect(() => {
     const fetchProducts = async () => {
       setHomeLoader(true);
-      FetchToCart();
+      if (user) {
+        
+        FetchToCart();
+      }
       await latestProduct(subdomain, "");
       setHomeLoader(false);
     };
@@ -58,7 +62,7 @@ const {isAuthenticated}=useAuth()||{}
     if (subdomain) {
       fetchProducts();
     }
-  }, [subdomain]);
+  }, [subdomain,user]);
 
   useEffect(() => {
     let filtered = data;
