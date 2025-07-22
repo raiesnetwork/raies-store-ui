@@ -39,7 +39,7 @@ import {
 } from "./StoreApi";
 
 const useMystoreStore = create<MystoreStore>((set,get) => ({
-  storeIconRefresh: false,
+  storeIconRefresh: true,
   onlinePaymenterror: "",
   storeData: {
     storeName: "",

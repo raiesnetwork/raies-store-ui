@@ -13,7 +13,7 @@ import Loader from "../Loader/Loader";
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 
-export const MyStore: React.FC = () => {
+const MyStore: React.FC = () => {
   const {
     FetchToCart,
     AllProducts,
@@ -179,3 +179,4 @@ const {isAuthenticated}=useAuth()||{}
     </>
   );
 };
+export default MyStore;

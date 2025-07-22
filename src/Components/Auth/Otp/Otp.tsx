@@ -6,7 +6,7 @@ import Header from "../../Store/Molecules/Header";
 import "./Otp.scss"
 import { useAuth } from "../AuthContext";
 
-export const OtpPage: React.FC = () => {
+ const OtpPage: React.FC = () => {
     const [otp, setOtp] = useState(Array(6).fill(""));
     const { loginUser, createUser, setUserName } = useMystoreStore((state) => state);
     // const navigate = useNavigate();
@@ -128,3 +128,4 @@ const navigate=useNavigate()
         </>
     );
 };
+export default OtpPage

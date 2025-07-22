@@ -14,7 +14,7 @@ import { FaCrown } from "react-icons/fa6";
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 
-export const Register: React.FC = () => {
+ const Register: React.FC = () => {
     const [username, setUsername] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [mobileNumber, setMobileNumber] = useState<string>("");
@@ -233,3 +233,4 @@ export const Register: React.FC = () => {
         </>
     );
 };
+export default Register

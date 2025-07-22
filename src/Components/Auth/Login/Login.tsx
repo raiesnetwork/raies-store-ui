@@ -14,7 +14,7 @@ const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
 console.log("ss",subdomain);
 
-export const Login: React.FC = () => {
+ const Login: React.FC = () => {
 const {login}=useAuth()||{}
     const [mobileNumber, setMobileNumber] = useState<string>("");
     const [loading, setLoading] = useState<boolean>(false); // Spinner state
@@ -175,3 +175,4 @@ console.log('response',response);
         </>
     );
 };
+export default Login
