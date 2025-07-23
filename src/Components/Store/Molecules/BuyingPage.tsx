@@ -472,8 +472,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
 
     e.preventDefault();
 
-    if (formData.productImage.trim() && selectedAddress._id.trim()) {
-      if (CourierId.trim() && !deliveryCharge) {
+    if (formData?.productImage?.trim() && selectedAddress?._id?.trim()) {
+      if (!CourierId && !deliveryCharge) {
+        
         return toast.error('We cant fetch delivery details plese try after some time.')
       }
       try {
@@ -527,7 +528,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         toast.error(`Bid amount must in bitween ${details[0]?.productDetails.minBidPrice}-${details[0]?.productDetails.maxBidPrice}`)
         return
       }
-      if (!CourierId.trim() && !deliveryCharge) {
+      if (!CourierId && !deliveryCharge) {
         return toast.error('We cant fetch delivery details plese try after some time.')
       }
       try {
