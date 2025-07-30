@@ -30,8 +30,14 @@ const CheckoutPage: React.FC = () => {
     createBiddingOrder,
     createBarterOrder,
     profileData,
-    getProfileInfo
+    getProfileInfo,
+    getShprocketToken
   } = useMystoreStore((s) => s);
+  useEffect(() => {
+    
+      getShprocketToken()
+    
+  }, []);
   const [selectedPaymentMethod, setSelectedPaymentMethod] =
     useState<string>("online");
     const [CourierId, setCourierId] = useState<string>('');
@@ -159,7 +165,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
     if (details && selectedAddress) {
       getDeliveryCharges();
     }
-  }, [details, selectedAddress, selectedPaymentMethod]);
+  }, [details, selectedAddress, selectedPaymentMethod,shiprocketToken]);
 
   useEffect(() => {
     if (addressData?.length > 0) {
