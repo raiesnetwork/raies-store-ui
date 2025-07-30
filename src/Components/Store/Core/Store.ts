@@ -219,7 +219,8 @@ const useMystoreStore = create<MystoreStore>((set,get) => ({
 
   verifyRazorpayPayment: async (data: onlinePayment) => {
     try {
-      await verifyRazorpayPaymentApi(data);
+     const response= await verifyRazorpayPaymentApi(data);
+     return response
       // eslint-disable-next-line @typescript-eslint/no-explicit-any
     } catch (error: any) {
       set({ onlinePaymenterror: error.message });

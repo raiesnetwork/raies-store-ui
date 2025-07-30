@@ -189,6 +189,7 @@ export interface onlinePayment {
   // eslint-disable-next-line @typescript-eslint/no-explicit-any
   response: any
   couponData?: any
+  CourierId?:any
 
 }
 export interface ApiResponce {

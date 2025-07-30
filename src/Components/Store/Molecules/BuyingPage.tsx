@@ -308,7 +308,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
             key: import.meta.env.VITE_APP_RAZOR_PAY,
             amount: order.amount,
             currency: "INR",
-            name: "STORE CART PURCHASE",
+            name: "STORE  PURCHASE",
             description: "",
             order_id: order.id,
             // eslint-disable-next-line @typescript-eslint/no-explicit-any
@@ -322,11 +322,27 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                   productDetails: productDetais,
                   totalAmount: totalAmount + deliveryCharge,
                   couponData: couponAmount,
+                  CourierId
                 };
-                await verifyRazorpayPayment(data);
+                const responses=await verifyRazorpayPayment(data);
+                if (responses?.err) {
+                  toast.error(
+                    "Payment verification failed. Please try again."
+                  );
+                }else{
 
-                // setLoading(false);
-                setRefresh(true);
+                  console.log(responses);
+                  
+                  await FetchToCart();
+                  navigate("/success", {
+                    state: {
+                      orderDetails: details,
+                      orderId:responses?.data?.orderData?.order_id
+                    }
+                  });
+                  // setLoading(false);
+                  setRefresh(true);
+                }
                 // eslint-disable-next-line @typescript-eslint/no-explicit-any
               } catch (error: any) {
                 // setLoading(false);
@@ -357,13 +373,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         } catch (error) {
           toast.error("Payment failed. Please try again.");
         }
-        await FetchToCart();
-        navigate("/success", {
-          state: {
-            orderDetails: details,
-            // orderId:data.data.orderId
-          }
-        });
+      
       }
     } else {
       setBtndesable(false);
