@@ -303,8 +303,8 @@ const useMystoreStore = create<MystoreStore>((set,get) => ({
 
     }))
   },
-  postCouponApi: async (code, details) => {
-    const data = await PostcouponApi(code, details)
+  postCouponApi: async (code, details,totalmount) => {
+    const data = await PostcouponApi(code, details,totalmount)
     return data
   },
   shiprocketToken: "",

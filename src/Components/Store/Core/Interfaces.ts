@@ -130,7 +130,7 @@ export interface MystoreStore {
   modalOpener: string
   verifyEmail: (mail: string) => void
   getSingleProduct: (id?: string) => void
-  postCouponApi: (id?: string, details?: any) => Promise<any>
+  postCouponApi: (id?: string, details?: any,totalmount?:any) => Promise<any>
   shiprocketToken: string
   getShprocketToken: () => void
   storeInvoices: storeInvoice[];

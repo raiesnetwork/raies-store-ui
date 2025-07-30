@@ -452,11 +452,11 @@ export const getSingleProductDetailsApi = async (id?: string) => {
     };
   }
 };
-export const PostcouponApi = async (code?: string, productDetails?: any) => {
+export const PostcouponApi = async (code?: string, productDetails?: any,totalmount?:any) => {
   try {
     const { data } = await axiosInstance.post(`/storcoupon/apply`, {
       code,
-      productDetails,
+      productDetails,totalmount
     });
     return data;
   } catch (error) {

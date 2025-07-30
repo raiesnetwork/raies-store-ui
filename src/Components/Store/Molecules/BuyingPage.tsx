@@ -396,7 +396,8 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
   const handileCoupon = async () => {
     if (couponCode.trim()) {
       setCouponBtnDesable(true);
-      const data = await postCouponApi(couponCode, details);
+      const totalmount=totalAmount+deliveryCharge
+      const data = await postCouponApi(couponCode, details,totalmount);
       setCouponBtnDesable(false);
       if (data.error) {
         setCouponCodeErr(data?.message);
