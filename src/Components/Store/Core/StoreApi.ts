@@ -288,7 +288,10 @@ export const getUserOrderApi = async (subdomain: string | null) => {
       data: error,
     };
   }
-}; export const getInventoryApi = async (subdomain: string | null) => {
+};
+
+
+export const getInventoryApi = async (subdomain: string | null) => {
   try {
     const { data } = await axiosInstance.get(`/storuser/inventory/${subdomain}`);
     return data;
@@ -605,3 +608,16 @@ export const getDeliveryCharge = async (productData: any, token: string) => {
   }
 };
 
+export const cancelOrder = async (orderId:string,orderType:string,cancelReason:string,additionalComments:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/storuser/cancel-order`,{
+      orderId,orderType,cancelReason,additionalComments});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Unable to process your request. Please try again.",
+      data: error,
+    };
+  }
+};
