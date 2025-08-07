@@ -31,7 +31,8 @@ const CheckoutPage: React.FC = () => {
     createBarterOrder,
     profileData,
     getProfileInfo,
-    getShprocketToken
+    getShprocketToken,
+   
   } = useMystoreStore((s) => s);
   useEffect(() => {
     
@@ -198,6 +199,10 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
 
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
+    if(profileData?.flag){
+      toast.error('Your account is currently blocked. Contact support for help.');
+      return
+    }
     if(deliveryError.error){
   
       setBtndesable(false);
@@ -536,9 +541,14 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
     });
   };
 
+  console.log(profileData)
   const handleBidSubmit = async (e: React.FormEvent) => {
 
     e.preventDefault();
+    if(profileData?.flag){
+      toast.error('Your account is currently blocked. Contact support for help.');
+      return
+    }
     if (formData?.biddingAmount.trim()) {
       if (formData?.biddingAmount < details[0]?.productDetails.minBidPrice ||
         formData?.biddingAmount > details[0]?.productDetails.maxBidPrice) {

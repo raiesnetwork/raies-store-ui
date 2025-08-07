@@ -179,7 +179,7 @@ export interface updateProfileInfo {
   plan?: string
   dealerView?: boolean
   paymentType?: 'Up Front' | 'Monthly Payment' | 'Credit' | 'false'
-
+flag?:boolean
 }
 export interface onlinePayment {
   productDetails: []

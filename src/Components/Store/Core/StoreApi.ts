@@ -621,3 +621,16 @@ export const cancelOrder = async (orderId:string,orderType:string,cancelReason:s
     };
   }
 };
+export const returnOrder = async (orderId:string,orderType:string,cancelReason:string,additionalComments:string) => {
+  try {
+    const { data } = await axiosInstance.post(`/storuser/return-order`,{
+      orderId,orderType,cancelReason,additionalComments});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Unable to process your request. Please try again.",
+      data: error,
+    };
+  }
+};

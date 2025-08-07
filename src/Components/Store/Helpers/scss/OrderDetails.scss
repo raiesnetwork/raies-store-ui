@@ -229,8 +229,8 @@ font-size: 20px;
       .progress-line {
         position: absolute;
         top: 14px;
-        left: 10%;
-        width: 80%;
+        left: 6%;
+        width: 90%;
         height: 2px;
         background-color: #ff3d00;
         z-index: 0;
@@ -298,5 +298,206 @@ font-size: 20px;
 .btn-outline-secondary {
   &:hover {
     background-color: #f8f9fa;
+  }
+}
+
+.order-tracker {
+  position: relative;
+  margin: 2rem 0;
+  
+  .order-status {
+    display: flex;
+    justify-content: space-between;
+    padding: 0;
+    list-style: none;
+    position: relative;
+    z-index: 2;
+    
+    li {
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      text-align: center;
+      width: 100%;
+      position: relative;
+      
+      span {
+        font-size: 0.85rem;
+        font-weight: 500;
+        margin-bottom: 0.5rem;
+      }
+      
+      p {
+        font-size: 0.75rem;
+        color: #666;
+        margin: 0;
+      }
+      
+      .truck-icon, .delivered-icon, .cancelled-icon, 
+      .returned-icon, .problem-icon {
+        margin-top: 0.5rem;
+        font-size: 1.2rem;
+      }
+      
+      .truck-icon {
+        color: #1976d2;
+      }
+      
+      &.completed {
+        span, p {
+          color: #4caf50;
+        }
+        
+        &::before {
+          background-color: #4caf50;
+        }
+      }
+      
+      &.current-status {
+        span {
+          font-weight: bold;
+        }
+      }
+      
+      &.problem-status {
+        span, p {
+          color: #ff6b6b;
+          font-weight: bold;
+        }
+      }
+    }
+  }
+  
+  .progress-line {
+    position: absolute;
+    top: 20px;
+    left: 0;
+    right: 0;
+    height: 4px;
+    background-color: #e0e0e0;
+    z-index: 1;
+    
+    .progress {
+      height: 100%;
+      transition: width 0.5s ease;
+      
+      &.delivered-progress {
+        background-color: #4caf50;
+      }
+      
+      &.cancelled-progress {
+        background-color: #f44336;
+      }
+      
+      &.problem-progress {
+        background-color: #ff6b6b;
+      }
+      
+      &.returned-progress {
+        background-color: #4a148c;
+      }
+    }
+  }
+}
+
+.problem-status-message {
+  margin-top: 1rem;
+  padding: 1rem;
+  background-color: #fff3f3;
+  border-radius: 4px;
+  color: #d32f2f;
+  border-left: 4px solid #ff6b6b;
+  
+  p {
+    margin-bottom: 0.5rem;
+    
+    &:last-child {
+      margin-bottom: 0;
+    }
+  }
+}
+
+.delivered-icon {
+  color: #4caf50;
+}
+
+.cancelled-icon {
+  color: #f44336;
+}
+
+.returned-icon {
+  color: #4a148c;
+}
+
+.problem-icon {
+  color: #ff6b6b;
+}
+
+.order-actions {
+  display: flex;
+  gap: 1rem;
+  
+  .btn-danger {
+    background-color: #f44336;
+    border-color: #f44336;
+    
+    &:hover {
+      background-color: #d32f2f;
+      border-color: #d32f2f;
+    }
+  }
+  
+  .download-invoice-btn {
+    background-color: #1976d2;
+    color: white;
+    border: none;
+    padding: 0.5rem 1rem;
+    border-radius: 4px;
+    cursor: pointer;
+    
+    &:hover {
+      background-color: #1565c0;
+    }
+  }
+}
+.return-status-message {
+  background-color: #fff8e6;
+  padding: 15px;
+  border-radius: 5px;
+  margin-top: 20px;
+  border-left: 4px solid #ffc107;
+  
+  p {
+    margin: 0;
+    color: #856404;
+  }
+}
+
+.returned-progress {
+  background-color: #ffc107;
+}
+
+.btn-warning {
+  margin-right: 10px;
+}
+
+.return-policy-info {
+  margin-top: 20px;
+  padding: 15px;
+  background-color: #f8f9fa;
+  border-radius: 5px;
+  
+  h6 {
+    font-weight: bold;
+    margin-bottom: 10px;
+  }
+  
+  ul {
+    padding-left: 20px;
+    margin-bottom: 0;
+    
+    li {
+      margin-bottom: 5px;
+    }
   }
 }
