@@ -5,24 +5,37 @@ import useMystoreStore from "../Core/Store";
 import { toast } from "react-toastify";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { Link } from "react-router-dom";
-import { MdVerified } from "react-icons/md";
-import { CgDanger } from "react-icons/cg";
+import { MdVerified, MdOutlineLocalShipping } from "react-icons/md";
+// import { CgDanger } from "react-icons/cg";
 import { RxLapTimer } from "react-icons/rx";
 import { BiSolidError } from "react-icons/bi";
-import { FaTimesCircle } from "react-icons/fa";
-import { FaChevronLeft, FaChevronRight } from "react-icons/fa";
+import { FaTimesCircle, FaChevronRight } from "react-icons/fa";
 import StoreFooter from "../../Footer/Footer";
 import Loader from "../../Loader/Loader";
+import { Tab, Tabs } from "react-bootstrap";
+import Pagination from "./Pagination";
 
 interface resp {
-  id: string;
+  _id: string;
   status: string;
   totalAmount: number;
-  productDetails: details;
+  productDetails: details[];
   paymentMethod: string;
+  createdAt: string;
+  orderData?: {
+    order_id: string;
+  };
 }
+
+interface details {
+  productName: string;
+  quantity: number;
+  price: number;
+  mainImage?: string;
+}
+
 interface respBid {
-  id: string;
+  _id: string;
   addressId: string;
   biddingAmount: string;
   userId: string;
@@ -34,9 +47,13 @@ interface respBid {
     mainImage: string;
   };
   deliveryStatus: string;
+  orderData?: {
+    order_id: string;
+  };
 }
+
 interface respBarter {
-  id: string;
+  _id: string;
   addressId: string;
   productImage: string;
   userId: string;
@@ -48,453 +65,632 @@ interface respBarter {
     mainImage: string;
   };
   deliveryStatus: string;
+  orderData?: {
+    order_id: string;
+  };
 }
-interface details {
-  map(
-    arg0: (
-      item: details,
-      index: number
-    ) => import("react/jsx-runtime").JSX.Element
-  ): React.ReactNode;
-  productName: string;
-  quantity: number;
-  price: number;
-  mainImage?: string;
+
+interface PaginationData {
+  currentPage: number;
+  limit: number;
+  totalStoreOrders: number;
+  totalBiddingOrders: number;
+  totalBarterOrders: number;
 }
+
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
+
 const UserOrdersPage: React.FC = () => {
   const { getUserOrder } = useMystoreStore((s) => s);
   const [orders, setOrders] = useState<resp[]>([]);
-  const [bidOrders, setbiDOrders] = useState<respBid[]>([]);
+  const [bidOrders, setBidOrders] = useState<respBid[]>([]);
   const [barterOrders, setBarterOrders] = useState<respBarter[]>([]);
   const [loading, setLoading] = useState<boolean>(true);
-  const [filter, setFilter] = useState<string>("all");
+  const [activeTab, setActiveTab] = useState<string>("normal");
+  const [pagination, setPagination] = useState<PaginationData>({
+    currentPage: 1,
+    limit: 10,
+    totalStoreOrders: 0,
+    totalBiddingOrders: 0,
+    totalBarterOrders: 0
+  });
 
-  useEffect(() => {
-    const apiHelper = async () => {
-      setLoading(true); // Start loading
-      const data = await getUserOrder(subdomain);
-      console.log("data", data);
+  const fetchOrders = async (page: number = 1) => {
+    setLoading(true);
+    try {
+      const data = await getUserOrder(subdomain, page);
       if (data.error) {
         toast.error(
           "We're sorry, but we couldn't fetch your orders. Please check your connection and try again."
         );
       } else {
-        setOrders(data?.data?.storeOrders);
-        setbiDOrders(data?.data?.biddingOrders);
-        setBarterOrders(data.data?.barterOrders);
+        setOrders(data?.data?.storeOrders || []);
+        setBidOrders(data?.data?.biddingOrders || []);
+        setBarterOrders(data.data?.barterOrders || []);
+        setPagination(data?.data?.pagination || {
+          currentPage: 1,
+          limit: 10,
+          totalStoreOrders: 0,
+          totalBiddingOrders: 0,
+          totalBarterOrders: 0
+        });
       }
+    } catch (error) {
+      toast.error("Failed to fetch orders. Please try again.");
+    } finally {
       setLoading(false);
+    }
+  };
+
+  useEffect(() => {
+    fetchOrders();
+  }, [getUserOrder]);
+
+  const handlePageChange = (page: number) => {
+    fetchOrders(page);
+  };
+
+  const formatDate = (dateString: string) => {
+    const options: Intl.DateTimeFormatOptions = { 
+      year: 'numeric', 
+      month: 'short', 
+      day: 'numeric'
     };
-    apiHelper();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, []);
-
-  const [currentSlideIndex, setCurrentSlideIndex] = useState<{
-    [orderId: string]: number;
-  }>({});
-
-  const handlePrev = (orderId: string, maxIndex: number) => {
-    setCurrentSlideIndex((prevState) => ({
-      ...prevState,
-      [orderId]: prevState[orderId] > 0 ? prevState[orderId] - 1 : maxIndex,
-    }));
+    return new Date(dateString).toLocaleDateString(undefined, options);
   };
 
-  const handleNext = (orderId: string, maxIndex: number) => {
-    setCurrentSlideIndex((prevState) => ({
-      ...prevState,
-      [orderId]: prevState[orderId] < maxIndex ? prevState[orderId] + 1 : 0,
-    }));
+  const getStatusIcon = (status: string) => {
+    switch (status) {
+      case "Order Confirmed":
+      case "Order Processed":
+      case "Accepted":
+        return <MdVerified className="text-success" />;
+      case "shipped":
+      case "Shipped":
+      case "Preparing for Shipment":
+        return <MdOutlineLocalShipping className="text-info" />;
+      case "Delivered":
+        return <MdVerified className="text-success" />;
+      case "Rejected":
+      case "Order Canceled":
+        return <FaTimesCircle className="text-danger" />;
+      case "Bid under review":
+        return <RxLapTimer className="text-warning" />;
+      default:
+        return <BiSolidError className="text-secondary" />;
+    }
   };
 
-  const filteredOrders = () => {
-    if (filter === "all") {
-      return { orders, bidOrders, barterOrders };
+  const getOrderStatusText = (status: string) => {
+    switch (status) {
+      case "Order Confirmed":
+        return "Order Confirmed";
+      case "shipped":
+      case "Shipped":
+        return "Shipped";
+      case "Delivered":
+        return "Delivered";
+      case "Rejected":
+        return "Cancelled";
+      case "Bid under review":
+        return "Under Review";
+      default:
+        return status;
     }
-    if (filter === "bid") {
-      return { orders: [], bidOrders, barterOrders: [] };
-    }
-    if (filter === "barter") {
-      return { orders: [], bidOrders: [], barterOrders };
-    }
-    if (filter === "normal") {
-      return { orders, bidOrders: [], barterOrders: [] };
-    }
-    return { orders: [], bidOrders: [], barterOrders: [] };
   };
-console.log("payement",orders)
-  const {
-    orders: filteredOrderList,
-    bidOrders: filteredBidOrders,
-    barterOrders: filteredBarterOrders,
-  } = filteredOrders();
 
-  const noOrders =
-    filteredOrderList?.length === 0 &&
-    filteredBidOrders?.length === 0 &&
-    filteredBarterOrders?.length === 0;
+  const getDeliveryEstimate = (createdAt: string) => {
+    const orderDate = new Date(createdAt);
+    const deliveryDate = new Date(orderDate);
+    deliveryDate.setDate(deliveryDate.getDate() + 5); // Adding 5 days as estimated delivery
+    
+    return `Expected delivery by ${deliveryDate.toLocaleDateString('en-US', { 
+      weekday: 'short', 
+      month: 'short', 
+      day: 'numeric' 
+    })}`;
+  };
+
+  // const getTotalItemsForActiveTab = () => {
+  //   switch (activeTab) {
+  //     case "normal":
+  //       return pagination.totalStoreOrders;
+  //     case "bid":
+  //       return pagination.totalBiddingOrders;
+  //     case "barter":
+  //       return pagination.totalBarterOrders;
+  //     default:
+  //       return 0;
+  //   }
+  // };
+
   return (
-    <>
-      <div
-        style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}
-      >
-        <Header />
-        <div style={{ flex: 1 }}>
-          <div className="myorder-page">
-            <div className="myorder-page__header">
-              <div className="myorder-page__heading">My Orders</div>
-            </div>
+    <div className="user-orders-page" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
+      <Header />
+      <div className="orders-container" style={{ flex: 1, padding: "20px 0" }}>
+        <div className="container">
+          <h1 className="mb-4">My Orders</h1>
 
-            <div className="myorder-page__filter-container">
-              <select
-                value={filter}
-                onChange={(e) => setFilter(e.target.value)}
-              >
-                <option value="all">ALL</option>
-                <option value="normal">ORDER</option>
-                <option value="bid">BID</option>
-                <option value="barter">EXCHANGE</option>
-              </select>
-            </div>
-            {loading ? (
-              <div
-                style={{
-                  display: "flex",
-                  justifyContent: "center",
-                  alignItems: "center",
-                  height: "200px",
-                }}
-              >
-                     <Loader/>
-
-              </div>
-            ) : noOrders ? (
-              <div className="myorder-page__no-orders">
-                <h2>No Orders Found</h2>
-                <p>
-                  You have not placed any orders yet. Start browsing our
-                  products and place an order now!
-                </p>
-                <Link to="/" className="myorder-page__shop-link">
-                  Go to Shop
-                </Link>
-              </div>
-            ) : (
-              <div className="orders-list">
-                {filteredOrderList.map((order: any) => {
-                  const currentIndex = currentSlideIndex[order._id] || 0;
-                  const maxIndex = order.productDetails.length - 1;
-                  const currentProduct = order.productDetails[currentIndex];
-
-                  return (
-                    <div
-                      key={order.id}
-                      className="myorder-page__card-container"
-                    >
-                      {/* Slider Section */}
-                      <div className="myorder-page__card-name-sec">
-                        <img
-                          className="myorder-page__card-img"
-                          src={currentProduct?.mainImage}
-                          alt={currentProduct?.productName}
-                        />
-                        {order.productDetails.length > 1 && (
-                          <div className="myorder-page__slider-btn-sec">
-                            <button
-                              className="myorder-page__slider-arrow"
-                              onClick={() => handlePrev(order?._id, maxIndex)}
-                            >
-                              <FaChevronLeft />
-                            </button>
-                            <button
-                              className="myorder-page__slider-arrow"
-                              onClick={() => handleNext(order?._id, maxIndex)}
-                            >
-                              <FaChevronRight />
-                            </button>
+          <Tabs
+            activeKey={activeTab}
+            onSelect={(k) => {
+              setActiveTab(k || "normal");
+              // Reset to first page when changing tabs
+              handlePageChange(1);
+            }}
+            className="mb-4 orders-tabs"
+            id="orders-tabs"
+          >
+            <Tab eventKey="normal" title={`Orders (${pagination.totalStoreOrders})`}>
+              {loading ? (
+                <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                  <Loader />
+                </div>
+              ) : orders.length > 0 ? (
+                <>
+                  <div className="orders-list">
+                    {orders.map((order) => (
+                      <div key={order._id} className="order-card mb-4">
+                        <div className="order-header">
+                          <div className="order-info">
+                            <div className="order-id">
+                              Order #{order?.orderData?.order_id || order._id.substring(0, 8)}
+                            </div>
+                            <div className="order-date">
+                              Placed on {formatDate(order.createdAt)}
+                            </div>
+                            <div className="order-total">
+                              ₹{order.totalAmount || "80"}
+                            </div>
                           </div>
-                        )}
-                        <hr className="myorder-page__line" />
-                        <div className="myorder-page__card-name-details">
-                          <div className="myorder-page__card-name">
-                            {currentProduct.productName}
-                          </div>
-                          <div className="myorder-page__order-methode">
-                            {order.paymentMethod === "offline"
-                              ? "Cash on Delivery"
-                              : "Online"}
+                          <div className="order-status">
+                            <span className={`status-badge ${order.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                              {getStatusIcon(order.status)}
+                              {getOrderStatusText(order.status)}
+                            </span>
                           </div>
                         </div>
-                      </div>
 
-                      {/* Product Info */}
-
-                      <Link
-                        style={{ textDecoration: "none", color: "auto" }}
-                        to="/orderdetails"
-                        state={{ orderData: order, type: "normal" }}
-                      >
-                        {/* Order Details */}
-                        <div className="myorder-page__order-details-sec">
-                          <div className="myorder-page__order-amount-sec">
-                          {order.paymentMethod === "offline" ? (
-  <>
-    {order.totalAmount === 0 ? (
-      <div className="myorder-page__order-amount">₹80</div>
-    ) : (
-      <div className="myorder-page__order-amount">
-        {`₹${order.totalAmount}`}
-      </div>
-    )}
-    <div className="myorder-page__payment-status">
-      Payment Due{" "}
-      <CgDanger className="myorder-page__order-amount-warning" />
-    </div>
-  </>
-) : order.paymentMethod === "credit" ? (
-  <>
-    <div className="myorder-page__order-amount">
-      {`₹${order.totalAmount}`}
-    </div>
-    <div className="myorder-page__payment-status">
-      Credit{" "}
-      <CgDanger className="myorder-page__order-amount-credit" />
-    </div>
-  </>
-) : (
-  <>
-    <div className="myorder-page__order-amount">
-      {`₹${order.totalAmount}`}
-    </div>
-    <div className="myorder-page__payment-status">
-      Paid{" "}
-      <MdVerified className="myorder-page__order-amount-tick" />
-    </div>
-  </>
-)}
-
-                          </div>
-
-                          <div className="myorder-page__delivery-status">
-                            <div className="myorder-page__delivery-head">
-                              Delivery
+                        <div className="order-products">
+                          {order.productDetails.slice(0, 2).map((product, index) => (
+                            <div key={index} className="product-item">
+                              <img 
+                                src={product.mainImage || "https://via.placeholder.com/80"} 
+                                alt={product.productName} 
+                                className="product-image"
+                              />
+                              <div className="product-details">
+                                <h4 className="product-name">{product.productName}</h4>
+                                <div className="product-quantity">Qty: {product.quantity}</div>
+                                <div className="product-price">₹{product.price}</div>
+                              </div>
                             </div>
-                            <div
-                              className={
-                                order.status === "Order Confirmed"
-                                  ? "myorder-page__status-processed"
-                                  : order.status === "shipped"
-                                  ? "myorder-page__status-preparing"
-                                  : order.status === "Shipped"
-                                  ? "myorder-page__status-shipped"
-                                  : order.status === "Delivered"
-                                  ? "myorder-page__status-delivered"
-                                  : "myorder-page__status-cancelled"
-                              }
-                            >
-                              {order.status}
+                          ))}
+                          {order.productDetails.length > 2 && (
+                            <div className="more-items">
+                              +{order.productDetails.length - 2} more item(s)
                             </div>
-                          </div>
+                          )}
                         </div>
-                      </Link>
-                    </div>
-                  );
-                })}
 
-                {filteredBidOrders?.length > 0 &&
-                  filteredBidOrders.map((order: respBid) => (
-                    <div
-                      key={order.id}
-                      className="myorder-page__card-container"
-                    >
-                      <Link
-                        style={{ textDecoration: "none", color: "auto" }}
-                        to="/orderdetails"
-                        state={{ orderData: order, type: "bid" }}
-                      >
-                        <div className="myorder-page__card-name-sec">
-                          {/* Product Image */}
-                          <img
-                            className="myorder-page__card-img"
-                            src={order.productDetails.mainImage}
-                            alt={order.productDetails.productName}
-                          />
-
-                          {/* Product Info */}
-                          <hr className="myorder-page__line" />
-                          {/* Product Info */}
-                          <div className="myorder-page__card-name-details">
-                            <div className="myorder-page__card-name">
-                              {order.productDetails.productName}
-                            </div>
-                            <div className="myorder-page__order-methode">
-                              AUCTION
-                            </div>
-                          </div>
-                        </div>
-                      </Link>
-
-                      <div className="myorder-page__order-details-sec">
-                        {/* Conditionally render the bid amount */}
-
-                        <div className="myorder-page__order-amount-sec">
-                          <div className="myorder-page__bid-amount">
-                            ₹{order.biddingAmount}{" "}
-                          </div>
-                          <div className="myorder-page__bid-verified">
-                            {order.status === "Accepted" ? (
-                              <>
-                                {order.status}
-                                <MdVerified className="myorder-page__order-amount-tick" />
-                              </>
-                            ) : order.status === "Rejected" ? (
-                              <>
-                                {order.status}
-                                <FaTimesCircle className="myorder-page__order-amount-rejected" />
-                              </>
-                            ) : order.status === "Bid under review" ? (
-                              <>
-                                {order.status}
-                                <RxLapTimer className="myorder-page__bid-review-icon" />
-                              </>
+                        <div className="order-footer">
+                          <div className="delivery-info">
+                            {order.status === "Delivered" ? (
+                              <span>Delivered on {formatDate(order.createdAt)}</span>
                             ) : (
-                              <>
-                                {order.status}
-                                <BiSolidError className="myorder-page__bid-review-icon" />
-                              </>
+                              <span>{getDeliveryEstimate(order.createdAt)}</span>
                             )}
                           </div>
-                        </div>
-                        <div className="myorder-page__delivery-status">
-                          <div className="myorder-page__delivery-head">
-                            Delivery
-                          </div>
-                          <div
-                            className={
-                              order?.deliveryStatus === "Order Processed"
-                                ? "myorder-page__status-processed"
-                                : order?.deliveryStatus ===
-                                  "Preparing for Shipment"
-                                ? "myorder-page__status-preparing"
-                                : order?.deliveryStatus === "Shipped"
-                                ? "myorder-page__status-shipped"
-                                : order?.deliveryStatus === "Out for Delivery"
-                                ? "myorder-page__status-outfordelivery"
-                                : order?.deliveryStatus === "Delivered"
-                                ? "myorder-page__status-delivered"
-                                : order?.deliveryStatus === "Order Canceled"
-                                ? "myorder-page__status-canceled"
-                                : "myorder-page__status-other"
-                            }
-                          >
-                            {order?.deliveryStatus}
-                          </div>
-                        </div>
-                      </div>
-                    </div>
-                  ))}
-
-                {filteredBarterOrders.length > 0 &&
-                  filteredBarterOrders.map((order: respBarter) => (
-                    <Link
-                      style={{ textDecoration: "none", color: "auto" }}
-                      key={order.id}
-                      to="/orderdetails"
-                      state={{ orderData: order }}
-                    >
-                      <div
-                        key={order.id}
-                        className="myorder-page__card-container"
-                      >
-                        <Link
-                          style={{ textDecoration: "none", color: "auto" }}
-                          to="/orderdetails"
-                          state={{ orderData: order, type: "barter" }}
-                        >
-                          <div className="myorder-page__card-name-sec">
-                            {/* Product Image */}
-                            <img
-                              className="myorder-page__card-img"
-                              src={order.productDetails.mainImage}
-                              alt={order.productDetails.productName}
-                            />
-
-                            {/* Product Info */}
-                            <hr className="myorder-page__line" />
-                            {/* Product Info */}
-                            <div className="myorder-page__card-name-details">
-                              <div className="myorder-page__card-name">
-                                {order.productDetails.productName}
-                              </div>
-                              <div className="myorder-page__order-methode">
-                                EXCHANGE
-                              </div>
-                            </div>
-                          </div>
-                        </Link>
-
-                        <div className="myorder-page__order-details-sec">
-                          {/* Conditionally render the bid amount */}
-
-                          <div className="myorder-page__order-amount-sec">
-                            <div className="myorder-page__bid-amount">SHOE</div>
-                            <div className="myorder-page__bid-verified">
-                              {order.status === "Accepted" ? (
-                                <>
-                                  {order.status}
-                                  <MdVerified className="myorder-page__order-amount-tick" />
-                                </>
-                              ) : order.status === "Rejected" ? (
-                                <>
-                                  {order.status}
-                                  <FaTimesCircle className="myorder-page__order-amount-rejected" />
-                                </>
-                              ) : (
-                                <>
-                                  {order.status}
-                                  <RxLapTimer className="myorder-page__bid-review-icon" />
-                                </>
-                              )}
-                            </div>
-                          </div>
-                          <div className="myorder-page__delivery-status">
-                            <div className="myorder-page__delivery-head">
-                              Delivery
-                            </div>
-                            <div
-                              className={
-                                order?.deliveryStatus === "Order Processed"
-                                  ? "myorder-page__status-processed"
-                                  : order?.deliveryStatus ===
-                                    "Preparing for Shipment"
-                                  ? "myorder-page__status-preparing"
-                                  : order?.deliveryStatus === "Shipped"
-                                  ? "myorder-page__status-shipped"
-                                  : order?.deliveryStatus === "Out for Delivery"
-                                  ? "myorder-page__status-outfordelivery"
-                                  : order?.deliveryStatus === "Delivered"
-                                  ? "myorder-page__status-delivered"
-                                  : order?.deliveryStatus === "Order Canceled"
-                                  ? "myorder-page__status-canceled"
-                                  : "myorder-page__status-other"
-                              }
+                          <div className="order-actions">
+                            <Link
+                              to="/orderdetails"
+                              state={{ orderData: order, type: "normal" }}
+                              className="btn btn-outline-primary btn-sm"
                             >
-                              {order?.deliveryStatus}
-                            </div>
+                              View Details <FaChevronRight />
+                            </Link>
                           </div>
                         </div>
                       </div>
-                    </Link>
-                  ))}
-              </div>
-            )}
-          </div>
+                    ))}
+                  </div>
+                  <Pagination
+                    currentPage={pagination.currentPage}
+                    totalItems={pagination.totalStoreOrders}
+                    itemsPerPage={pagination.limit}
+                    onPageChange={handlePageChange}
+                  />
+                </>
+              ) : (
+                <div className="no-orders text-center py-5">
+                  <img 
+                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png" 
+                    alt="No orders" 
+                    className="empty-order-image mb-4"
+                    style={{ maxWidth: "200px" }}
+                  />
+                  <h3>You haven't placed any orders yet!</h3>
+                  <p className="mb-4">Your orders will appear here</p>
+                  <Link to="/" className="btn btn-primary">
+                    Continue Shopping
+                  </Link>
+                </div>
+              )}
+            </Tab>
+
+            <Tab eventKey="bid" title={`Bids (${pagination.totalBiddingOrders})`}>
+              {loading ? (
+                <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                  <Loader />
+                </div>
+              ) : bidOrders.length > 0 ? (
+                <>
+                  <div className="orders-list">
+                    {bidOrders.map((order) => (
+                      <div key={order._id} className="order-card mb-4">
+                        <div className="order-header">
+                          <div className="order-info">
+                            <div className="order-id">
+                              Bid #{order?.orderData?.order_id || order._id.substring(0, 8)}
+                            </div>
+                            <div className="order-date">
+                              Placed on {formatDate(order.createdAt)}
+                            </div>
+                            <div className="order-total">
+                              ₹{order.biddingAmount}
+                            </div>
+                          </div>
+                          <div className="order-status">
+                            <span className={`status-badge ${order.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                              {getStatusIcon(order.status)}
+                              {getOrderStatusText(order.status)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="order-products">
+                          <div className="product-item">
+                            <img 
+                              src={order.productDetails.mainImage || "https://via.placeholder.com/80"} 
+                              alt={order.productDetails.productName} 
+                              className="product-image"
+                            />
+                            <div className="product-details">
+                              <h4 className="product-name">{order.productDetails.productName}</h4>
+                              <div className="product-quantity">Qty: {order.quantity}</div>
+                              <div className="product-price">Bid Amount: ₹{order.biddingAmount}</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="order-footer">
+                          <div className="delivery-info">
+                            {order.deliveryStatus === "Delivered" ? (
+                              <span>Delivered on {formatDate(order.createdAt)}</span>
+                            ) : order.deliveryStatus ? (
+                              <span>Status: {order.deliveryStatus}</span>
+                            ) : (
+                              <span>Bid status: {order.status}</span>
+                            )}
+                          </div>
+                          <div className="order-actions">
+                            <Link
+                              to="/orderdetails"
+                              state={{ orderData: order, type: "bid" }}
+                              className="btn btn-outline-primary btn-sm"
+                            >
+                              View Details <FaChevronRight />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Pagination
+                    currentPage={pagination.currentPage}
+                    totalItems={pagination.totalBiddingOrders}
+                    itemsPerPage={pagination.limit}
+                    onPageChange={handlePageChange}
+                  />
+                </>
+              ) : (
+                <div className="no-orders text-center py-5">
+                  <img 
+                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png" 
+                    alt="No bids" 
+                    className="empty-order-image mb-4"
+                    style={{ maxWidth: "200px" }}
+                  />
+                  <h3>You haven't placed any bids yet!</h3>
+                  <p className="mb-4">Your bidding history will appear here</p>
+                  <Link to="/auctions" className="btn btn-primary">
+                    View Auctions
+                  </Link>
+                </div>
+              )}
+            </Tab>
+
+            <Tab eventKey="barter" title={`Exchanges (${pagination.totalBarterOrders})`}>
+              {loading ? (
+                <div className="d-flex justify-content-center align-items-center" style={{ height: "200px" }}>
+                  <Loader />
+                </div>
+              ) : barterOrders.length > 0 ? (
+                <>
+                  <div className="orders-list">
+                    {barterOrders.map((order) => (
+                      <div key={order._id} className="order-card mb-4">
+                        <div className="order-header">
+                          <div className="order-info">
+                            <div className="order-id">
+                              Exchange #{order?.orderData?.order_id || order._id.substring(0, 8)}
+                            </div>
+                            <div className="order-date">
+                              Placed on {formatDate(order.createdAt)}
+                            </div>
+                          </div>
+                          <div className="order-status">
+                            <span className={`status-badge ${order.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                              {getStatusIcon(order.status)}
+                              {getOrderStatusText(order.status)}
+                            </span>
+                          </div>
+                        </div>
+
+                        <div className="order-products">
+                          <div className="product-item">
+                            <img 
+                              src={order.productDetails.mainImage || "https://via.placeholder.com/80"} 
+                              alt={order.productDetails.productName} 
+                              className="product-image"
+                            />
+                            <div className="product-details">
+                              <h4 className="product-name">{order.productDetails.productName}</h4>
+                              <div className="product-quantity">Qty: {order.quantity}</div>
+                              <div className="product-price">Exchange</div>
+                            </div>
+                          </div>
+                        </div>
+
+                        <div className="order-footer">
+                          <div className="delivery-info">
+                            {order.deliveryStatus === "Delivered" ? (
+                              <span>Delivered on {formatDate(order.createdAt)}</span>
+                            ) : order.deliveryStatus ? (
+                              <span>Status: {order.deliveryStatus}</span>
+                            ) : (
+                              <span>Exchange status: {order.status}</span>
+                            )}
+                          </div>
+                          <div className="order-actions">
+                            <Link
+                              to="/orderdetails"
+                              state={{ orderData: order, type: "barter" }}
+                              className="btn btn-outline-primary btn-sm"
+                            >
+                              View Details <FaChevronRight />
+                            </Link>
+                          </div>
+                        </div>
+                      </div>
+                    ))}
+                  </div>
+                  <Pagination
+                    currentPage={pagination.currentPage}
+                    totalItems={pagination.totalBarterOrders}
+                    itemsPerPage={pagination.limit}
+                    onPageChange={handlePageChange}
+                  />
+                </>
+              ) : (
+                <div className="no-orders text-center py-5">
+                  <img 
+                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png" 
+                    alt="No exchanges" 
+                    className="empty-order-image mb-4"
+                    style={{ maxWidth: "200px" }}
+                  />
+                  <h3>You haven't made any exchanges yet!</h3>
+                  <p className="mb-4">Your exchange requests will appear here</p>
+                  <Link to="/barter" className="btn btn-primary">
+                    View Exchange Options
+                  </Link>
+                </div>
+              )}
+            </Tab>
+          </Tabs>
         </div>
-        <StoreFooter />
       </div>
-    </>
+      <StoreFooter />
+
+      <style>{`
+        .user-orders-page {
+          background-color: #f7f7f7;
+        }
+        
+        .orders-container {
+          background-color: white;
+          margin-top: 20px;
+          border-radius: 8px;
+          box-shadow: 0 1px 3px rgba(0,0,0,0.1);
+        }
+        
+        .order-card {
+          border: 1px solid #e0e0e0;
+          border-radius: 8px;
+          padding: 16px;
+          background-color: white;
+        }
+        
+        .order-header {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-bottom: 12px;
+          border-bottom: 1px solid #f0f0f0;
+          margin-bottom: 12px;
+        }
+        
+        .order-info {
+          flex: 1;
+        }
+        
+        .order-id {
+          font-weight: 500;
+          color: #212121;
+        }
+        
+        .order-date {
+          font-size: 14px;
+          color: #878787;
+        }
+        
+        .order-total {
+          font-weight: 500;
+          margin-top: 4px;
+        }
+        
+        .order-status {
+          margin-left: 16px;
+        }
+        
+        .status-badge {
+          display: inline-flex;
+          align-items: center;
+          padding: 4px 8px;
+          border-radius: 4px;
+          font-size: 14px;
+          gap: 4px;
+        }
+        
+        .status-badge.order-confirmed,
+        .status-badge.order-processed,
+        .status-badge.accepted {
+          background-color: #e3f2fd;
+          color: #1976d2;
+        }
+        
+        .status-badge.shipped,
+        .status-badge.preparing-for-shipment {
+          background-color: #e0f7fa;
+          color: #00acc1;
+        }
+        
+        .status-badge.delivered {
+          background-color: #e8f5e9;
+          color: #388e3c;
+        }
+        
+        .status-badge.rejected,
+        .status-badge.order-canceled {
+          background-color: #ffebee;
+          color: #d32f2f;
+        }
+        
+        .status-badge.bid-under-review {
+          background-color: #fff8e1;
+          color: #ffa000;
+        }
+        
+        .order-products {
+          margin-bottom: 12px;
+        }
+        
+        .product-item {
+          display: flex;
+          gap: 16px;
+          padding: 12px 0;
+          border-bottom: 1px solid #f0f0f0;
+        }
+        
+        .product-item:last-child {
+          border-bottom: none;
+        }
+        
+        .product-image {
+          width: 80px;
+          height: 80px;
+          object-fit: contain;
+        }
+        
+        .product-details {
+          flex: 1;
+        }
+        
+        .product-name {
+          font-size: 16px;
+          font-weight: 500;
+          margin-bottom: 4px;
+          color: #212121;
+        }
+        
+        .product-quantity {
+          font-size: 14px;
+          color: #878787;
+        }
+        
+        .product-price {
+          font-weight: 500;
+          margin-top: 4px;
+        }
+        
+        .more-items {
+          font-size: 14px;
+          color: #2874f0;
+          padding: 8px 0;
+          cursor: pointer;
+        }
+        
+        .order-footer {
+          display: flex;
+          justify-content: space-between;
+          align-items: center;
+          padding-top: 12px;
+          border-top: 1px solid #f0f0f0;
+        }
+        
+        .delivery-info {
+          font-size: 14px;
+          color: #878787;
+        }
+        
+        .order-actions .btn {
+          display: flex;
+          align-items: center;
+          gap: 4px;
+        }
+        
+        .no-orders {
+          background-color: white;
+          padding: 40px;
+          border-radius: 8px;
+        }
+        
+        .empty-order-image {
+          opacity: 0.8;
+        }
+        
+        @media (max-width: 768px) {
+          .order-header {
+            flex-direction: column;
+            align-items: flex-start;
+            gap: 8px;
+          }
+          
+          .order-status {
+            margin-left: 0;
+            align-self: flex-start;
+          }
+          
+          .order-footer {
+            flex-direction: column;
+            gap: 12px;
+            align-items: flex-start;
+          }
+        }
+      `}</style>
+    </div>
   );
 };
 
