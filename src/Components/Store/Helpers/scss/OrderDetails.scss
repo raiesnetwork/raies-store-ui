@@ -501,3 +501,86 @@ font-size: 20px;
     }
   }
 }
+
+.shiprocket-tracking-info {
+  background: #f8f9fa;
+  padding: 15px;
+  border-radius: 8px;
+  margin-bottom: 20px;
+  
+  h3 {
+    margin-bottom: 15px;
+    font-size: 1.2rem;
+    color: #333;
+  }
+  
+  .tracking-details {
+    display: grid;
+    grid-template-columns: repeat(auto-fill, minmax(200px, 1fr));
+    gap: 15px;
+    
+    .tracking-row {
+      display: flex;
+      flex-direction: column;
+      
+      .tracking-label {
+        font-weight: 600;
+        color: #555;
+        font-size: 0.9rem;
+      }
+      
+      .tracking-value {
+        font-size: 1rem;
+        color: #333;
+      }
+      
+      .tracking-link {
+        color: #0066cc;
+        text-decoration: none;
+        
+        &:hover {
+          text-decoration: underline;
+        }
+      }
+    }
+  }
+}
+
+// Add these to your existing SCSS
+.return-order-tag {
+  margin-top: 10px;
+  
+  .badge {
+    font-size: 0.8rem;
+    padding: 4px 8px;
+    border-radius: 4px;
+  }
+  
+  .return-reason {
+    margin-top: 5px;
+    font-size: 0.9rem;
+    color: #666;
+  }
+}
+
+.refund-amount {
+  font-weight: bold;
+  color: #28a745;
+}
+
+.refund-status {
+  font-size: 0.9rem;
+  margin-top: 5px;
+  
+  &.processed {
+    color: #28a745;
+  }
+  
+  &.pending {
+    color: #ffc107;
+  }
+  
+  &.failed {
+    color: #dc3545;
+  }
+}

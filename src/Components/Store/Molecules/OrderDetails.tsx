@@ -21,7 +21,7 @@ const OrderDetails: React.FC = () => {
   const [returnReason, setReturnReason] = useState('');
   const [additionalComments, setAdditionalComments] = useState('');
   const [currentOrderData, setCurrentOrderData] = useState(orderData);
-  
+  const [isReturnOrder] = useState(currentOrderData.returnOrder || false);
   // Categorized status flows
   const statusFlows = {
     // Normal delivery process flow
@@ -42,6 +42,7 @@ const OrderDetails: React.FC = () => {
     rto: [
       'NEW',
       'READY TO SHIP',
+      'PENDING',
       'PICKED UP',
       'IN TRANSIT',
       'RTO INITIATED',
@@ -99,6 +100,7 @@ const OrderDetails: React.FC = () => {
     'REJECTED': <FaTimesCircle className="problem-icon" />,
     'PICKUP ERROR': <FaTimesCircle className="problem-icon" />
   };
+console.log(currentOrderData);
 
   // Get the current status from order data and convert to uppercase
   const currentStatus = (type === "normal" 
@@ -106,13 +108,11 @@ const OrderDetails: React.FC = () => {
     : currentOrderData.deliveryStatus)?.toUpperCase();
   // Determine which flow to use based on current status
   const getActiveFlow = () => {
-    if (statusFlows.rto.includes(currentStatus)) {
+    if (statusFlows.rto.includes(currentStatus)&&isReturnOrder) {
       return statusFlows.rto;
     } else if (currentStatus === 'CANCELED') {
       return statusFlows.cancelled;
-    } else if (currentStatus === 'RETURN REQUESTED' || 
-               currentStatus === 'RETURN APPROVED' || 
-               currentStatus === 'RETURNED') {
+    } else if (isReturnOrder) {
       return statusFlows.rto;
     } else if (statusFlows.problem.includes(currentStatus)) {
       const normalFlow = [...statusFlows.normal];
@@ -206,7 +206,7 @@ const statusDates = getStatusDates();
 
   // Calculate progress percentage
   const calculateProgress = () => {
-    if (['DELIVERED', 'CANCELED', 'RTO DELIVERED','RETURNED'].includes(currentStatus)) {
+    if (['DELIVERED', 'CANCELED', 'RTO DELIVERED','RETURNED'].includes(currentStatus.toUpperCase())) {
       return 100;
     } else if (statusFlows.problem.includes(currentStatus)) {
       // For problem statuses, show partial progress
@@ -288,11 +288,14 @@ const statusDates = getStatusDates();
     "Other reason"
   ];
   const returnReasons = [
-    "Product damaged",
-    "Wrong product delivered",
-    "Product not as described",
-    // "Changed my mind",
-    "Other reason"
+    "product damaged, but shipping box ok",
+    "both product and shipping box damaged",
+    "wrong item was sent",
+    "incorrect item delivered",
+    "inaccurate website description",
+    "product does not match description on website",
+    "changed my mind",
+    "other"
   ];
   return (
     <>
