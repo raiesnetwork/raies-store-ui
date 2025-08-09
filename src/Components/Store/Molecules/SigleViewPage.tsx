@@ -198,7 +198,8 @@ const {isAuthenticated}=useAuth()||{}
                   )}
                 </div>
                 <div className="purchase-btns">
-                  {singleProductData.priceOption === "barter" && (
+                  {singleProductData.priceOption === "barter" &&
+                   singleProductData.productCount > 0 && (
                     <>
                       {/* <button
                         onClick={() => {
@@ -305,7 +306,7 @@ const {isAuthenticated}=useAuth()||{}
                           </button>
                         </Link>
                          
-                        { profileData?.dealerView&& <button
+                        { profileData?.dealerView&& singleProductData.productCount > 0 && <button
                         onClick={() => {
                           setOpenBiddingModal();
                         }}
@@ -314,7 +315,7 @@ const {isAuthenticated}=useAuth()||{}
                       </button>}
                       </>
                     )}
-                  {singleProductData.priceOption === "bidding" && (
+                  {singleProductData.priceOption === "bidding" &&  singleProductData.productCount > 0 &&(
                     <>
                       {/* <button
                         onClick={() => {

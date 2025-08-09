@@ -431,7 +431,18 @@ const statusDates = getStatusDates();
                     ></div>
                   </div>
                 </div>
-                
+                {currentStatus === 'CANCELED' && (
+  <div className="cancel-status-message">
+    <p>Your order has been cancelled.</p>
+    {currentOrderData.cancelReason && (
+      <p><strong>Reason:</strong> {currentOrderData.cancelReason}</p>
+    )}
+    {currentOrderData.additionalComments && (
+      <p><strong>Comments:</strong> {currentOrderData.additionalComments}</p>
+    )}
+    <p>Cancellation date: {statusDates['CANCELED']}</p>
+  </div>
+)}
                 {statusFlows.problem.includes(currentStatus) && (
                   <div className="problem-status-message">
                     <p>Your shipment encountered an issue: {simplifiedStatusMap[currentStatus]}</p>
