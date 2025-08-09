@@ -25,6 +25,7 @@ interface resp {
   orderData?: {
     order_id: string;
   };
+  expectedDeliveryDate:any
 }
 
 interface details {
@@ -50,6 +51,8 @@ interface respBid {
   orderData?: {
     order_id: string;
   };
+  expectedDeliveryDate:any
+
 }
 
 interface respBarter {
@@ -68,6 +71,8 @@ interface respBarter {
   orderData?: {
     order_id: string;
   };
+  expectedDeliveryDate:any
+
 }
 
 interface PaginationData {
@@ -105,6 +110,8 @@ const UserOrdersPage: React.FC = () => {
           "We're sorry, but we couldn't fetch your orders. Please check your connection and try again."
         );
       } else {
+        console.log(data?.data);
+        
         setOrders(data?.data?.storeOrders || []);
         setBidOrders(data?.data?.biddingOrders || []);
         setBarterOrders(data.data?.barterOrders || []);
@@ -183,7 +190,7 @@ const UserOrdersPage: React.FC = () => {
   const getDeliveryEstimate = (createdAt: string) => {
     const orderDate = new Date(createdAt);
     const deliveryDate = new Date(orderDate);
-    deliveryDate.setDate(deliveryDate.getDate() + 5); // Adding 5 days as estimated delivery
+    // deliveryDate.setDate(deliveryDate.getDate() + 5); // Adding 5 days as estimated delivery
     
     return `Expected delivery by ${deliveryDate.toLocaleDateString('en-US', { 
       weekday: 'short', 
@@ -279,7 +286,7 @@ const UserOrdersPage: React.FC = () => {
                             {order.status === "Delivered" ? (
                               <span>Delivered on {formatDate(order.createdAt)}</span>
                             ) : (
-                              <span>{getDeliveryEstimate(order.createdAt)}</span>
+                              <span>{getDeliveryEstimate(order.expectedDeliveryDate)}</span>
                             )}
                           </div>
                           <div className="order-actions">
