@@ -4,7 +4,7 @@ import { useLocation } from 'react-router-dom';
 import Header from './Header';
 import useMystoreStore from '../Core/Store';
 import { FaTruckMoving, FaTimesCircle, FaCheckCircle, FaUndo } from "react-icons/fa";
-import { format } from 'date-fns';
+import { format, isValid, parseISO } from 'date-fns';
 import StoreFooter from '../../Footer/Footer';
 import Button from 'react-bootstrap/Button';
 import Modal from 'react-bootstrap/Modal';
@@ -22,9 +22,26 @@ const OrderDetails: React.FC = () => {
   const [additionalComments, setAdditionalComments] = useState('');
   const [currentOrderData, setCurrentOrderData] = useState(orderData);
   const [isReturnOrder] = useState(currentOrderData.returnOrder || false);
+
+  // Safe date parsing and formatting function
+  const safeFormatDate = (dateString: string | Date | undefined | null, fallback = ''): string => {
+    if (!dateString) return fallback;
+    
+    try {
+      // Parse the date string using date-fns parseISO for ISO strings or new Date for others
+      const date = typeof dateString === 'string' 
+        ? parseISO(dateString) 
+        : new Date(dateString);
+      
+      return isValid(date) ? format(date, 'EEE, d MMM') : fallback;
+    } catch (error) {
+      console.error('Date formatting error:', error);
+      return fallback;
+    }
+  };
+
   // Categorized status flows
   const statusFlows = {
-    // Normal delivery process flow
     normal: [
       'NEW',
       'READY TO SHIP',
@@ -37,8 +54,6 @@ const OrderDetails: React.FC = () => {
       'OUT FOR DELIVERY',
       'DELIVERED'
     ],
-    
-    // Return to Origin (RTO) process flow
     rto: [
       'NEW',
       'READY TO SHIP',
@@ -48,16 +63,12 @@ const OrderDetails: React.FC = () => {
       'RTO INITIATED',
       'RTO DELIVERED'
     ],
-    
-    // Cancellation process flow
     cancelled: [
       'NEW',
       'READY TO SHIP',
       'PENDING',
       'CANCELED'
     ],
-    
-    // Problem statuses (these will be shown as end states)
     problem: [
       'LOST',
       'DAMAGED',
@@ -67,7 +78,6 @@ const OrderDetails: React.FC = () => {
     ]
   };
 
-  // Simplified status mapping for display purposes
   const simplifiedStatusMap: Record<string, string> = {
     'NEW': 'Order Placed',
     'READY TO SHIP': 'Ready to ship',
@@ -89,10 +99,9 @@ const OrderDetails: React.FC = () => {
     'REJECTED': 'Rejected by Customer'
   };
 
-  // Status icons mapping
   const statusIcons: Record<string, JSX.Element> = {
     'DELIVERED': <FaCheckCircle className="delivered-icon" />,
-    'CANCELED': <FaTimesCircle color='red' className=" truck-icon cancelled-icon" />,
+    'CANCELED': <FaTimesCircle color='red' className="truck-icon cancelled-icon" />,
     'RTO DELIVERED': <FaUndo className="returned-icon" />,
     'LOST': <FaTimesCircle className="problem-icon" />,
     'DAMAGED': <FaTimesCircle className="problem-icon" />,
@@ -100,15 +109,15 @@ const OrderDetails: React.FC = () => {
     'REJECTED': <FaTimesCircle className="problem-icon" />,
     'PICKUP ERROR': <FaTimesCircle className="problem-icon" />
   };
-console.log(currentOrderData);
 
   // Get the current status from order data and convert to uppercase
   const currentStatus = (type === "normal" 
     ? currentOrderData.status 
     : currentOrderData.deliveryStatus)?.toUpperCase();
+
   // Determine which flow to use based on current status
   const getActiveFlow = () => {
-    if (statusFlows.rto.includes(currentStatus)&&isReturnOrder) {
+    if (statusFlows.rto.includes(currentStatus) && isReturnOrder) {
       return statusFlows.rto;
     } else if (currentStatus === 'CANCELED') {
       return statusFlows.cancelled;
@@ -118,12 +127,15 @@ console.log(currentOrderData);
       const normalFlow = [...statusFlows.normal];
       const lastCompletedStatus = orderData?.statusHistory
         ?.filter((h: any) => statusFlows.normal.includes(h.status?.toUpperCase()))
-        // @ts-ignore
-        ?.sort((a: any, b: any) => new Date(b.timestamp) - new Date(a.timestamp))[0]?.status?.toUpperCase();
+        ?.sort((a: any, b: any) => {
+          const dateA = a.timestamp ? new Date(a.timestamp).getTime() : 0;
+          const dateB = b.timestamp ? new Date(b.timestamp).getTime() : 0;
+          return dateB - dateA;
+        })[0]?.status?.toUpperCase();
       
-      const lastCompletedIndex = normalFlow?.findIndex(status => 
-        status === lastCompletedStatus
-      );
+      const lastCompletedIndex = lastCompletedStatus 
+        ? normalFlow?.findIndex(status => status === lastCompletedStatus)
+        : -1;
       
       return lastCompletedIndex >= 0 
         ? [...normalFlow.slice(0, lastCompletedIndex + 1), currentStatus]
@@ -137,79 +149,84 @@ console.log(currentOrderData);
 
   const { storeData } = useMystoreStore((state) => state);
 
-
-// Get status dates from order data
-const getStatusDates = () => {
-  const dates: Record<string, string> = {};
-  
-  // Order creation date
-  dates['NEW'] = format(new Date(currentOrderData.createdAt), 'EEE, d MMM');
-  
-  // Add dates from updateHistory
-  if (currentOrderData.updateHistory && currentOrderData.updateHistory.length > 0) {
-    if (currentStatus === 'CANCELED' && currentOrderData.updateHistory.length === 1) {
-      dates['CANCELED'] = format(new Date(currentOrderData.updateHistory[0]), 'EEE, d MMM');
-    } else {
-      currentOrderData.updateHistory.forEach((dateString: string, index: number) => {
-        if (index < activeFlow.length) {
-          dates[activeFlow[index]] = format(new Date(dateString), 'EEE, d MMM');
+  // Get status dates from order data
+  const getStatusDates = () => {
+    const dates: Record<string, string> = {};
+    
+    // Order creation date
+    dates['NEW'] = safeFormatDate(currentOrderData.createdAt);
+    
+    // Add dates from updateHistory
+    if (currentOrderData.updateHistory && currentOrderData.updateHistory.length > 0) {
+      if (currentStatus === 'CANCELED' && currentOrderData.updateHistory.length === 1) {
+        dates['CANCELED'] = safeFormatDate(currentOrderData.updateHistory[0]);
+      } else {
+        currentOrderData.updateHistory.forEach((dateString: string, index: number) => {
+          if (index < activeFlow.length) {
+            dates[activeFlow[index]] = safeFormatDate(dateString);
+          }
+        });
+      }
+    }
+    
+    // Add dates from ShipRocket orderData if available
+    if (currentOrderData.orderData?.statusHistory) {
+      currentOrderData.orderData.statusHistory.forEach((historyItem: any) => {
+        const status = historyItem.status?.toUpperCase();
+        if (status && historyItem.timestamp && !dates[status]) {
+          dates[status] = safeFormatDate(historyItem.timestamp);
         }
       });
     }
-  }
-  
-  // Add dates from ShipRocket orderData if available
-  if (currentOrderData.orderData?.statusHistory) {
-    currentOrderData.orderData.statusHistory.forEach((historyItem: any) => {
-      const status = historyItem.status?.toUpperCase();
-      if (status && !dates[status]) {
-        dates[status] = format(new Date(historyItem.timestamp), 'EEE, d MMM');
+    
+    // Add return request dates if available
+    if (currentOrderData.returnRequestDate) {
+      dates['RETURN REQUESTED'] = safeFormatDate(currentOrderData.returnRequestDate);
+    }
+    if (currentOrderData.returnApprovalDate) {
+      dates['RETURN APPROVED'] = safeFormatDate(currentOrderData.returnApprovalDate);
+    }
+    if (currentOrderData.returnCompletionDate) {
+      dates['RETURNED'] = safeFormatDate(currentOrderData.returnCompletionDate);
+    }
+    
+    // Fill in missing dates with estimates
+    let lastDate = currentOrderData.createdAt ? new Date(currentOrderData.createdAt) : new Date();
+    activeFlow.forEach(status => {
+      if (!dates[status]) {
+        const daysToAdd = 
+          status === 'CANCELED' ? 1 : 
+          status.includes('PICKUP') ? 1 : 
+          status === 'DELIVERED' || status === 'RTO DELIVERED' || status === 'RETURNED' ? 2 : 1;
+        
+        lastDate = new Date(lastDate.setDate(lastDate.getDate() + daysToAdd));
+        dates[status] = safeFormatDate(lastDate);
+      } else {
+        const historyItem = currentOrderData.orderData?.statusHistory?.find(
+          (h: any) => h.status?.toUpperCase() === status
+        );
+        if (historyItem?.timestamp) {
+          lastDate = new Date(historyItem.timestamp);
+        } else if (dates[status]) {
+          try {
+            lastDate = new Date(dates[status]);
+          } catch {
+            lastDate = new Date();
+          }
+        }
       }
     });
-  }
-  
-  // Add return request dates if available
-  if (currentOrderData.returnRequestDate) {
-    dates['RETURN REQUESTED'] = format(new Date(currentOrderData.returnRequestDate), 'EEE, d MMM');
-  }
-  if (currentOrderData.returnApprovalDate) {
-    dates['RETURN APPROVED'] = format(new Date(currentOrderData.returnApprovalDate), 'EEE, d MMM');
-  }
-  if (currentOrderData.returnCompletionDate) {
-    dates['RETURNED'] = format(new Date(currentOrderData.returnCompletionDate), 'EEE, d MMM');
-  }
-  
-  // Fill in missing dates with estimates
-  let lastDate = new Date(currentOrderData.createdAt);
-  activeFlow.forEach(status => {
-    if (!dates[status]) {
-      const daysToAdd = 
-        status === 'CANCELED' ? 1 : 
-        status.includes('PICKUP') ? 1 : 
-        status === 'DELIVERED' || status === 'RTO DELIVERED' || status === 'RETURNED' ? 2 : 1;
-      
-      lastDate = new Date(lastDate.setDate(lastDate.getDate() + daysToAdd));
-      dates[status] = format(lastDate, 'EEE, d MMM');
-    } else {
-      lastDate = new Date(
-        currentOrderData.orderData?.statusHistory?.find(
-          (h: any) => h.status?.toUpperCase() === status
-        )?.timestamp || dates[status]
-      );
-    }
-  });
-  
-  return dates;
-};
+    
+    return dates;
+  };
 
-const statusDates = getStatusDates();
+  const statusDates = getStatusDates();
 
   // Calculate progress percentage
   const calculateProgress = () => {
-    if (['DELIVERED', 'CANCELED', 'RTO DELIVERED','RETURNED'].includes(currentStatus.toUpperCase())) {
+    if (['DELIVERED', 'CANCELED', 'RTO DELIVERED','RETURNED'].includes(currentStatus)) {
       return 100;
     } else if (statusFlows.problem.includes(currentStatus)) {
-      // For problem statuses, show partial progress
       return Math.min(90, (currentStatusIndex / activeFlow.length) * 100);
     }
     return currentStatusIndex >= 0
@@ -233,7 +250,10 @@ const statusDates = getStatusDates();
       } else {
         setCurrentOrderData((prev: any) => ({
           ...prev,
-          status: 'CANCELED'
+          status: 'CANCELED',
+          cancelReason,
+          additionalComments,
+          updateHistory: [...(prev.updateHistory || []), new Date().toISOString()]
         }));
         toast.success("Order cancelled successfully");
         setShowCancelModal(false);
@@ -245,8 +265,6 @@ const statusDates = getStatusDates();
       console.error(error);
     }
   };
-
-
 
   const handleReturnOrder = async () => {
     if (!returnReason.trim()) {
@@ -268,7 +286,8 @@ const statusDates = getStatusDates();
           ...prev,
           status: 'RETURN REQUESTED',
           returnRequestDate: new Date().toISOString(),
-          returnReason: returnReason
+          returnReason: returnReason,
+          additionalComments
         }));
         toast.success("Return request submitted successfully");
         setShowReturnModal(false);
@@ -280,6 +299,7 @@ const statusDates = getStatusDates();
       console.error(error);
     }
   };
+
   const cancellationReasons = [
     "Changed my mind",
     "Found a better price elsewhere",
@@ -287,6 +307,7 @@ const statusDates = getStatusDates();
     "Product no longer needed",
     "Other reason"
   ];
+
   const returnReasons = [
     "product damaged, but shipping box ok",
     "both product and shipping box damaged",
@@ -297,6 +318,7 @@ const statusDates = getStatusDates();
     "changed my mind",
     "other"
   ];
+
   return (
     <>
       <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
@@ -326,12 +348,6 @@ const statusDates = getStatusDates();
                       </button>
                     </>
                   )}
-                   {/* <button 
-                          className="btn btn-warning" 
-                          onClick={() => setShowReturnModal(true)}
-                        >
-                          Return Order
-                        </button> */}
                 </div>
               </div>
               
@@ -395,7 +411,8 @@ const statusDates = getStatusDates();
                       const isCurrent = index === currentStatusIndex;
                       const isProblemStatus = statusFlows.problem.includes(status);
                       const isFirstItem = index === 0;
-    const isLastItem = index === activeFlow.length - 1;
+                      const isLastItem = index === activeFlow.length - 1;
+                      
                       return (
                         <li
                           key={status}
@@ -407,8 +424,8 @@ const statusDates = getStatusDates();
                         >
                           <span>{simplifiedStatusMap[status] || status}</span>
                           {(isFirstItem || isLastItem) && (
-          <p>{statusDates[status] || 'Estimated'}</p>
-        )}
+                            <p>{statusDates[status] || 'Estimated'}</p>
+                          )}
                           {isCurrent && (
                             statusIcons[status] || <FaTruckMoving className="truck-icon" />
                           )}
@@ -431,36 +448,43 @@ const statusDates = getStatusDates();
                     ></div>
                   </div>
                 </div>
+                
                 {currentStatus === 'CANCELED' && (
-  <div className="cancel-status-message">
-    <p>Your order has been cancelled.</p>
-    {currentOrderData.cancelReason && (
-      <p><strong>Reason:</strong> {currentOrderData.cancelReason}</p>
-    )}
-    {currentOrderData.additionalComments && (
-      <p><strong>Comments:</strong> {currentOrderData.additionalComments}</p>
-    )}
-    <p>Cancellation date: {statusDates['CANCELED']}</p>
-  </div>
-)}
+                  <div className="cancel-status-message">
+                    <p>Your order has been cancelled.</p>
+                    {currentOrderData.cancelReason && (
+                      <p><strong>Reason:</strong> {currentOrderData.cancelReason}</p>
+                    )}
+                    {currentOrderData.additionalComments && (
+                      <p><strong>Comments:</strong> {currentOrderData.additionalComments}</p>
+                    )}
+                    <p>Cancellation date: {safeFormatDate(currentOrderData.updateHistory?.[currentOrderData.updateHistory.length - 1])}</p>
+                  </div>
+                )}
+                
                 {statusFlows.problem.includes(currentStatus) && (
                   <div className="problem-status-message">
                     <p>Your shipment encountered an issue: {simplifiedStatusMap[currentStatus]}</p>
                     <p>Please contact customer support for assistance.</p>
                   </div>
                 )}
-                 {currentStatus === 'RETURN REQUESTED' && (
+                
+                {currentStatus === 'RETURN REQUESTED' && (
                   <div className="return-status-message">
                     <p>Your return request has been submitted and is pending approval.</p>
+                    {currentOrderData.returnRequestDate && (
+                      <p>Request date: {safeFormatDate(currentOrderData.returnRequestDate)}</p>
+                    )}
                   </div>
                 )}
+                
                 {currentStatus === 'RETURN APPROVED' && (
                   <div className="return-status-message">
                     <p>Your return has been approved. The pickup will be scheduled soon.</p>
                     {currentOrderData.returnPickupDate && (
-                      <p>Expected pickup date: {format(new Date(currentOrderData.returnPickupDate), 'EEE, d MMM yyyy')}</p>
+                      <p>Expected pickup date: {safeFormatDate(currentOrderData.returnPickupDate)}</p>
                     )}
-                    </div>
+                  </div>
                 )}
               </div>
             </div>
@@ -516,8 +540,8 @@ const statusDates = getStatusDates();
         </Modal.Footer>
       </Modal>
 
-       {/* Return Order Modal */}
-       <Modal show={showReturnModal} onHide={() => setShowReturnModal(false)} centered>
+      {/* Return Order Modal */}
+      <Modal show={showReturnModal} onHide={() => setShowReturnModal(false)} centered>
         <Modal.Header closeButton>
           <Modal.Title>Return Order</Modal.Title>
         </Modal.Header>
