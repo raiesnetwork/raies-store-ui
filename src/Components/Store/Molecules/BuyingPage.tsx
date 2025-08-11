@@ -9,9 +9,11 @@ import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
 import StoreFooter from "../../Footer/Footer";
-import { getDeliveryCharge } from "../Core/StoreApi";
+import { getDeliveryCharge, QuentityCheck } from "../Core/StoreApi";
 import { fileToBase64 } from "../../../Utils/Base64";
 import Loader from "../../Loader/Loader";
+import QuantityControl from "./Components/QuantityControl";
+import { Spinner } from "react-bootstrap";
 
 const CheckoutPage: React.FC = () => {
   const {
@@ -43,9 +45,10 @@ const CheckoutPage: React.FC = () => {
     useState<string>("online");
     const [CourierId, setCourierId] = useState<string>('');
     const location = useLocation();
-    const { details, proType } = location.state || {};
+    const { details:detailss, proType } = location.state || {};
     const [btnDisable, setBtndesable] = useState<boolean>(false);
     // const [loading, setLoading] = useState<boolean>(false);
+    const [details, setDetails] = useState(detailss);
     const [refresh, setRefresh] = useState<boolean>(false);
     const [deliveryCharge, setdeliveryCharge] = useState<number>(0);
 
@@ -54,11 +57,17 @@ const CheckoutPage: React.FC = () => {
     type: string;
     couponId: string;
   }>({ amount: 0, type: "", couponId: "" });
-
+  const [productQuantities, setProductQuantities] = useState<Record<string, number>>(
+    details?.reduce((acc: Record<string, number>, product: respStoreCart) => {
+      acc[product.productDetails._id] = product.quantity;
+      return acc;
+    }, {}) || {}
+  );
   let totalPrice = details?.reduce(
     (total: number, product: respStoreCart) =>
       product.productDetails.priceOption !== 'free' ?
-        total + Number(product.productDetails.price) * product.quantity : 0,
+        total + Number(product.productDetails.price) *
+         (productQuantities[product._id] || product.quantity) : 0,
     0
   );
   const [totalAmount, setTotalAmount] = useState(0);
@@ -588,8 +597,53 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
     }
   };
 
+  const [quantityLoading, setQuantityLoading] = useState<Record<string, boolean>>({});
 
-
+  const handleIncrement = async (productId: string) => {
+    setQuantityLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const newQuantity = (productQuantities[productId] || 0) + 1;
+      const isValid = await QuentityCheck(productId, newQuantity);
+      if (isValid?.error) {
+        toast.error(isValid?.message);
+        return;
+      }
+      setProductQuantities(prev => ({
+        ...prev,
+        [productId]: newQuantity
+      }));
+      setDetails((prev: any) => prev.map((product: any) => 
+        product.productDetails._id === productId 
+          ? { ...product, quantity: newQuantity } 
+          : product
+      ));
+    } finally {
+      setQuantityLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
+  
+  const handleDecrement = async (productId: string) => {
+    setQuantityLoading(prev => ({ ...prev, [productId]: true }));
+    try {
+      const newQuantity = (productQuantities[productId] || 0) - 1;
+      const isValid = await QuentityCheck(productId, newQuantity);
+      if (isValid?.error) {
+        toast.error(isValid?.message);
+        return;
+      }
+      setProductQuantities(prev => ({
+        ...prev,
+        [productId]: newQuantity
+      }));
+      setDetails((prev: any) => prev.map((product: any) => 
+        product.productDetails._id === productId 
+          ? { ...product, quantity: newQuantity } 
+          : product
+      ));
+    } finally {
+      setQuantityLoading(prev => ({ ...prev, [productId]: false }));
+    }
+  };
    return (
     <>
     {
@@ -779,9 +833,23 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                             <p>Price: ₹{product.productDetails.price}.00</p>
                             {/* <p>Delivery: {product.deliveryDate}</p> */}
                           </div>
-                          <div className="quantity">
-                            <p>Qty: {product.quantity}</p>
-                          </div>
+                          {proType !== "bid" && proType !== "barter" ? 
+  quantityLoading[product.productDetails._id] ? (
+    <div style={{ display: 'flex', justifyContent: 'center', alignItems: 'center' }}>
+      <Spinner animation="border" size="sm" />
+    </div>
+  ) : (
+    <QuantityControl
+      quantity={productQuantities[product._id] || product.quantity}
+      onIncrement={() => handleIncrement(product.productDetails._id)}
+      onDecrement={() => handleDecrement(product.productDetails._id)}
+    />
+  )
+  :
+  <div className="quantity">
+    <p>Qty: {product.quantity}</p>
+  </div>
+}
                         </div>
                         <hr />
                       </>

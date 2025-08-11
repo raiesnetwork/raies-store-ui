@@ -1,0 +1,32 @@
+.quantity-control {
+    display: flex;
+    align-items: center;
+    gap: 8px;
+  
+    .quantity-btn {
+      width: 30px;
+      height: 30px;
+      border: 1px solid #ccc;
+      background: #fff;
+      border-radius: 4px;
+      cursor: pointer;
+      font-size: 16px;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+  
+      &:disabled {
+        opacity: 0.5;
+        cursor: not-allowed;
+      }
+  
+      &:hover:not(:disabled) {
+        background: #f0f0f0;
+      }
+    }
+  
+    .quantity-value {
+      min-width: 30px;
+      text-align: center;
+    }
+  }

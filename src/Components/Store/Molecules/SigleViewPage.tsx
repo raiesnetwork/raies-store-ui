@@ -2,31 +2,29 @@ import React, { useEffect, useState } from "react";
 import "../Helpers/scss/SinglePageView.scss";
 import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
-// import BiddingModal from "./BiddingModal";
 import Header from "./Header";
 import { toast } from "react-toastify";
 import { Link, useParams } from "react-router-dom";
 import AddressModal from "./BuyAddressModal";
 import AddressComponentModal from "./ShowAllAddressModal";
-import { FaShoppingCart } from "react-icons/fa";
+import { FaShoppingCart, FaMapMarkerAlt } from "react-icons/fa";
 import { IoBag } from "react-icons/io5";
 import { LiaExchangeAltSolid } from "react-icons/lia";
 import StoreFooter from "../../Footer/Footer";
 import { useAuth } from "../../Auth/AuthContext";
 import Loader from "../../Loader/Loader";
 import StockRequestModal from "./StockRequestModal";
+import { getDeliveryCharge } from "../Core/StoreApi";
+
 const SingleProductView: React.FC = () => {
-  const {id}=useParams()
+  const { id } = useParams();
   
   const {
     addressSupparator,
     addressSupparatorBarter,
-    // setaddressSupparatorBarter,
-    // setAddressSuparator,
     isOpenselectAddressModal,
     OpenAddressModal,
     isOpenAddressModal,
-   
     FetchToCart,
     AddToCart,
     isOpenBarteModal,
@@ -36,25 +34,40 @@ const SingleProductView: React.FC = () => {
     setOpenBarterModal,
     getSingleProduct,
     profileData,
-    getProfileInfo
+    getProfileInfo,
+    shiprocketToken,
+    getShprocketToken
   } = useMystoreStore((s) => s);
-  useEffect(()=>{
-    getProfileInfo()
-  },[])
-  const [imageView, setImageView] = useState<string>(
-    singleProductData.mainImage
-  );
-  useEffect(()=>{
-    setImageView( singleProductData.mainImage)
-  },[ singleProductData])
-  useEffect(()=>{
-     getSingleProduct(id);
-  },[id])
-  // eslint-disable-next-line no-unsafe-optional-chaining
-  const [year, month, day] = singleProductData?.endDate.split("-");
-  const lastDate = `${day}-${month}-${year}`;
+
+  const [imageView, setImageView] = useState<string>(singleProductData.mainImage);
   const [disable, setDisable] = useState<boolean>(false);
-const {isAuthenticated}=useAuth()||{}
+  const [pincode, setPincode] = useState<string>("");
+  const [deliveryEstimate, setDeliveryEstimate] = useState<string>("");
+  const [deliveryLoader, setDeliveryLoader] = useState<boolean>(false);
+  const [deliveryDetails, setDeliveryDetails] = useState<{
+    charge: number;
+    days: string;
+    courier: string;
+  } | null>(null);
+  const { isAuthenticated } = useAuth() || {};
+
+  useEffect(() => {
+    getProfileInfo();
+    getShprocketToken();
+  }, []);
+
+  useEffect(() => {
+    setImageView(singleProductData.mainImage);
+  }, [singleProductData]);
+
+  useEffect(() => {
+    getSingleProduct(id);
+  }, [id]);
+
+  // eslint-disable-next-line no-unsafe-optional-chaining
+  const [year, month, day] = singleProductData?.endDate?.split("-") || [];
+  const lastDate = `${day}-${month}-${year}`;
+
   const handileCart = async (id: string, count: number, userId: string) => {
     if (isAuthenticated) {
       setDisable(true);
@@ -70,318 +83,340 @@ const {isAuthenticated}=useAuth()||{}
       return toast("Please log in to continue.");
     }
   };
+
   const handleBarterAddressModalClose = () => {
     OpenAddressModal();
     setOpenBarterModal();
   };
+
   const handleBidAddressModalClose = () => {
     OpenAddressModal();
     setOpenBiddingModal();
   };
 
+  const checkDelivery = async () => {
+    if (pincode.length !== 6) {
+      setDeliveryEstimate("Please enter a valid 6-digit pincode");
+      setDeliveryDetails(null);
+      return;
+    }
+
+    setDeliveryLoader(true);
+    setDeliveryEstimate("Checking delivery options...");
+    
+    try {
+      const payload = {
+        pickup_postcode: singleProductData.pickupAddress?.Zip || "673504",
+        delivery_postcode: pincode,
+        cod: 1, // 1 for COD, 0 for prepaid
+        weight: singleProductData.productWeight,
+        length: singleProductData.packageLength,
+        breadth: singleProductData.packageBreadth,
+        height: singleProductData.packageHeight,
+      };
+
+      // Convert weight to kg if it's in grams
+      if (singleProductData.productWeightType === 'g') {
+        // @ts-ignore
+        payload.weight = Number(singleProductData.productWeight) / 1000;
+      }
+
+      const data = await getDeliveryCharge(payload, shiprocketToken);
+      
+      if (data?.status === 404 || data?.error === true) {
+        setDeliveryEstimate(data.message || "Delivery not available for this pincode");
+        setDeliveryDetails(null);
+        return;
+      }
+
+      const couriers = data.data.available_courier_companies;
+      
+      if (!couriers || couriers.length === 0) {
+        setDeliveryEstimate("No delivery options available for this pincode");
+        setDeliveryDetails(null);
+        return;
+      }
+
+      // Find the best courier based on price and delivery time
+      const bestCourier = couriers.reduce((best:any, current:any) => {
+        if (current.recommendation_score > best.recommendation_score) {
+          return current;
+        }
+        return best;
+      }, couriers[0]);
+
+      const freightCharge = parseFloat(bestCourier.freight_charge || 0);
+      const codCharges = parseFloat(bestCourier.cod_charges || 0);
+      const otherCharges = parseFloat(bestCourier.other_charges || 0);
+      const totalDeliveryCharge = freightCharge + codCharges + otherCharges;
+
+      setDeliveryDetails({
+        charge: totalDeliveryCharge,
+        days: bestCourier.etd || "3-7",
+        courier: bestCourier.courier_name || "Standard Delivery"
+      });
+
+      setDeliveryEstimate("");
+
+    } catch (error) {
+      console.error("Error checking delivery:", error);
+      setDeliveryEstimate("Error checking delivery options. Please try again.");
+      setDeliveryDetails(null);
+    } finally {
+      setDeliveryLoader(false);
+    }
+  };
+
   return (
-    <>
-        <div style={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
-
+    <div className="single-product-page">
       <Header />
-      <div style={{ flex: 1 }}>
-
-      {singleProductData._id ? (
-        <>
-          <div className="single-product-container">
-            <div className="single-product-details">
-              <div className="single-product-left">
-                <div className="big-image">
-                  <img src={imageView} alt="fullsize" />
+      
+      <div className="product-content-wrapper">
+        {singleProductData._id ? (
+          <div className="product-container">
+            {/* Product Images Section */}
+            <div className="product-images-section">
+              <div className="main-image-container">
+                <img 
+                  src={imageView} 
+                  alt={singleProductData.productName} 
+                  className="main-product-image"
+                />
+              </div>
+              
+              <div className="thumbnail-container">
+                <div 
+                  className={`thumbnail ${imageView === singleProductData.mainImage ? 'active' : ''}`}
+                  onClick={() => setImageView(singleProductData.mainImage)}
+                >
+                  <img src={singleProductData.mainImage} alt="Main" />
                 </div>
-                <div className="related-images">
-                  <img
-                    onClick={() => setImageView(singleProductData.mainImage)}
-                    src={singleProductData.mainImage}
-                    alt=""
-                    className="related-1"
-                  />
-                  {singleProductData?.subImages[0] && (
-                    <img
-                      onClick={() =>
-                        setImageView(singleProductData?.subImages[0])
-                      }
-                      src={singleProductData?.subImages[0]}
-                      alt="sub1"
-                      className="related-1"
+                
+                {singleProductData?.subImages?.map((img, index) => (
+                  <div 
+                    key={index}
+                    className={`thumbnail ${imageView === img ? 'active' : ''}`}
+                    onClick={() => setImageView(img)}
+                  >
+                    <img src={img} alt={`Product view ${index + 1}`} />
+                  </div>
+                ))}
+              </div>
+            </div>
+            
+            {/* Product Details Section */}
+            <div className="product-details-section">
+              <h1 className="product-title">{singleProductData.productName}</h1>
+              
+              <div className="product-meta">
+                <span className="brand">{singleProductData.brandName}</span>
+                {singleProductData.productCount < 5 && (
+                  <span className="stock-warning">
+                    Only {singleProductData.productCount} left in stock
+                  </span>
+                )}
+              </div>
+              
+              <div className="price-section">
+                {singleProductData.priceOption === "free" && (
+                  <div className="price-free">FREE</div>
+                )}
+                
+                {singleProductData.priceOption === "normal" && (
+                  <div className="price-normal">
+                    {singleProductData.currency} {singleProductData.price}
+                  </div>
+                )}
+                
+                {singleProductData.priceOption === "barter" && (
+                  <div className="price-barter">
+                    <LiaExchangeAltSolid /> Exchange for: {singleProductData.barterProductName}
+                  </div>
+                )}
+                
+                {singleProductData.priceOption === "bidding" && (
+                  <div className="price-bidding">
+                    <div className="bid-info">
+                      Starting bid: {singleProductData.currency} {singleProductData.minBidPrice}
+                    </div>
+                    <div className="bid-closing">
+                      Auction ends: {lastDate}
+                    </div>
+                  </div>
+                )}
+              </div>
+              
+              <div className="product-description">
+                <h3>Description</h3>
+                <p>{singleProductData.description}</p>
+              </div>
+              
+              {/* Delivery Estimation */}
+              <div className="delivery-estimation">
+                <h3>Delivery Options</h3>
+                <div className="pincode-checker">
+                  <div className="input-group">
+                    <FaMapMarkerAlt className="location-icon" />
+                    <input
+                      type="text"
+                      placeholder="Enter pincode"
+                      maxLength={6}
+                      value={pincode}
+                      onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
                     />
+                    <button 
+                      onClick={checkDelivery}
+                      disabled={deliveryLoader || pincode.length !== 6}
+                    >
+                      {deliveryLoader ? "Checking..." : "Check"}
+                    </button>
+                  </div>
+                  {deliveryEstimate && (
+                    <div className="delivery-result">{deliveryEstimate}</div>
                   )}
-                  {singleProductData?.subImages[1] && (
-                    <img
-                      onClick={() =>
-                        setImageView(singleProductData?.subImages[1])
-                      }
-                      src={singleProductData?.subImages[1]}
-                      alt="sub2"
-                      className="related-1"
-                    />
-                  )}
-                  {singleProductData?.subImages[2] && (
-                    <img
-                      onClick={() =>
-                        setImageView(singleProductData?.subImages[2])
-                      }
-                      src={singleProductData?.subImages[2]}
-                      alt="sub3"
-                      className="related-1"
-                    />
+                  {deliveryDetails && (
+                    <div className="delivery-details">
+                      <div className="delivery-row">
+                        <span>Delivery Partner:</span>
+                        <span>{deliveryDetails.courier}</span>
+                      </div>
+                      <div className="delivery-row">
+                        <span>Estimated Delivery:</span>
+                        <span>{deliveryDetails.days} business days</span>
+                      </div>
+                      <div className="delivery-row">
+                        <span>Shipping Charge:</span>
+                        <span>₹{deliveryDetails.charge.toFixed(2)}</span>
+                      </div>
+                    </div>
                   )}
                 </div>
               </div>
-              <div className="single-product-right">
-                {/* Normal type */}
-
-                <div className="details-product-info-container">
-                  <div className="product-details-info-sec">
-                    <div className="product-name">
-                      {singleProductData.productName}
-                    </div>
-                    {singleProductData.priceOption === "free" && (
-                      <div className="product-type-info">Free</div>
-                    )}
-
-                    {singleProductData.priceOption === "normal" && (
-                      <div className="product-details-page-price">
-                        {singleProductData.currency +
-                          " " +
-                          singleProductData.price}
-                      </div>
-                    )}
-
-                    {singleProductData.priceOption === "barter" && (
-                      <div className="product-type-info-barter">
-                        <LiaExchangeAltSolid /> Exchange With{" "}
-                        {singleProductData.barterProductName}
-                      </div>
-                    )}
-                    {singleProductData.priceOption === "bidding" && (
-                      <div className="product-type-info-auction">Auction</div>
-                    )}
-                  </div>
-                  <div className="single-product-brand">
-                    {singleProductData.brandName}
-                  </div>
-
-                  {/* normal type */}
-
-                  {/*free type */}
-
-                  {/*bidding type */}
-                  {singleProductData.priceOption === "bidding" && (
-                    <div className="single-product-page-auction-details">
-                      <div className="single-product-page-auction-bid">
-                        Bid start @ {singleProductData.minBidPrice}
-                      </div>
-                      <div className="single-product-page-auction-clse">
-                        Closing Date {lastDate}
-                      </div>
-                    </div>
-                  )}
-                  {/*barter type */}
-
-                  <div className="product-description">
-                    {singleProductData.description}
-                  </div>
-                  {singleProductData.productCount < 5 && (
-                    <p className="product-card__limited-stock">
-                      Only{" "}
-                      <span style={{ color: "red" }}>
-                        {singleProductData.productCount}{" "}
-                      </span>{" "}
-                      item left
-                    </p>
-                  )}
-                </div>
-                <div className="purchase-btns">
-                  {singleProductData.priceOption === "barter" &&
-                   singleProductData.productCount > 0 && (
-                    <>
-                      {/* <button
-                        onClick={() => {
-                          setOpenBarterModal();
-                          setaddressSupparatorBarter(true);
-                        }}
-                      >
-                        {" "}
-                        <LiaExchangeAltSolid />
-                        Exchange
-                      </button> */}
-                      <Link
-                          style={{ textDecoration: "none" }}
-                          to="/buy"
-                          state={{
-                            details: [
-                              {
-                                id: singleProductData._id,
-                                quantity: 1,
-                                productDetails: singleProductData,
-                              },
-                            ],
-                            type: "single",
-                            proType:'barter'
-                          }}
-                        >
-                          <button>
-                          <LiaExchangeAltSolid />
-                          Exchange
-                          </button>
-                        </Link>
-                    </>
-                  )}
-                  {singleProductData.priceOption === "free" &&
-                    singleProductData.productCount > 0 && (
-                      <>
-                        <button
-                          disabled={disable}
-                          onClick={() =>
-                            handileCart(
-                              singleProductData._id,
-                              singleProductData.productCount,
-                              singleProductData.user
-                            )
-                          }
-                        >
-                          <FaShoppingCart className="product-details-page-cart-icon" />
-                          Add to cart
-                        </button>
-                        <Link
-                          style={{ textDecoration: "none" }}
-                          to="/buy"
-                          state={{
-                            details: [
-                              {
-                                id: singleProductData._id,
-                                quantity: 1,
-                                productDetails: singleProductData,
-                              },
-                            ],
-                            type: "single",
-                          }}
-                        >
-                          <button>
-                            <IoBag className="product-details-page-cart-icon" />
-                            Buy Now
-                          </button>
-                        </Link>
-                      </>
-                    )}
-                  {singleProductData.priceOption === "normal" &&
-                    singleProductData.productCount > 0 && (
-                      <>
-                        <button
-                          disabled={disable}
-                          onClick={() =>
-                            handileCart(
-                              singleProductData._id,
-                              singleProductData.productCount,
-                              singleProductData.user
-                            )
-                          }
-                        >
-                          <FaShoppingCart className="product-details-page-cart-icon" />
-                          Add to cart
-                        </button>
-                        <Link
-                          style={{ textDecoration: "none" }}
-                          to="/buy"
-                          state={{
-                            details: [
-                              {
-                                id: "",
-                                quantity: 1,
-                                productDetails: singleProductData,
-                              },
-                            ],
-                            type: "single",
-                          }}
-                        >
-                          <button>
-                            <IoBag className="product-details-page-cart-icon" />
-                            Buy Now
-                          </button>
-                        </Link>
-                         
-                        { profileData?.dealerView&& singleProductData.productCount > 0 && <button
-                        onClick={() => {
-                          setOpenBiddingModal();
-                        }}
-                      >
-                         Request for stock
-                      </button>}
-                      </>
-                    )}
-                  {singleProductData.priceOption === "bidding" &&  singleProductData.productCount > 0 &&(
-                    <>
-                      {/* <button
-                        onClick={() => {
-                          setOpenBiddingModal();
-                          setAddressSuparator(true);
-                        }}
-                      >
-                        Start Auction
-                      </button> */}
-                      <Link
-                          style={{ textDecoration: "none" }}
-                          to="/buy"
-                          state={{
-                            details: [
-                              {
-                                id: singleProductData._id,
-                                quantity: 1,
-                                productDetails: singleProductData,
-                              },
-                            ],
-                            type: "single",
-                            proType:'bid'
-                          }}
-                        >
-                          <button>
-                          <LiaExchangeAltSolid />
-                          Start Auction
-                          </button>
-                        </Link>
-                    </>
-                  )}
-                </div>
+              
+              {/* Action Buttons */}
+              <div className="action-buttons">
+                {singleProductData.priceOption === "barter" &&
+                 singleProductData.productCount > 0 && (
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to="/buy"
+                    state={{
+                      details: [{
+                        id: singleProductData._id,
+                        quantity: 1,
+                        productDetails: singleProductData,
+                      }],
+                      type: "single",
+                      proType: 'barter'
+                    }}
+                  >
+                    <button className="btn-exchange">
+                      <LiaExchangeAltSolid />
+                      Exchange Now
+                    </button>
+                  </Link>
+                )}
+                
+                {(singleProductData.priceOption === "free" || 
+                  singleProductData.priceOption === "normal") && 
+                  singleProductData.productCount > 0 && (
+                  <>
+                    <button
+                      className="btn-cart"
+                      disabled={disable}
+                      onClick={() =>
+                        handileCart(
+                          singleProductData._id,
+                          singleProductData.productCount,
+                          singleProductData.user
+                        )
+                      }
+                    >
+                      <FaShoppingCart />
+                      Add to Cart
+                    </button>
+                    
+                    <Link
+                      style={{ textDecoration: "none" }}
+                      to="/buy"
+                      state={{
+                        details: [{
+                          id: singleProductData._id,
+                          quantity: 1,
+                          productDetails: singleProductData,
+                        }],
+                        type: "single",
+                      }}
+                    >
+                      <button className="btn-buy">
+                        <IoBag />
+                        Buy Now
+                      </button>
+                    </Link>
+                  </>
+                )}
+                
+                {singleProductData.priceOption === "bidding" && 
+                 singleProductData.productCount > 0 && (
+                  <Link
+                    style={{ textDecoration: "none" }}
+                    to="/buy"
+                    state={{
+                      details: [{
+                        id: singleProductData._id,
+                        quantity: 1,
+                        productDetails: singleProductData,
+                      }],
+                      type: "single",
+                      proType: 'bid'
+                    }}
+                  >
+                    <button className="btn-bid">
+                      Place a Bid
+                    </button>
+                  </Link>
+                )}
+                
+                {profileData?.dealerView && 
+                 singleProductData.priceOption === "normal" && 
+                 singleProductData.productCount > 0 && (
+                  <button
+                    className="btn-stock-request"
+                    onClick={() => setOpenBiddingModal()}
+                  >
+                    Request for Stock
+                  </button>
+                )}
               </div>
             </div>
           </div>
-          {isOpenAddressModal && (
-            <AddressModal
-              closeModal={
-                addressSupparatorBarter
-                  ? handleBarterAddressModalClose
-                  : addressSupparator
-                  ? handleBidAddressModalClose
-                  : () => {}
-              }
-            />
-          )}
-          {isOpenselectAddressModal && (
-            <AddressComponentModal opencreateAddressModal={OpenAddressModal} />
-          )}
-
-          {isOpenBarteModal && <BarterModal product={singleProductData} />}
-          {isOpenBiddingModal && <StockRequestModal/> }
-          {/* <StockRequestModal/> */}
-        </>
-      ) : (
-        <>
-          <Loader/>
-        </>
+        ) : (
+          <Loader />
+        )}
+      </div>
+      
+      {/* Modals */}
+      {isOpenAddressModal && (
+        <AddressModal
+          closeModal={
+            addressSupparatorBarter
+              ? handleBarterAddressModalClose
+              : addressSupparator
+              ? handleBidAddressModalClose
+              : () => {}
+          }
+        />
       )}
       
-
-      </div>
-      <StoreFooter/>
-
-      </div>
-    </>
+      {isOpenselectAddressModal && (
+        <AddressComponentModal opencreateAddressModal={OpenAddressModal} />
+      )}
+      
+      {isOpenBarteModal && <BarterModal product={singleProductData} />}
+      {isOpenBiddingModal && <StockRequestModal />}
+      
+      <StoreFooter />
+    </div>
   );
 };
 

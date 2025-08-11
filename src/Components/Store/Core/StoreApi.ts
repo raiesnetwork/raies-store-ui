@@ -634,3 +634,16 @@ export const returnOrder = async (orderId:string,orderType:string,returnReason:s
     };
   }
 };
+export const QuentityCheck = async (productId:string, requestedQuantity:number) => {
+  try {
+    const { data } = await axiosInstance.post(`/storuser/quentity-check`,{
+      productId, requestedQuantity});
+    return data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Unable to process your request. Please try again.",
+      data: error,
+    };
+  }
+};
