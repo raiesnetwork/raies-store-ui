@@ -22,7 +22,20 @@ const OrderDetails: React.FC = () => {
   const [additionalComments, setAdditionalComments] = useState('');
   const [currentOrderData, setCurrentOrderData] = useState(orderData);
   const [isReturnOrder] = useState(currentOrderData.returnOrder || false);
-
+  const [bankDetails, setBankDetails] = useState({
+    accountName: '',
+    accountNumber: '',
+    bankName: '',
+    ifscCode: '',
+    accountType: ''
+  });
+  const handleBankDetailChange = (e: React.ChangeEvent<HTMLInputElement | HTMLTextAreaElement | HTMLSelectElement>) => {
+    const { name, value } = e.target;
+    setBankDetails(prev => ({
+      ...prev,
+      [name]: value
+    }));
+  };
   // Safe date parsing and formatting function
   const safeFormatDate = (dateString: string | Date | undefined | null, fallback = ''): string => {
     if (!dateString) return fallback;
@@ -270,13 +283,23 @@ const OrderDetails: React.FC = () => {
     if (!returnReason.trim()) {
       return toast.error('Please select a proper reason');
     }
-    
+    if (orderData.paymentMethod==='offline') {
+      const bankDetailsComplete = (
+        bankDetails.accountName &&
+        bankDetails.accountNumber &&
+        bankDetails.bankName &&
+        bankDetails.ifscCode &&
+        bankDetails.accountType
+      );
+      if(!bankDetailsComplete)return toast.error('Complete the bank details')
+    }
     try {
       const data = await returnOrder(
         orderData?._id, 
         type, 
         returnReason, 
         additionalComments,
+        bankDetails
       );
       
       if (data?.error) {
@@ -348,6 +371,12 @@ const OrderDetails: React.FC = () => {
                       </button>
                     </>
                   )}
+                   <button 
+                          className="btn btn-warning" 
+                          onClick={() => setShowReturnModal(true)}
+                        >
+                          Return Order
+                        </button>
                 </div>
               </div>
               
@@ -541,60 +570,151 @@ const OrderDetails: React.FC = () => {
       </Modal>
 
       {/* Return Order Modal */}
-      <Modal show={showReturnModal} onHide={() => setShowReturnModal(false)} centered>
-        <Modal.Header closeButton>
-          <Modal.Title>Return Order</Modal.Title>
-        </Modal.Header>
-        <Modal.Body>
-          <Form>
-            <Form.Group className="mb-3">
-              <Form.Label>Reason for return</Form.Label>
-              <Form.Select 
-                value={returnReason} 
-                onChange={(e) => setReturnReason(e.target.value)}
-                required
-              >
-                <option value="">Select a reason</option>
-                {returnReasons.map((reason) => (
-                  <option key={reason} value={reason}>{reason}</option>
-                ))}
-              </Form.Select>
-            </Form.Group>
+<Modal show={showReturnModal} onHide={() => setShowReturnModal(false)} centered>
+  <Modal.Header closeButton>
+    <Modal.Title>Return Order</Modal.Title>
+  </Modal.Header>
+  <Modal.Body>
+    <Form>
+      <Form.Group className="mb-3">
+        <Form.Label>Reason for return*</Form.Label>
+        <Form.Select 
+          value={returnReason} 
+          onChange={(e) => setReturnReason(e.target.value)}
+          required
+        >
+          <option value="">Select a reason</option>
+          {returnReasons.map((reason) => (
+            <option key={reason} value={reason}>{reason}</option>
+          ))}
+        </Form.Select>
+      </Form.Group>
 
-            <Form.Group className="mb-3">
-              <Form.Label>Additional details</Form.Label>
-              <Form.Control
-                as="textarea"
-                rows={3}
-                value={additionalComments}
-                onChange={(e) => setAdditionalComments(e.target.value)}
-                placeholder="Please provide any additional details about the issue..."
-              />
-            </Form.Group>
+      <Form.Group className="mb-3">
+        <Form.Label>Additional details</Form.Label>
+        <Form.Control
+          as="textarea"
+          rows={3}
+          value={additionalComments}
+          onChange={(e) => setAdditionalComments(e.target.value)}
+          placeholder="Please provide any additional details about the issue..."
+        />
+      </Form.Group>
 
-            <div className="return-policy-info">
-              <h6>Return Policy:</h6>
-              <ul>
-                <li>Items must be returned within 7 days of delivery</li>
-                <li>Products must be in original condition with all tags</li>
-                <li>Refund will be processed after we receive and inspect the item</li>
-              </ul>
+      {/* Bank Details Section (for COD returns) */}
+      {orderData?.paymentMethod === "offline" && (
+        <div className="bank-details-section">
+          <h5>Refund Bank Details</h5>
+          <p className="text-muted small">
+            Please provide your bank account details for refund processing. 
+            We'll contact you at <span style={{color:"blueviolet"}}>{orderData?.DeliveryAddress.email}</span> if there are any issues.
+          </p>
+          
+          <Form.Group className="mb-3">
+            <Form.Label>Account Holder Name*</Form.Label>
+            <Form.Control
+  type="text"
+  name="accountName"
+  value={bankDetails.accountName}
+  onChange={handleBankDetailChange}
+  placeholder="Name as in bank account"
+  required
+/>
+          </Form.Group>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Account Number*</Form.Label>
+            <Form.Control
+  type="text"
+  name="accountNumber"
+  value={bankDetails.accountNumber}
+  onChange={handleBankDetailChange}
+  placeholder="Bank account number"
+  required
+/>
+
+          </Form.Group>
+
+          <div className="row">
+            <div className="col-md-6">
+              <Form.Group className="mb-3">
+                <Form.Label>Bank Name*</Form.Label>
+                <Form.Control
+  type="text"
+  name="bankName"
+  value={bankDetails.bankName}
+  onChange={handleBankDetailChange}
+  placeholder="Bank name"
+  required
+/>
+              </Form.Group>
             </div>
-          </Form>
-        </Modal.Body>
-        <Modal.Footer>
-          <Button variant="outline-secondary" onClick={() => setShowReturnModal(false)}>
-            Close
-          </Button>
-          <Button 
-            variant="warning" 
-            onClick={handleReturnOrder}
-            disabled={!returnReason}
-          >
-            Submit Return Request
-          </Button>
-        </Modal.Footer>
-      </Modal>
+            <div className="col-md-6">
+              <Form.Group className="mb-3">
+                <Form.Label>IFSC Code*</Form.Label>
+                <Form.Control
+  type="text"
+  name="ifscCode"
+  value={bankDetails.ifscCode}
+  onChange={handleBankDetailChange}
+  placeholder="IFSC code"
+  required
+/>
+
+              </Form.Group>
+            </div>
+          </div>
+
+          <Form.Group className="mb-3">
+            <Form.Label>Account Type*</Form.Label>
+            <Form.Select 
+  name="accountType"
+  value={bankDetails.accountType}
+  onChange={handleBankDetailChange}
+  required
+>
+  <option value="">Select account type</option>
+  <option value="savings">Savings</option>
+  <option value="current">Current</option>
+</Form.Select>
+          </Form.Group>
+
+          <div className="alert alert-info small">
+            <strong>Note:</strong> 
+            <ul className="mb-0">
+              <li>Refund will be processed within 5-7 business days after we receive the returned item</li>
+              <li>Ensure all details are correct to avoid refund delays</li>
+              <li>For any issues, contact support@example.com</li>
+            </ul>
+          </div>
+        </div>
+      )}
+
+      <div className="return-policy-info mt-3">
+        <h6>Return Policy:</h6>
+        <ul>
+          <li>Items must be returned within 7 days of delivery</li>
+          <li>Products must be in original condition with all tags</li>
+          <li>For prepaid orders, refund will be issued to original payment method</li>
+          <li>For COD orders, refund will be processed via bank transfer</li>
+          <li>Refund will be processed after we receive and inspect the item</li>
+        </ul>
+      </div>
+    </Form>
+  </Modal.Body>
+  <Modal.Footer>
+    <Button variant="outline-secondary" onClick={() => setShowReturnModal(false)}>
+      Close
+    </Button>
+    <Button 
+      variant="warning" 
+      onClick={handleReturnOrder}
+      disabled={!returnReason }
+    >
+      Submit Return Request
+    </Button>
+  </Modal.Footer>
+</Modal>
     </>
   );
 };

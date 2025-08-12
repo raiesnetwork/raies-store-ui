@@ -621,10 +621,10 @@ export const cancelOrder = async (orderId:string,orderType:string,cancelReason:s
     };
   }
 };
-export const returnOrder = async (orderId:string,orderType:string,returnReason:string,returnadditionalComments:string) => {
+export const returnOrder = async (orderId:string,orderType:string,returnReason:string,returnadditionalComments:string,bankDetails:any) => {
   try {
     const { data } = await axiosInstance.post(`/storuser/return-order`,{
-      orderId,orderType,returnReason,returnadditionalComments});
+      orderId,orderType,returnReason,returnadditionalComments,bankDetails});
     return data;
   } catch (error) {
     return {

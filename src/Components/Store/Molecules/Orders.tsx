@@ -285,7 +285,11 @@ const UserOrdersPage: React.FC = () => {
                           <div className="delivery-info">
                             {order.status === "Delivered" ? (
                               <span>Delivered on {formatDate(order.createdAt)}</span>
-                            ) : (
+                            ) :order.status==="CANCELED"?
+                            <span className={`status-badge ${order.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                              {getStatusIcon(order.status)}
+                              {getOrderStatusText(order.status)}
+                            </span>: (
                               <span>{getDeliveryEstimate(order.expectedDeliveryDate)}</span>
                             )}
                           </div>
