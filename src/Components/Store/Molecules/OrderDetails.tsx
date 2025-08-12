@@ -371,12 +371,12 @@ const OrderDetails: React.FC = () => {
                       </button>
                     </>
                   )}
-                   <button 
+                   {/* <button 
                           className="btn btn-warning" 
                           onClick={() => setShowReturnModal(true)}
                         >
                           Return Order
-                        </button>
+                        </button> */}
                 </div>
               </div>
               
