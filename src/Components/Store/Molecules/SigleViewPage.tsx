@@ -95,6 +95,10 @@ const SingleProductView: React.FC = () => {
   };
 
   const checkDelivery = async () => {
+    if (!isAuthenticated) {
+      setDeliveryEstimate("Please log in to continue.");
+      return 
+    }
     if (pincode.length !== 6) {
       setDeliveryEstimate("Please enter a valid 6-digit pincode");
       setDeliveryDetails(null);
@@ -166,7 +170,6 @@ const SingleProductView: React.FC = () => {
       setDeliveryLoader(false);
     }
   };
-
   return (
     <div className="single-product-page">
       <Header />

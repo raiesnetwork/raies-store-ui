@@ -71,6 +71,7 @@ const CheckoutPage: React.FC = () => {
     0
   );
   const [totalAmount, setTotalAmount] = useState(0);
+  const [isLoading, setIsLoading] = useState(false);
 const [deliveryError,setDeliveryError]=useState({error:false,message:""})
   useEffect(() => {
     setTotalAmount(totalPrice)
@@ -264,6 +265,8 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
       }
       const totalAmountWithDelivery = totalPrice + deliveryCharge;
       if (selectedPaymentMethod === "offline") {
+        try{
+        setIsLoading(true)
         const data = await createOrdr({
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
@@ -273,7 +276,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           CourierId
         });
         setBtndesable(false);
-
+        setIsLoading(false)
         if (data.error) {
           setBtndesable(false);
 
@@ -286,13 +289,20 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
 
           navigate("/success", { state: { orderDetails: details, orderId: data.data.orderData?.order_id } });
         }
+      }catch(e){
+
+      }finally{
+        setIsLoading(false)
+      }
       } else if (selectedPaymentMethod === "credit") {
         if(deliveryError.error){
           setBtndesable(false);
-  
+          
           return toast.error(deliveryError.message)
         }
+        setIsLoading(true)
         // Credit payment flow
+        try{
         const data = await createOrdr({
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
@@ -313,6 +323,12 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
             state: { orderDetails: details, orderId: data.data.orderData?.order_id },
           });
         }
+      }catch(E){
+
+      }finally{
+        setIsLoading(false)
+
+      }
       }
       else {
 
@@ -321,6 +337,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
 
         try {
           // setLoading(true)
+          setIsLoading(true)
 
           const { order } = await createRazorpayOrder(totalAmountWithDelivery);
 
@@ -369,6 +386,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                 toast.error(
                   "Payment verification failed. Please check your payment details and try again."
                 );
+              }finally{
+                setIsLoading(false)
+
               }
             },
             profile: {
@@ -392,6 +412,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           rzp1.open();
         } catch (error) {
           toast.error("Payment failed. Please try again.");
+        }finally{
+          setIsLoading(false)
+
         }
       
       }
@@ -509,6 +532,8 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         return toast.error('We cant fetch delivery details plese try after some time.')
       }
       try {
+        setIsLoading(true)
+
         const data = await createBarterOrder(formData);
 
         if (data.error) {
@@ -532,6 +557,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         toast.error(
           "We couldn't submit your form due to an error. Please check your information and try again."
         );
+      }finally{
+        setIsLoading(false)
+
       }
     } else {
       toast.error(
@@ -568,6 +596,8 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         return toast.error('We cant fetch delivery details plese try after some time.')
       }
       try {
+        setIsLoading(true)
+
         const data = await createBiddingOrder(formData);
         if (data.error) {
 
@@ -588,6 +618,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         toast.error(
           "We couldn't submit your form due to an error. Please check your information and try again."
         );
+      }finally{
+        setIsLoading(false)
+
       }
     } else {
       toast.error(
@@ -931,7 +964,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
               </>
 
               <button
-                disabled={btnDisable}
+                disabled={isLoading}
                 onClick={
                   proType === "barter"
                     ? handleBarderSubmit
@@ -940,7 +973,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                       : handilPlaceOrder
                 }
               >
-                {btnDisable
+                {isLoading
                   ? "Loading..."
                   : selectedPaymentMethod === "credit"
                     ? "Purchase on Credit"
