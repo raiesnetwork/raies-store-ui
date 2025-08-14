@@ -46,7 +46,6 @@ const CheckoutPage: React.FC = () => {
     const [CourierId, setCourierId] = useState<string>('');
     const location = useLocation();
     const { details:detailss, proType } = location.state || {};
-    const [btnDisable, setBtndesable] = useState<boolean>(false);
     // const [loading, setLoading] = useState<boolean>(false);
     const [details, setDetails] = useState(detailss);
     const [refresh, setRefresh] = useState<boolean>(false);
@@ -215,13 +214,11 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
     }
     if(deliveryError.error){
   
-      setBtndesable(false);
 
       toast.error(deliveryError.message)
       return
     }
     if (selectedAddress._id.trim() && selectedPaymentMethod.trim()) {
-      setBtndesable(true);
       const diamentions = details.reduce((agg: {
         weight: number;
         length: number;
@@ -259,7 +256,6 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         };
       });
       if(deliveryError.error){
-        setBtndesable(false);
 
         return toast.error(deliveryError.message)
       }
@@ -275,16 +271,13 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           couponData: couponAmount,
           CourierId
         });
-        setBtndesable(false);
         setIsLoading(false)
         if (data.error) {
-          setBtndesable(false);
 
           return toast.error(
             "We couldn't create your order. Please try again."
           );
         } else {
-          setBtndesable(false);
           await FetchToCart();
 
           navigate("/success", { state: { orderDetails: details, orderId: data.data.orderData?.order_id } });
@@ -296,7 +289,6 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
       }
       } else if (selectedPaymentMethod === "credit") {
         if(deliveryError.error){
-          setBtndesable(false);
           
           return toast.error(deliveryError.message)
         }
@@ -312,7 +304,6 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           CourierId,
         });
 
-        setBtndesable(false);
 
         if (data.error) {
           return toast.error("We couldn't create your credit order. Please try again.");
@@ -333,7 +324,6 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
       else {
 
        
-        setBtndesable(false);
 
         try {
           // setLoading(true)
@@ -412,14 +402,14 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           rzp1.open();
         } catch (error) {
           toast.error("Payment failed. Please try again.");
-        }finally{
-          setIsLoading(false)
-
         }
+        // finally{
+        //   setIsLoading(false)
+
+        // }
       
       }
     } else {
-      setBtndesable(false);
 
       toast.error(
         "Please make sure to select your delivery address and payment method."
