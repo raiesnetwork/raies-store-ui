@@ -180,6 +180,7 @@ export interface updateProfileInfo {
   dealerView?: boolean
   paymentType?: 'Up Front' | 'Monthly Payment' | 'Credit' | 'false'
 flag?:boolean
+adminUserData?:string
 }
 export interface onlinePayment {
   productDetails: []
@@ -190,6 +191,7 @@ export interface onlinePayment {
   response: any
   couponData?: any
   CourierId?:any
+  dealerId:any
 
 }
 export interface ApiResponce {

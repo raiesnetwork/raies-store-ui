@@ -39,7 +39,7 @@ const Header: React.FC = () => {
   };
 
   // Calculate total items in cart
-  const cartItemCount = cartData?.reduce((total, item) => {
+  const cartItemCount =cartData?.length&& cartData?.reduce((total, item) => {
     return total + (item.quantity || 1); // Handle cases where quantity might not exist
   }, 0) || 0;
 

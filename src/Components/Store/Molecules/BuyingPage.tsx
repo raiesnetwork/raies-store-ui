@@ -9,7 +9,7 @@ import { toast } from "react-toastify";
 import useMystoreStore from "../Core/Store";
 import AddressComponent from "./ShowAllAddressModal";
 import StoreFooter from "../../Footer/Footer";
-import { getDeliveryCharge, QuentityCheck } from "../Core/StoreApi";
+import { createRazorpayPartnerOrderApi, getDeliveryCharge, QuentityCheck } from "../Core/StoreApi";
 import { fileToBase64 } from "../../../Utils/Base64";
 import Loader from "../../Loader/Loader";
 import QuantityControl from "./Components/QuantityControl";
@@ -17,7 +17,6 @@ import { Spinner } from "react-bootstrap";
 
 const CheckoutPage: React.FC = () => {
   const {
-    createRazorpayOrder,
     verifyRazorpayPayment,
     selectedAddress,
     addressData,
@@ -165,8 +164,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
       setdeliveryCharge(totalDeliveryCharge);
       setExpectedDeliveryDate(bestCourier?.etd);
       setCourierId(bestCourier?.id)
+      console.log('bestCourier',bestCourier)
     } catch (error) {
-    
+  console.log('corier getting-error',error)
     }finally{
       setDeliveryLoader(false)
     }
@@ -328,8 +328,12 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         try {
           // setLoading(true)
           setIsLoading(true)
-
-          const { order } = await createRazorpayOrder(totalAmountWithDelivery);
+          const userData={
+            name:profileData.fullName,
+            email:profileData.email
+          }
+          console.log(profileData)
+          const { order } = await createRazorpayPartnerOrderApi(profileData?.adminUserData||"",totalAmountWithDelivery,userData);
 
           const options = {
             key: import.meta.env.VITE_APP_RAZOR_PAY,
@@ -349,11 +353,12 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                   productDetails: productDetais,
                   totalAmount: totalAmount + deliveryCharge,
                   couponData: couponAmount,
-                  CourierId
+                  CourierId,
+                  dealerId:profileData?.adminUserData
                 };
                 const responses=await verifyRazorpayPayment(data);
                 if (responses?.err) {
-                  toast.error(
+                  toast.error(responses?.message||
                     "Payment verification failed. Please try again."
                   );
                 }else{

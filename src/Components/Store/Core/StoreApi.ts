@@ -647,3 +647,20 @@ export const QuentityCheck = async (productId:string, requestedQuantity:number) 
     };
   }
 };
+
+export const createRazorpayPartnerOrderApi = async (
+  dealerId: string,
+  amount: number,
+  customerDetails: any
+): Promise<any> => {
+  try {
+    const response = await axiosInstance.post(
+      `/onlinePayment/create-partner-order`,
+      { dealerId, amount, customerDetails }
+    );
+    return response.data;
+  } catch (error) {
+    console.log(error);
+    throw error
+  }
+};
