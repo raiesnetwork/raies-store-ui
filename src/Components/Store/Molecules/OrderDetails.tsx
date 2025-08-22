@@ -352,7 +352,7 @@ const OrderDetails: React.FC = () => {
               <div className="order_details-header">
                 <h2>Order Details</h2>
                 <div className="order-actions">
-                  <button className="download-invoice-btn">Download Invoice</button>
+                  {/* <button className="download-invoice-btn">Download Invoice</button> */}
                   {!['CANCELED', 'DELIVERED', 'RTO DELIVERED', 'RETURNED', 'RETURN REQUESTED', 'RETURN APPROVED'].includes(currentStatus) && (
                     <>
                       {currentStatus === 'DELIVERED' && (
