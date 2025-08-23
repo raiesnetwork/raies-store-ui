@@ -9,7 +9,7 @@ import StoreFooter from "../../Footer/Footer";
 const SuccessPage: React.FC = () => {
   const location = useLocation();
   const navigate = useNavigate();
-  const { orderDetails,orderId } = location.state || {};
+  const { orderDetails,orderId,price } = location.state || {};
   const [data, setData] = useState(orderDetails);
   useEffect(() => {
     if (orderDetails) {
@@ -54,7 +54,7 @@ const SuccessPage: React.FC = () => {
                   {val.quantity}
                 </p>
                 <p>
-                  <strong>Price:</strong> {val.productDetails.price}
+                  <strong>Price:</strong> {price?price:val.productDetails.price}
                 </p>
                 {/* <p><strong>Estimated Delivery Date:</strong> {}</p> */}
                 {/* <p><strong>Tracking Number:</strong> {ingNumber}</p> */}

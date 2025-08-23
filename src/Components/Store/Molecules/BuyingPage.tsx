@@ -205,7 +205,18 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
     apiHelper();
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, []);
-
+  function roundAmount(amount:number) {
+    let integerPart = Math.floor(amount);
+    let decimalPart = amount - integerPart;
+  
+    if (decimalPart === 0) {
+      return integerPart; // exact whole number
+    } else if (decimalPart <= 0.49) {
+      return integerPart + 0.5; // round to .50
+    } else {
+      return integerPart + 1; // round to next integer
+    }
+  }
   const navigate = useNavigate();
   const handilPlaceOrder = async () => {
     if(profileData?.flag){
@@ -259,7 +270,8 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
 
         return toast.error(deliveryError.message)
       }
-      const totalAmountWithDelivery = totalPrice + deliveryCharge;
+     
+      const totalAmountWithDelivery =roundAmount( totalPrice + deliveryCharge);
       if (selectedPaymentMethod === "offline") {
         try{
         setIsLoading(true)
@@ -267,7 +279,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           addressId: selectedAddress._id,
           paymentMethod: selectedPaymentMethod,
           productDetails: productDetais,
-          totalAmount: totalAmount + deliveryCharge,
+          totalAmount: totalAmountWithDelivery,
           couponData: couponAmount,
           CourierId
         });
@@ -280,7 +292,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
         } else {
           await FetchToCart();
 
-          navigate("/success", { state: { orderDetails: details, orderId: data.data.orderData?.order_id } });
+          navigate("/success", { state: {price:totalAmountWithDelivery, orderDetails: details, orderId: data.data.orderData?.order_id } });
         }
       }catch(e){
 
@@ -311,7 +323,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           await FetchToCart();
 
           navigate("/credit-success", {
-            state: { orderDetails: details, orderId: data.data.orderData?.order_id },
+            state: {price:totalAmountWithDelivery, orderDetails: details, orderId: data.data.orderData?.order_id },
           });
         }
       }catch(E){
@@ -323,7 +335,6 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
       }
       else {
 
-       
 
         try {
           // setLoading(true)
@@ -351,7 +362,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                   addressId: selectedAddress._id,
                   paymentMethod: selectedPaymentMethod,
                   productDetails: productDetais,
-                  totalAmount: totalAmount + deliveryCharge,
+                  totalAmount: totalAmountWithDelivery,
                   couponData: couponAmount,
                   CourierId,
                   dealerId:profileData?.adminUserData
@@ -368,6 +379,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                   await FetchToCart();
                   navigate("/success", {
                     state: {
+                      price:totalAmountWithDelivery,
                       orderDetails: details,
                       orderId:responses?.data?.orderData?.order_id
                     }
@@ -396,7 +408,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
             },
             modal: {
               ondismiss: () => {
-                // setLoading(false);
+                setIsLoading(false);
                 // Optionally stop loading if the user dismisses the payment modal
               },
             },
@@ -407,9 +419,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           rzp1.open();
         } catch (error) {
           toast.error("Payment failed. Please try again.");
+          setIsLoading(false)
         }
         // finally{
-        //   setIsLoading(false)
 
         // }
       
@@ -941,7 +953,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                   </div>}
                 <div className="summary-row">
                   <span>Delivery:</span>
-                  <span>{deliveryCharge}</span>
+                  <span>{deliveryCharge?.toFixed(2)}</span>
                 </div>
                 {!proType &&
                   <div className="summary-row">
@@ -952,8 +964,8 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
                   <span>Total:</span>
                   <span className="total-price">
                     ₹{!deliveryLoader&&proType === "bid"
-        ? ( parseFloat(formData?.biddingAmount) || 0) + deliveryCharge 
-        :!deliveryLoader &&totalAmount+deliveryCharge}
+        ? (roundAmount( parseFloat(formData?.biddingAmount) || 0) + deliveryCharge) 
+        :!deliveryLoader &&roundAmount(totalAmount+deliveryCharge)}
                   </span>
                 </div>
               </>
