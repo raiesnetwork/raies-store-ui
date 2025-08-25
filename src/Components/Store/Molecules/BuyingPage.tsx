@@ -345,7 +345,7 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           }
           console.log(profileData)
           const { order } = await createRazorpayPartnerOrderApi(profileData?.adminUserData||"",totalAmountWithDelivery,userData);
-
+          console.log(order)
           const options = {
             key: import.meta.env.VITE_APP_RAZORPAY_ID,
             amount: order.amount,
