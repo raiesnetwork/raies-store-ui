@@ -22,7 +22,7 @@ const {login}=useAuth()||{}
     const [errorMessage, setErrorMsg] = useState<string>("");
     const [password, setPassword] = useState<string>("");
     const [checkBox, setCheckBox] = useState<boolean>(false);
-    const [userType, setUserType] = useState<string>("false"); // User type state
+    const [userType, setUserType] = useState<string>("Normal"); // User type state
 
     const {
      
