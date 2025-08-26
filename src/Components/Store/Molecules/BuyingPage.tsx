@@ -344,10 +344,10 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
             email:profileData.email
           }
           console.log(profileData)
-          const { order } = await createRazorpayPartnerOrderApi(profileData?.adminUserData||"",totalAmountWithDelivery,userData);
-          console.log(order)
+          const { order,key_id } = await createRazorpayPartnerOrderApi(profileData?.adminUserData||"",totalAmountWithDelivery,userData);
+          console.log(key_id,order)
           const options = {
-            key: import.meta.env.VITE_APP_RAZORPAY_ID,
+            key: key_id ,//import.meta.env.VITE_APP_RAZORPAY_ID,
             amount: order.amount,
             currency: "INR",
             name: "STORE  PURCHASE",
