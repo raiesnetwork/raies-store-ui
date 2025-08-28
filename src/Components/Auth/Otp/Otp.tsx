@@ -45,15 +45,15 @@ const navigate=useNavigate()
                 } else {
                     toast.success("User registered successfully!");
                     
-                    navigate('/login')
                     // checkLoggedIn(true);
-                    // setUserName(response.data?.username);
-                    // const credentials={
-                    //     username:response.data?.username,
-                    //     api_token: response.data?.token,
+                    setUserName(response.data?.username);
+                    const credentials={
+                            username:response.data?.username,
+                            api_token: response.data?.token,
                         
-                    // }
-                    // login(credentials);
+                        }
+                        login(credentials);
+                        navigate('/login')
                    // Redirect to home page on successful registration
                 }
             } else {

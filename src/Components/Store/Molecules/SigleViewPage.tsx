@@ -4,7 +4,7 @@ import useMystoreStore from "../Core/Store";
 import BarterModal from "./BarterModal";
 import Header from "./Header";
 import { toast } from "react-toastify";
-import { Link, useParams } from "react-router-dom";
+import { Link, useNavigate, useParams } from "react-router-dom";
 import AddressModal from "./BuyAddressModal";
 import AddressComponentModal from "./ShowAllAddressModal";
 import { FaShoppingCart, FaMapMarkerAlt } from "react-icons/fa";
@@ -18,7 +18,7 @@ import { getDeliveryCharge } from "../Core/StoreApi";
 
 const SingleProductView: React.FC = () => {
   const { id } = useParams();
-  
+  const Navigate=useNavigate()
   const {
     addressSupparator,
     addressSupparatorBarter,
@@ -275,8 +275,23 @@ const SingleProductView: React.FC = () => {
                     </button>
                   </div>
                   {deliveryEstimate && (
-                    <div className="delivery-result">{deliveryEstimate}</div>
-                  )}
+  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+    <div className="delivery-result">{deliveryEstimate}</div>
+    {!isAuthenticated && (
+      <div
+        style={{
+          cursor: "pointer",
+          textDecoration: "underline",
+          color: "blueviolet",
+        }}
+        onClick={() => Navigate("/login")}
+      >
+        Login
+      </div>
+    )}
+  </div>
+)}
+
                   {deliveryDetails && (
                     <div className="delivery-details">
                       <div className="delivery-row">
