@@ -586,10 +586,57 @@ export const getStockRequestApi = async (pageNo: string,type:string) => {
 // shprocket api calls
 export const getDeliveryCharge = async (productData: any, token: string) => {
   try {
-    console.log("tocken",token)
-    console.log("productData",productData)
+    console.log("token", token);
+    console.log("productData", productData);
+
     const { data } = await axios.get(
       "https://apiv2.shiprocket.in/v1/external/courier/serviceability/",
+      {
+        headers: {
+          Authorization: `Bearer ${token}`,
+        },
+        params: productData,
+      }
+    );
+
+    // ✅ Extract available couriers
+    const couriers = data?.data?.available_courier_companies || [];
+
+    // ✅ Filter only where pickup is available
+    const pickupAvailableCouriers = couriers.filter(
+      (c: any) => c.pickup_availability === "1" && c.blocked === 0
+    );
+
+    // If no couriers with pickup available
+    if (!pickupAvailableCouriers.length) {
+      return {
+        error: true,
+        message: "No courier partner available for pickup from this location",
+        data,
+      };
+    }
+
+    return {
+      error: false,
+      message: "Pickup available",
+      couriers: pickupAvailableCouriers,
+    };
+  } catch (error) {
+    return {
+      error: true,
+      message: "Something went wrong please try again later",
+      data: error,
+    };
+  }
+};
+
+// shprocket api calls
+export const returnServiceability = async (productData: any, token: string) => {
+  try {
+    console.log("tocken",token)
+    console.log("productData",productData)
+    const  data  = await axios.get(
+      "https://apiv2.shiprocket.in/v1/external/courier/return/serviceability",
 
       {
         headers: {
@@ -598,6 +645,7 @@ export const getDeliveryCharge = async (productData: any, token: string) => {
         params: productData,
       }
     );
+    console.log("retrun courier",data)
     return data;
   } catch (error) {
     return {
@@ -607,6 +655,10 @@ export const getDeliveryCharge = async (productData: any, token: string) => {
     };
   }
 };
+
+// Pre-check return courier availability
+
+
 
 export const cancelOrder = async (orderId:string,orderType:string,cancelReason:string,additionalComments:string) => {
   try {

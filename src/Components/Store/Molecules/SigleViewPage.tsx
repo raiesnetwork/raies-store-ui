@@ -18,7 +18,7 @@ import { getDeliveryCharge } from "../Core/StoreApi";
 
 const SingleProductView: React.FC = () => {
   const { id } = useParams();
-  const Navigate=useNavigate()
+  const Navigate = useNavigate()
   const {
     addressSupparator,
     addressSupparatorBarter,
@@ -97,7 +97,7 @@ const SingleProductView: React.FC = () => {
   const checkDelivery = async () => {
     if (!isAuthenticated) {
       setDeliveryEstimate("Please log in to continue.");
-      return 
+      return
     }
     if (pincode.length !== 6) {
       setDeliveryEstimate("Please enter a valid 6-digit pincode");
@@ -107,7 +107,7 @@ const SingleProductView: React.FC = () => {
 
     setDeliveryLoader(true);
     setDeliveryEstimate("Checking delivery options...");
-    
+
     try {
       const payload = {
         pickup_postcode: singleProductData.pickupAddress?.Zip || "673504",
@@ -126,7 +126,7 @@ const SingleProductView: React.FC = () => {
       }
 
       const data = await getDeliveryCharge(payload, shiprocketToken);
-      
+      console.log("delivery", data)
       if (data?.status === 404 || data?.error === true) {
         setDeliveryEstimate(data.message || "Delivery not available for this pincode");
         setDeliveryDetails(null);
@@ -134,7 +134,7 @@ const SingleProductView: React.FC = () => {
       }
 
       const couriers = data.data.available_courier_companies;
-      
+
       if (!couriers || couriers.length === 0) {
         setDeliveryEstimate("No delivery options available for this pincode");
         setDeliveryDetails(null);
@@ -142,7 +142,7 @@ const SingleProductView: React.FC = () => {
       }
 
       // Find the best courier based on price and delivery time
-      const bestCourier = couriers.reduce((best:any, current:any) => {
+      const bestCourier = couriers.reduce((best: any, current: any) => {
         if (current.recommendation_score > best.recommendation_score) {
           return current;
         }
@@ -173,30 +173,30 @@ const SingleProductView: React.FC = () => {
   return (
     <div className="single-product-page">
       <Header />
-      
+
       <div className="product-content-wrapper">
         {singleProductData._id ? (
           <div className="product-container">
             {/* Product Images Section */}
             <div className="product-images-section">
               <div className="main-image-container">
-                <img 
-                  src={imageView} 
-                  alt={singleProductData.productName} 
+                <img
+                  src={imageView}
+                  alt={singleProductData.productName}
                   className="main-product-image"
                 />
               </div>
-              
+
               <div className="thumbnail-container">
-                <div 
+                <div
                   className={`thumbnail ${imageView === singleProductData.mainImage ? 'active' : ''}`}
                   onClick={() => setImageView(singleProductData.mainImage)}
                 >
                   <img src={singleProductData.mainImage} alt="Main" />
                 </div>
-                
+
                 {singleProductData?.subImages?.map((img, index) => (
-                  <div 
+                  <div
                     key={index}
                     className={`thumbnail ${imageView === img ? 'active' : ''}`}
                     onClick={() => setImageView(img)}
@@ -206,11 +206,11 @@ const SingleProductView: React.FC = () => {
                 ))}
               </div>
             </div>
-            
+
             {/* Product Details Section */}
             <div className="product-details-section">
               <h1 className="product-title">{singleProductData.productName}</h1>
-              
+
               <div className="product-meta">
                 <span className="brand">{singleProductData.brandName}</span>
                 {singleProductData.productCount < 5 && (
@@ -219,24 +219,24 @@ const SingleProductView: React.FC = () => {
                   </span>
                 )}
               </div>
-              
+
               <div className="price-section">
                 {singleProductData.priceOption === "free" && (
                   <div className="price-free">FREE</div>
                 )}
-                
+
                 {singleProductData.priceOption === "normal" && (
                   <div className="price-normal">
                     {singleProductData.currency} {singleProductData.price}
                   </div>
                 )}
-                
+
                 {singleProductData.priceOption === "barter" && (
                   <div className="price-barter">
                     <LiaExchangeAltSolid /> Exchange for: {singleProductData.barterProductName}
                   </div>
                 )}
-                
+
                 {singleProductData.priceOption === "bidding" && (
                   <div className="price-bidding">
                     <div className="bid-info">
@@ -248,12 +248,12 @@ const SingleProductView: React.FC = () => {
                   </div>
                 )}
               </div>
-              
+
               <div className="product-description">
                 <h3>Description</h3>
                 <p>{singleProductData.description}</p>
               </div>
-              
+
               {/* Delivery Estimation */}
               <div className="delivery-estimation">
                 <h3>Delivery Options</h3>
@@ -267,7 +267,7 @@ const SingleProductView: React.FC = () => {
                       value={pincode}
                       onChange={(e) => setPincode(e.target.value.replace(/\D/g, ''))}
                     />
-                    <button 
+                    <button
                       onClick={checkDelivery}
                       disabled={deliveryLoader || pincode.length !== 6}
                     >
@@ -275,22 +275,22 @@ const SingleProductView: React.FC = () => {
                     </button>
                   </div>
                   {deliveryEstimate && (
-  <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
-    <div className="delivery-result">{deliveryEstimate}</div>
-    {!isAuthenticated && (
-      <div
-        style={{
-          cursor: "pointer",
-          textDecoration: "underline",
-          color: "blueviolet",
-        }}
-        onClick={() => Navigate("/login")}
-      >
-        Login
-      </div>
-    )}
-  </div>
-)}
+                    <div style={{ display: "flex", alignItems: "center", gap: "8px" }}>
+                      <div className="delivery-result">{deliveryEstimate}</div>
+                      {!isAuthenticated && (
+                        <div
+                          style={{
+                            cursor: "pointer",
+                            textDecoration: "underline",
+                            color: "blueviolet",
+                          }}
+                          onClick={() => Navigate("/login")}
+                        >
+                          Login
+                        </div>
+                      )}
+                    </div>
+                  )}
 
                   {deliveryDetails && (
                     <div className="delivery-details">
@@ -310,50 +310,11 @@ const SingleProductView: React.FC = () => {
                   )}
                 </div>
               </div>
-              
+
               {/* Action Buttons */}
               <div className="action-buttons">
                 {singleProductData.priceOption === "barter" &&
-                 singleProductData.productCount > 0 && (
-                  <Link
-                    style={{ textDecoration: "none" }}
-                    to="/buy"
-                    state={{
-                      details: [{
-                        id: singleProductData._id,
-                        quantity: 1,
-                        productDetails: singleProductData,
-                      }],
-                      type: "single",
-                      proType: 'barter'
-                    }}
-                  >
-                    <button className="btn-exchange">
-                      <LiaExchangeAltSolid />
-                      Exchange Now
-                    </button>
-                  </Link>
-                )}
-                
-                {(singleProductData.priceOption === "free" || 
-                  singleProductData.priceOption === "normal") && 
                   singleProductData.productCount > 0 && (
-                  <>
-                    <button
-                      className="btn-cart"
-                      disabled={disable}
-                      onClick={() =>
-                        handileCart(
-                          singleProductData._id,
-                          singleProductData.productCount,
-                          singleProductData.user
-                        )
-                      }
-                    >
-                      <FaShoppingCart />
-                      Add to Cart
-                    </button>
-                    
                     <Link
                       style={{ textDecoration: "none" }}
                       to="/buy"
@@ -364,47 +325,86 @@ const SingleProductView: React.FC = () => {
                           productDetails: singleProductData,
                         }],
                         type: "single",
+                        proType: 'barter'
                       }}
                     >
-                      <button className="btn-buy">
-                        <IoBag />
-                        Buy Now
+                      <button className="btn-exchange">
+                        <LiaExchangeAltSolid />
+                        Exchange Now
                       </button>
                     </Link>
-                  </>
-                )}
-                
-                {singleProductData.priceOption === "bidding" && 
-                 singleProductData.productCount > 0 && (
-                  <Link
-                    style={{ textDecoration: "none" }}
-                    to="/buy"
-                    state={{
-                      details: [{
-                        id: singleProductData._id,
-                        quantity: 1,
-                        productDetails: singleProductData,
-                      }],
-                      type: "single",
-                      proType: 'bid'
-                    }}
-                  >
-                    <button className="btn-bid">
-                      Place a Bid
+                  )}
+
+                {(singleProductData.priceOption === "free" ||
+                  singleProductData.priceOption === "normal") &&
+                  singleProductData.productCount > 0 && (
+                    <>
+                      <button
+                        className="btn-cart"
+                        disabled={disable}
+                        onClick={() =>
+                          handileCart(
+                            singleProductData._id,
+                            singleProductData.productCount,
+                            singleProductData.user
+                          )
+                        }
+                      >
+                        <FaShoppingCart />
+                        Add to Cart
+                      </button>
+
+                      <Link
+                        style={{ textDecoration: "none" }}
+                        to="/buy"
+                        state={{
+                          details: [{
+                            id: singleProductData._id,
+                            quantity: 1,
+                            productDetails: singleProductData,
+                          }],
+                          type: "single",
+                        }}
+                      >
+                        <button className="btn-buy">
+                          <IoBag />
+                          Buy Now
+                        </button>
+                      </Link>
+                    </>
+                  )}
+
+                {singleProductData.priceOption === "bidding" &&
+                  singleProductData.productCount > 0 && (
+                    <Link
+                      style={{ textDecoration: "none" }}
+                      to="/buy"
+                      state={{
+                        details: [{
+                          id: singleProductData._id,
+                          quantity: 1,
+                          productDetails: singleProductData,
+                        }],
+                        type: "single",
+                        proType: 'bid'
+                      }}
+                    >
+                      <button className="btn-bid">
+                        Place a Bid
+                      </button>
+                    </Link>
+                  )}
+
+                {profileData?.dealerView &&
+                  singleProductData.priceOption === "normal" &&
+                  singleProductData.productCount > 0 && (
+                    <button
+                      className="btn-stock-request"
+                      onClick={() => setOpenBiddingModal()}
+                    >
+                      Request for Stock
                     </button>
-                  </Link>
-                )}
-                
-                {profileData?.dealerView && 
-                 singleProductData.priceOption === "normal" && 
-                 singleProductData.productCount > 0 && (
-                  <button
-                    className="btn-stock-request"
-                    onClick={() => setOpenBiddingModal()}
-                  >
-                    Request for Stock
-                  </button>
-                )}
+                  )}
               </div>
             </div>
           </div>
@@ -412,7 +412,7 @@ const SingleProductView: React.FC = () => {
           <Loader />
         )}
       </div>
-      
+
       {/* Modals */}
       {isOpenAddressModal && (
         <AddressModal
@@ -420,19 +420,19 @@ const SingleProductView: React.FC = () => {
             addressSupparatorBarter
               ? handleBarterAddressModalClose
               : addressSupparator
-              ? handleBidAddressModalClose
-              : () => {}
+                ? handleBidAddressModalClose
+                : () => { }
           }
         />
       )}
-      
+
       {isOpenselectAddressModal && (
         <AddressComponentModal opencreateAddressModal={OpenAddressModal} />
       )}
-      
+
       {isOpenBarteModal && <BarterModal product={singleProductData} />}
       {isOpenBiddingModal && <StockRequestModal />}
-      
+
       <StoreFooter />
     </div>
   );

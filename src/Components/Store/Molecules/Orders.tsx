@@ -25,7 +25,13 @@ interface resp {
   orderData?: {
     order_id: string;
   };
-  expectedDeliveryDate:any
+  expectedDeliveryDate: any;
+  deliveredDate?: any;
+  returnOrder?:boolean;
+  returnDeliveredDate?:any;
+  returnPickupScheduledDate?:any;
+  returnShippedDate?:any;
+
 }
 
 interface details {
@@ -51,7 +57,7 @@ interface respBid {
   orderData?: {
     order_id: string;
   };
-  expectedDeliveryDate:any
+  expectedDeliveryDate: any
 
 }
 
@@ -71,7 +77,7 @@ interface respBarter {
   orderData?: {
     order_id: string;
   };
-  expectedDeliveryDate:any
+  expectedDeliveryDate: any
 
 }
 
@@ -111,7 +117,7 @@ const UserOrdersPage: React.FC = () => {
         );
       } else {
         console.log(data?.data);
-        
+
         setOrders(data?.data?.storeOrders || []);
         setBidOrders(data?.data?.biddingOrders || []);
         setBarterOrders(data.data?.barterOrders || []);
@@ -139,9 +145,9 @@ const UserOrdersPage: React.FC = () => {
   };
 
   const formatDate = (dateString: string) => {
-    const options: Intl.DateTimeFormatOptions = { 
-      year: 'numeric', 
-      month: 'short', 
+    const options: Intl.DateTimeFormatOptions = {
+      year: 'numeric',
+      month: 'short',
       day: 'numeric'
     };
     return new Date(dateString).toLocaleDateString(undefined, options);
@@ -191,11 +197,11 @@ const UserOrdersPage: React.FC = () => {
     const orderDate = new Date(createdAt);
     const deliveryDate = new Date(orderDate);
     // deliveryDate.setDate(deliveryDate.getDate() + 5); // Adding 5 days as estimated delivery
-    
-    return `Expected delivery by ${deliveryDate.toLocaleDateString('en-US', { 
-      weekday: 'short', 
-      month: 'short', 
-      day: 'numeric' 
+
+    return `Expected delivery by ${deliveryDate.toLocaleDateString('en-US', {
+      weekday: 'short',
+      month: 'short',
+      day: 'numeric'
     })}`;
   };
 
@@ -212,6 +218,7 @@ const UserOrdersPage: React.FC = () => {
   //   }
   // };
 
+  console.log("order", orders)
   return (
     <div className="user-orders-page" style={{ minHeight: "100vh", display: "flex", flexDirection: "column" }}>
       <Header />
@@ -262,9 +269,9 @@ const UserOrdersPage: React.FC = () => {
                         <div className="order-products">
                           {order.productDetails.slice(0, 2).map((product, index) => (
                             <div key={index} className="product-item">
-                              <img 
-                                src={product.mainImage || "https://via.placeholder.com/80"} 
-                                alt={product.productName} 
+                              <img
+                                src={product.mainImage || "https://via.placeholder.com/80"}
+                                alt={product.productName}
                                 className="product-image"
                               />
                               <div className="product-details">
@@ -282,17 +289,69 @@ const UserOrdersPage: React.FC = () => {
                         </div>
 
                         <div className="order-footer">
+                          {/* <div className="delivery-info">
+                            {order.status === "DELIVERED" ? (
+                              <span>Delivered on {formatDate(order.deliveredDate)}</span>
+                            ) : order.status === "CANCELED" ?
+                              <span className={`status-badge ${order.status.toLowerCase().replace(/\s+/g, '-')}`}>
+                                {getStatusIcon(order.status)}
+                                {getOrderStatusText(order.status)}
+                              </span> : (
+                                <span>Expected delivery by {formatDate(order.expectedDeliveryDate)}</span>
+                              )}
+                              
+                          </div> */}
+
                           <div className="delivery-info">
-                            {order.status === "Delivered" ? (
-                              <span>Delivered on {formatDate(order.createdAt)}</span>
-                            ) :order.status==="CANCELED"?
-                            <span className={`status-badge ${order.status.toLowerCase().replace(/\s+/g, '-')}`}>
-                              {getStatusIcon(order.status)}
-                              {getOrderStatusText(order.status)}
-                            </span>: (
-                              <span>{getDeliveryEstimate(order.expectedDeliveryDate)}</span>
+                            {order.returnOrder ? (
+                              // ---- Return Order Block ----
+                              <div className="return-info">
+                                <h5 className="return-label">🔄 Return Order</h5>
+                                {order.returnDeliveredDate ? (
+                                  <span>
+                                    Returned on {formatDate(order.returnDeliveredDate)}
+                                  </span>
+                                ) : order.returnPickupScheduledDate ? (
+                                  <span>
+                                    Pickup scheduled for {formatDate(order.returnPickupScheduledDate)}
+                                  </span>
+                                )
+                                  : order.returnShippedDate ? (
+                                    <span>
+                                      Return shipped on {formatDate(order.returnShippedDate)}
+                                    </span>
+                                  )
+                                    : (
+                                      <span>
+                                        Return expected delivery by {formatDate(order.expectedDeliveryDate)}
+                                      </span>
+                                    )}
+                              </div>
+                            ) : (
+                              // ---- Normal Order Block ----
+                              <>
+                                {order.status === "DELIVERED" ? (
+                                  <span>
+                                    Delivered on {formatDate(order.deliveredDate)}
+                                  </span>
+                                ) : order.status === "CANCELED" ? (
+                                  <span
+                                    className={`status-badge ${order.status
+                                      .toLowerCase()
+                                      .replace(/\s+/g, "-")}`}
+                                  >
+                                    {getStatusIcon(order.status)}
+                                    {getOrderStatusText(order.status)}
+                                  </span>
+                                ) : (
+                                  <span>
+                                    Expected delivery by {formatDate(order.expectedDeliveryDate)}
+                                  </span>
+                                )}
+                              </>
                             )}
                           </div>
+
                           <div className="order-actions">
                             <Link
                               to="/orderdetails"
@@ -315,9 +374,9 @@ const UserOrdersPage: React.FC = () => {
                 </>
               ) : (
                 <div className="no-orders text-center py-5">
-                  <img 
-                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png" 
-                    alt="No orders" 
+                  <img
+                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png"
+                    alt="No orders"
                     className="empty-order-image mb-4"
                     style={{ maxWidth: "200px" }}
                   />
@@ -362,9 +421,9 @@ const UserOrdersPage: React.FC = () => {
 
                         <div className="order-products">
                           <div className="product-item">
-                            <img 
-                              src={order.productDetails.mainImage || "https://via.placeholder.com/80"} 
-                              alt={order.productDetails.productName} 
+                            <img
+                              src={order.productDetails.mainImage || "https://via.placeholder.com/80"}
+                              alt={order.productDetails.productName}
                               className="product-image"
                             />
                             <div className="product-details">
@@ -407,9 +466,9 @@ const UserOrdersPage: React.FC = () => {
                 </>
               ) : (
                 <div className="no-orders text-center py-5">
-                  <img 
-                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png" 
-                    alt="No bids" 
+                  <img
+                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png"
+                    alt="No bids"
                     className="empty-order-image mb-4"
                     style={{ maxWidth: "200px" }}
                   />
@@ -451,9 +510,9 @@ const UserOrdersPage: React.FC = () => {
 
                         <div className="order-products">
                           <div className="product-item">
-                            <img 
-                              src={order.productDetails.mainImage || "https://via.placeholder.com/80"} 
-                              alt={order.productDetails.productName} 
+                            <img
+                              src={order.productDetails.mainImage || "https://via.placeholder.com/80"}
+                              alt={order.productDetails.productName}
                               className="product-image"
                             />
                             <div className="product-details">
@@ -496,9 +555,9 @@ const UserOrdersPage: React.FC = () => {
                 </>
               ) : (
                 <div className="no-orders text-center py-5">
-                  <img 
-                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png" 
-                    alt="No exchanges" 
+                  <img
+                    src="https://static-assets-web.flixcart.com/www/linchpin/fk-cp-zion/img/emptyOrders_f13d28.png"
+                    alt="No exchanges"
                     className="empty-order-image mb-4"
                     style={{ maxWidth: "200px" }}
                   />
