@@ -163,77 +163,77 @@ const OrderDetails: React.FC = () => {
   const { storeData } = useMystoreStore((state) => state);
   console.log("currentOrder", currentOrderData)
   // Get status dates from order data
-  const getStatusDates = () => {
-    const dates: Record<string, string> = {};
+  // const getStatusDates = () => {
+  //   const dates: Record<string, string> = {};
 
-    // Order creation date
-    dates['NEW'] = safeFormatDate(currentOrderData.createdAt);
+  //   // Order creation date
+  //   dates['NEW'] = safeFormatDate(currentOrderData.createdAt);
 
-    // Add dates from updateHistory
-    if (currentOrderData.updateHistory && currentOrderData.updateHistory.length > 0) {
-      if (currentStatus === 'CANCELED' && currentOrderData.updateHistory.length === 1) {
-        dates['CANCELED'] = safeFormatDate(currentOrderData.updateHistory[0]);
-      } else {
-        currentOrderData.updateHistory.forEach((dateString: string, index: number) => {
-          if (index < activeFlow.length) {
-            dates[activeFlow[index]] = safeFormatDate(dateString);
-          }
-        });
-      }
-    }
+  //   // Add dates from updateHistory
+  //   if (currentOrderData.updateHistory && currentOrderData.updateHistory.length > 0) {
+  //     if (currentStatus === 'CANCELED' && currentOrderData.updateHistory.length === 1) {
+  //       dates['CANCELED'] = safeFormatDate(currentOrderData.updateHistory[0]);
+  //     } else {
+  //       currentOrderData.updateHistory.forEach((dateString: string, index: number) => {
+  //         if (index < activeFlow.length) {
+  //           dates[activeFlow[index]] = safeFormatDate(dateString);
+  //         }
+  //       });
+  //     }
+  //   }
 
-    // Add dates from ShipRocket orderData if available
-    if (currentOrderData.orderData?.statusHistory) {
-      currentOrderData.orderData.statusHistory.forEach((historyItem: any) => {
-        const status = historyItem.status?.toUpperCase();
-        if (status && historyItem.timestamp && !dates[status]) {
-          dates[status] = safeFormatDate(historyItem.timestamp);
-        }
-      });
-    }
+  //   // Add dates from ShipRocket orderData if available
+  //   if (currentOrderData.orderData?.statusHistory) {
+  //     currentOrderData.orderData.statusHistory.forEach((historyItem: any) => {
+  //       const status = historyItem.status?.toUpperCase();
+  //       if (status && historyItem.timestamp && !dates[status]) {
+  //         dates[status] = safeFormatDate(historyItem.timestamp);
+  //       }
+  //     });
+  //   }
 
-    // Add return request dates if available
-    if (currentOrderData.returnRequestDate) {
-      dates['RETURN REQUESTED'] = safeFormatDate(currentOrderData.returnRequestDate);
-    }
-    if (currentOrderData.returnApprovalDate) {
-      dates['RETURN APPROVED'] = safeFormatDate(currentOrderData.returnApprovalDate);
-    }
-    if (currentOrderData.returnCompletionDate) {
-      dates['RETURNED'] = safeFormatDate(currentOrderData.returnCompletionDate);
-    }
+  //   // Add return request dates if available
+  //   if (currentOrderData.returnRequestDate) {
+  //     dates['RETURN REQUESTED'] = safeFormatDate(currentOrderData.returnRequestDate);
+  //   }
+  //   if (currentOrderData.returnApprovalDate) {
+  //     dates['RETURN APPROVED'] = safeFormatDate(currentOrderData.returnApprovalDate);
+  //   }
+  //   if (currentOrderData.returnCompletionDate) {
+  //     dates['RETURNED'] = safeFormatDate(currentOrderData.returnCompletionDate);
+  //   }
 
-    // Fill in missing dates with estimates
-    let lastDate = currentOrderData.createdAt ? new Date(currentOrderData.createdAt) : new Date();
-    activeFlow.forEach(status => {
-      if (!dates[status]) {
-        const daysToAdd =
-          status === 'CANCELED' ? 1 :
-            status.includes('PICKUP') ? 1 :
-              status === 'DELIVERED' || status === 'RTO DELIVERED' || status === 'RETURNED' ? 2 : 1;
+  //   // Fill in missing dates with estimates
+  //   let lastDate = currentOrderData.createdAt ? new Date(currentOrderData.createdAt) : new Date();
+  //   activeFlow.forEach(status => {
+  //     if (!dates[status]) {
+  //       const daysToAdd =
+  //         status === 'CANCELED' ? 1 :
+  //           status.includes('PICKUP') ? 1 :
+  //             status === 'DELIVERED' || status === 'RTO DELIVERED' || status === 'RETURNED' ? 2 : 1;
 
-        lastDate = new Date(lastDate.setDate(lastDate.getDate() + daysToAdd));
-        dates[status] = safeFormatDate(lastDate);
-      } else {
-        const historyItem = currentOrderData.orderData?.statusHistory?.find(
-          (h: any) => h.status?.toUpperCase() === status
-        );
-        if (historyItem?.timestamp) {
-          lastDate = new Date(historyItem.timestamp);
-        } else if (dates[status]) {
-          try {
-            lastDate = new Date(dates[status]);
-          } catch {
-            lastDate = new Date();
-          }
-        }
-      }
-    });
+  //       lastDate = new Date(lastDate.setDate(lastDate.getDate() + daysToAdd));
+  //       dates[status] = safeFormatDate(lastDate);
+  //     } else {
+  //       const historyItem = currentOrderData.orderData?.statusHistory?.find(
+  //         (h: any) => h.status?.toUpperCase() === status
+  //       );
+  //       if (historyItem?.timestamp) {
+  //         lastDate = new Date(historyItem.timestamp);
+  //       } else if (dates[status]) {
+  //         try {
+  //           lastDate = new Date(dates[status]);
+  //         } catch {
+  //           lastDate = new Date();
+  //         }
+  //       }
+  //     }
+  //   });
 
-    return dates;
-  };
+  //   return dates;
+  // };
 
-  const statusDates = getStatusDates();
+  // const statusDates = getStatusDates();
 
   // Calculate progress percentage
   const calculateProgress = () => {
@@ -442,7 +442,7 @@ const OrderDetails: React.FC = () => {
                       const isCompleted = index <= currentStatusIndex;
                       const isCurrent = index === currentStatusIndex;
                       const isProblemStatus = statusFlows.problem.includes(status);
-                      const isFirstItem = index === 0;
+                      // const isFirstItem = index === 0;
                       const isLastItem = index === activeFlow.length - 1;
 
                       return (

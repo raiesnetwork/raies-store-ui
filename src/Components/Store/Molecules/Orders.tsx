@@ -193,17 +193,17 @@ const UserOrdersPage: React.FC = () => {
     }
   };
 
-  const getDeliveryEstimate = (createdAt: string) => {
-    const orderDate = new Date(createdAt);
-    const deliveryDate = new Date(orderDate);
-    // deliveryDate.setDate(deliveryDate.getDate() + 5); // Adding 5 days as estimated delivery
+  // const getDeliveryEstimate = (createdAt: string) => {
+  //   const orderDate = new Date(createdAt);
+  //   const deliveryDate = new Date(orderDate);
+  //   // deliveryDate.setDate(deliveryDate.getDate() + 5); // Adding 5 days as estimated delivery
 
-    return `Expected delivery by ${deliveryDate.toLocaleDateString('en-US', {
-      weekday: 'short',
-      month: 'short',
-      day: 'numeric'
-    })}`;
-  };
+  //   return `Expected delivery by ${deliveryDate.toLocaleDateString('en-US', {
+  //     weekday: 'short',
+  //     month: 'short',
+  //     day: 'numeric'
+  //   })}`;
+  // };
 
   // const getTotalItemsForActiveTab = () => {
   //   switch (activeTab) {

@@ -583,8 +583,9 @@ export const getStockRequestApi = async (pageNo: string,type:string) => {
 };
 
 
+
 // shprocket api calls
-export const getDeliveryCharge = async (productData: any, token: string) => {
+export const getDeliveryCharge = async (productData: any, token: string):Promise<any> => {
   try {
     console.log("token", token);
     console.log("productData", productData);
