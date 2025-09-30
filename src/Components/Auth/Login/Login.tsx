@@ -19,8 +19,6 @@ console.log("ss", subdomain);
 const Login: React.FC = () => {
     const { login } = useAuth() || {};
     const [mobileNumber, setMobileNumber] = useState<string>("");
-    const [email, setEmail] = useState<string>("");
-    const [loginMethod, setLoginMethod] = useState<"mobile" | "email">("mobile");
     const [loading, setLoading] = useState<boolean>(false);
     const [error, setError] = useState<boolean>(false);
     const [errorMessage, setErrorMsg] = useState<string>("");
@@ -71,18 +69,7 @@ const Login: React.FC = () => {
             return setErrorMsg("Select a user type");
         }
 
-        // Validate based on login method
-        if (loginMethod === "mobile" && (!mobileNumber.trim() || mobileNumber.length < 7)) {
-            setError(true);
-            setErrorMsg("Please enter a valid mobile number");
-            return;
-        }
-
-        if (loginMethod === "email" && (!email.trim() || !isValidEmail(email))) {
-            setError(true);
-            setErrorMsg("Please enter a valid email address");
-            return;
-        }
+        
 
         if (!password.trim()) {
             setError(true);
@@ -94,8 +81,7 @@ const Login: React.FC = () => {
         setError(false);
 
         try {
-            const identifier = loginMethod === "mobile" ? mobileNumber : email;
-            const response = await loginWithPassword(identifier, password, subdomain, userType);
+            const response = await loginWithPassword(mobileNumber, password, subdomain, userType);
             console.log('response', response);
 
             setLoading(false);
@@ -126,7 +112,7 @@ const Login: React.FC = () => {
         }
 
         // Validate mobile number for OTP login
-        if (loginMethod !== "mobile" || !mobileNumber.trim() || mobileNumber.length < 7) {
+        if ( !mobileNumber.trim() || mobileNumber.length < 7) {
             setError(true);
             setErrorMsg("OTP login requires a valid mobile number");
             return;
@@ -240,7 +226,7 @@ const Login: React.FC = () => {
                     </div> */}
 
                     {/* Mobile Number Input */}
-                    {loginMethod === "mobile" && (
+                   
                         <div className="login__input_container">
                             <PhoneInput
                                 value={mobileNumber}
@@ -250,22 +236,9 @@ const Login: React.FC = () => {
                                 placeholder="Enter phone number"
                             />
                         </div>
-                    )}
+                    
 
-                    {/* Email Input */}
-                    {loginMethod === "email" && (
-                        <div className="login__input_container">
-                            <TextField
-                                fullWidth
-                                label="Email Address"
-                                type="email"
-                                value={email}
-                                onChange={(e) => setEmail(e.target.value)}
-                                className="login__input_field"
-                                placeholder="Enter your email"
-                            />
-                        </div>
-                    )}
+                  
 
                     {/* User Type Selector */}
                     <div className="login__input_container">
@@ -315,14 +288,10 @@ const Login: React.FC = () => {
                         <input 
                             type="checkbox" 
                             onChange={(e) => setCheckBox(e.target.checked)} 
-                            disabled={loginMethod === "email"} // Disable OTP for email login
+                           
                         /> 
                         Login With OTP
-                        {loginMethod === "email" && (
-                            <span className="login__otp_disabled_note">
-                                (OTP available only for mobile login)
-                            </span>
-                        )}
+                        
                     </div>
 
                     {/* Forgot Password Link */}
