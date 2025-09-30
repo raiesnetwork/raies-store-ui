@@ -717,3 +717,66 @@ export const createRazorpayPartnerOrderApi = async (
     throw error
   }
 };
+
+export const forgotPassword = async (
+  identifier:string,
+   userType:string, 
+   method:string, 
+   subdomain:any
+) => {
+  try {
+    const response = await axiosInstance.post(`/userstore/auth/reset-password`, {
+      identifier,
+      method,
+      subdomain,
+      userType
+    });
+    console.log("apires", response);
+    return response.data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Api call failed",
+      data: error,
+    };
+  }
+};
+export const updateNewPassword = async (
+  token:string,
+  newPassword:string, 
+   subdomain:any
+) => {
+  try {
+    const response = await axiosInstance.post(`/userstore/auth/updated-password`, {
+      token,
+      newPassword,
+      subdomain,
+    });
+    console.log("apires", response);
+    return response.data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Api call failed",
+      data: error,
+    };
+  }
+};
+export const verifyResetToken = async (
+  token:string,   subdomain:any
+) => {
+  try {
+    const response = await axiosInstance.post(`/userstore/auth/verify-reset-token`, {
+      token,
+      subdomain,
+    });
+    console.log("apires", response);
+    return response.data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Api call failed",
+      data: error,
+    };
+  }
+};
