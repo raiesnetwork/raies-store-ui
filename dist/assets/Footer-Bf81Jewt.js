@@ -1,5 +1,0 @@
-<<<<<<<< HEAD:dist/assets/Footer-Bf81Jewt.js
-import{j as e,L as o}from"./index-BxFzFt9d.js";const t=()=>e.jsxs("footer",{className:"store_footer",children:[e.jsx("div",{className:"store_footer__links",children:e.jsx(o,{to:"/refund-cancellation-policy",className:"store_footer__link",children:"Refund and Cancellation Policy"})}),e.jsxs("div",{className:"store_footer__copyright",children:["© ",new Date().getFullYear(),"       iXES Global solutions private limited. All Rights Reserved"]})]});export{t as S};
-========
-import{j as e,L as o}from"./index-DO3I4ds2.js";const t=()=>e.jsxs("footer",{className:"store_footer",children:[e.jsx("div",{className:"store_footer__links",children:e.jsx(o,{to:"/refund-cancellation-policy",className:"store_footer__link",children:"Refund and Cancellation Policy"})}),e.jsxs("div",{className:"store_footer__copyright",children:["© ",new Date().getFullYear(),"       iXES Global solutions private limited. All Rights Reserved"]})]});export{t as S};
->>>>>>>> 3a03bbc614a152d89b39c5219805ace2c4cf7cb9:dist/assets/Footer-BfcSR1Ch.js
