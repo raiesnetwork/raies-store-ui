@@ -590,7 +590,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
     console.log("token", token);
     console.log("productData", productData);
 
-    const { data } = await axios.get(
+    const {data } = await axios.get(
       "https://apiv2.shiprocket.in/v1/external/courier/serviceability/",
       {
         headers: {
@@ -605,7 +605,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
 
     // ✅ Filter only where pickup is available
     const pickupAvailableCouriers = couriers.filter(
-      (c: any) => c.pickup_availability === "1" && c.blocked === 0
+      (c: any) => c.blocked === 0
     );
 
     // If no couriers with pickup available
@@ -613,7 +613,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
       return {
         error: true,
         message: "No courier partner available for pickup from this location",
-        data,
+        
       };
     }
 
@@ -621,6 +621,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
       error: false,
       message: "Pickup available",
       couriers: pickupAvailableCouriers,
+      data:data.data
     };
   } catch (error) {
     return {
