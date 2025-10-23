@@ -125,7 +125,7 @@ const SingleProductView: React.FC = () => {
         payload.weight = Number(singleProductData.productWeight) / 1000;
       }
 
-      const data = await getDeliveryCharge(payload, shiprocketToken);
+      const data= await getDeliveryCharge(payload, shiprocketToken);
       console.log("delivery", data)
       if (data?.status === 404 || data?.error === true) {
         setDeliveryEstimate(data.message || "Delivery not available for this pincode");
@@ -141,6 +141,7 @@ const SingleProductView: React.FC = () => {
         return;
       }
 
+      
       // Find the best courier based on price and delivery time
       const bestCourier = couriers.reduce((best: any, current: any) => {
         if (current.recommendation_score > best.recommendation_score) {
