@@ -590,7 +590,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
     console.log("token", token);
     console.log("productData", productData);
 
-    const { data } = await axios.get(
+    const {data } = await axios.get(
       "https://apiv2.shiprocket.in/v1/external/courier/serviceability/",
       {
         headers: {
@@ -605,7 +605,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
 
     // ✅ Filter only where pickup is available
     const pickupAvailableCouriers = couriers.filter(
-      (c: any) => c.pickup_availability === "1" && c.blocked === 0
+      (c: any) => c.blocked === 0
     );
 
     // If no couriers with pickup available
@@ -613,7 +613,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
       return {
         error: true,
         message: "No courier partner available for pickup from this location",
-        data,
+        
       };
     }
 
@@ -621,6 +621,7 @@ export const getDeliveryCharge = async (productData: any, token: string):Promise
       error: false,
       message: "Pickup available",
       couriers: pickupAvailableCouriers,
+      data:data.data
     };
   } catch (error) {
     return {
@@ -715,5 +716,68 @@ export const createRazorpayPartnerOrderApi = async (
   } catch (error) {
     console.log(error);
     throw error
+  }
+};
+
+export const forgotPassword = async (
+  identifier:string,
+   userType:string, 
+   method:string, 
+   subdomain:any
+) => {
+  try {
+    const response = await axiosInstance.post(`/userstore/auth/reset-password`, {
+      identifier,
+      method,
+      subdomain,
+      userType
+    });
+    console.log("apires", response);
+    return response.data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Api call failed",
+      data: error,
+    };
+  }
+};
+export const updateNewPassword = async (
+  token:string,
+  newPassword:string, 
+   subdomain:any
+) => {
+  try {
+    const response = await axiosInstance.post(`/userstore/auth/updated-password`, {
+      token,
+      newPassword,
+      subdomain,
+    });
+    console.log("apires", response);
+    return response.data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Api call failed",
+      data: error,
+    };
+  }
+};
+export const verifyResetToken = async (
+  token:string,   subdomain:any
+) => {
+  try {
+    const response = await axiosInstance.post(`/userstore/auth/verify-reset-token`, {
+      token,
+      subdomain,
+    });
+    console.log("apires", response);
+    return response.data;
+  } catch (error) {
+    return {
+      error: true,
+      message: "Api call failed",
+      data: error,
+    };
   }
 };

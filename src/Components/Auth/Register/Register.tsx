@@ -1,5 +1,5 @@
 import React, { useState } from "react";
-import { TextField, CircularProgress, Select, MenuItem, FormControl } from "@mui/material";
+import { TextField, CircularProgress, Select, MenuItem, FormControl, InputAdornment, IconButton } from "@mui/material";
 import { PhoneInput } from "react-international-phone";
 import "react-international-phone/style.css"; // Make sure to include the required styles
 import "../Login/Login.scss";
@@ -10,6 +10,7 @@ import useMystoreStore from "../../Store/Core/Store";
 import { getSubdomain } from "../../../Utils/Subdomain";
 import { toast } from "react-toastify";
 import { FaCrown } from "react-icons/fa6";
+import { Visibility, VisibilityOff } from "@mui/icons-material";
 
 const { hostname } = window.location;
 let subdomain = getSubdomain(hostname);
@@ -102,6 +103,14 @@ let subdomain = getSubdomain(hostname);
             } 
         });
     };
+    const [showPassword, setShowPassword] = useState<boolean>(false); // Password visibility state
+    // Toggle password visibility
+    const handleClickShowPassword = () => {
+        setShowPassword(!showPassword);
+    };
+    const handleMouseDownPassword = (event: React.MouseEvent<HTMLButtonElement>) => {
+        event.preventDefault();
+    };
 
     return (
         <>
@@ -184,10 +193,25 @@ let subdomain = getSubdomain(hostname);
                         <TextField
                             id="outlined-password-input"
                             label="Password"
-                            type="password"
+                            type={showPassword ? "text" : "password"}
+
                             className="login__input_field"
                             value={password}
                             onChange={(e) => setPassword(e.target.value)}
+                            InputProps={{
+                                endAdornment: (
+                                    <InputAdornment position="end">
+                                        <IconButton
+                                            aria-label="toggle password visibility"
+                                            onClick={handleClickShowPassword}
+                                            onMouseDown={handleMouseDownPassword}
+                                            edge="end"
+                                        >
+                                            {showPassword ? <VisibilityOff /> : <Visibility />}
+                                        </IconButton>
+                                    </InputAdornment>
+                                ),
+                            }}
                         />
                     </div>
 

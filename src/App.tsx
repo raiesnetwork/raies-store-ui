@@ -12,6 +12,7 @@ import { useAuth } from "./Components/Auth/AuthContext";
 import Loader from "./Components/Loader/Loader";
 import './main.css'
 import useMystoreStore from './Components/Store/Core/Store';
+import ResetPassword from './Components/Auth/ResetPassword/ResetPassword';
 
 // Lazy load all major components
 const MyStore = lazy(() => import("./Components/Store/MyStore"));
@@ -46,6 +47,7 @@ function App() {
                 <Route path="/billing" element={<Billing />} />
                 <Route path="/upgrade-plan" element={<Billing />} />
                 <Route path="/upgrade-plan/:id" element={<Billing />} />
+                // In your App.tsx or routing file
                 <Route
                   path="/refund-cancellation-policy"
                   element={<RefundAndCancellationPolicy />}
@@ -53,6 +55,7 @@ function App() {
               </>
             ) : (
               <>
+<Route path="/reset-password/:token" element={<ResetPassword />} />
                 <Route path="/details/:id" element={<SingleProductView />} />
                 <Route path="/billing" element={<Billing />} />
                 <Route path="/upgrade-plan" element={<Billing />} />
