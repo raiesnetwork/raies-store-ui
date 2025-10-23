@@ -345,6 +345,13 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           }
           console.log(profileData)
           const { order,key_id } = await createRazorpayPartnerOrderApi(profileData?.adminUserData||"",totalAmountWithDelivery,userData);
+          if (!order || !key_id) {
+            toast.warning(
+              "Online payment is currently unavailable because the store owner hasn’t completed Razorpay registration. You can continue your purchase using offline payment."
+            );
+            setIsLoading(false);
+            return;
+          }
           console.log(key_id,order)
           const options = {
             key: key_id ,//import.meta.env.VITE_APP_RAZORPAY_ID,
@@ -399,9 +406,9 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
               }
             },
             profile: {
-              name: "John Doe",
-              email: "john.doe@example.com",
-              contact: "9999999999",
+              name: profileData.fullName,
+              email:profileData.email,
+              contact: profileData.mobileNumber,
             },
             theme: {
               color: "#3399cc",
@@ -418,6 +425,8 @@ const [deliveryError,setDeliveryError]=useState({error:false,message:""})
           const rzp1 = new (window as any).Razorpay(options);
           rzp1.open();
         } catch (error) {
+          console.log('online payment error:',error);
+          
           toast.error("Payment failed. Please try again.");
           setIsLoading(false)
         }
